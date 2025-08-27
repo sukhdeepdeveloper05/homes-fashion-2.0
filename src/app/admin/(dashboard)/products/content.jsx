@@ -1,0 +1,45 @@
+"use client";
+
+import TableLayout from "@/components/shared/table/TableLayout";
+import { useSetParams } from "@/hooks/setParams";
+import { useListQuery } from "@/hooks/queries";
+import useProductsTableColumns from "./columns";
+import FiltersBar from "@/components/shared/FiltersBar";
+import useGetFilters from "./filters";
+
+export default function ProductsContent({ searchParams }) {
+  const setParams = useSetParams();
+
+  const { data: { products = [], pagination = {} } = {}, isLoading } =
+    useListQuery("products", "/products", { ...searchParams }, false, {
+      keepPreviousData: true,
+    });
+
+  const headings = useProductsTableColumns();
+
+  const filters = useGetFilters({ searchParams });
+
+  return (
+    <>
+      <FiltersBar filters={filters} searchParams={searchParams} />
+
+      <TableLayout
+        headings={headings}
+        rows={products}
+        loading={isLoading}
+        sortKey={searchParams.sortKey}
+        sortDir={searchParams.sortDir}
+        onSort={(k, d) => setParams({ page: 1, sortKey: k, sortDir: d })}
+        pagination={{
+          total: pagination.total,
+          page: searchParams.page,
+          perPage: searchParams.perPage,
+          showPerPage: true,
+        }}
+        onPageChange={(v) => setParams({ page: v })}
+        onPerPageChange={(v) => setParams({ page: 1, perPage: v })}
+        skeletonRows={Math.min(searchParams.perPage, 10)}
+      />
+    </>
+  );
+}

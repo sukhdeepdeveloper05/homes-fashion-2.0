@@ -1,0 +1,62 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Page</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  <body>
+    <h1>Welcome to Razorpay Payment Gateway</h1>
+
+    <!-- Input field to enter Razorpay order_id -->
+    <label for="order_id">Enter Order ID:</label>
+    <input
+      type="text"
+      id="order_id"
+      placeholder="Paste Order ID here"
+      required
+    />
+
+    <!-- Button to trigger payment -->
+    <button id="payBtn">Pay with Razorpay</button>
+
+    <script>
+      document.getElementById("payBtn").onclick = function () {
+        // Get the order_id entered by the user
+        const orderId = document.getElementById("order_id").value;
+
+        // If no order_id is entered, alert the user
+        if (!orderId) {
+          alert("Please enter a valid Order ID");
+          return;
+        }
+
+        const options = {
+          key: "rzp_test_GKhHkCLlohURK6", // Your Razorpay Key ID (replace with your key)
+          order_id: orderId, // Use the manually entered order ID
+          handler: function (response) {
+            alert(response.razorpay_payment_id);
+            alert(response.razorpay_order_id);
+            alert(response.razorpay_signature);
+          },
+          prefill: {
+            name: "Customer Name", // Prefill name of the customer
+            email: "customer@example.com", // Prefill email of the customer
+            contact: "+919876543210", // Prefill contact number
+          },
+
+          notes: {
+            address: "Customer Address", // Optional notes (e.g., delivery address)
+          },
+
+          theme: {
+            color: "#F37254", // Customize the color of the Razorpay payment modal
+          },
+        };
+
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+      };
+    </script>
+  </body>
+</html>
