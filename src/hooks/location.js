@@ -7,7 +7,7 @@ const useUserLocation = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const pickLocation = () => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by this browser.");
       setLoading(false);
@@ -40,9 +40,9 @@ const useUserLocation = () => {
       errorCallback,
       options
     );
-  }, []); // Empty dependency array ensures this runs once on mount
+  };
 
-  return { location, error, loading };
+  return { location, pickLocation, error, loading };
 };
 
 export default useUserLocation;

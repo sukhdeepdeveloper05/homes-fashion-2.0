@@ -8,6 +8,12 @@ import { useCart } from "@/store/cartContext";
 import { formatPrice } from "@/utils/formatPrice";
 import { toast } from "sonner";
 import useUserLocation from "@/hooks/location";
+import AddressStep from "./AddressStep";
+
+import("olamaps-web-sdk").then((module) => {
+  const { OlaMaps } = module;
+  // initialize and render map here
+});
 
 const TAX_RATE = 5;
 
@@ -27,16 +33,13 @@ export default function CheckoutPage({ params }) {
   const currentIndex = steps.findIndex((s) => s.id === activeStep);
 
   const goToStep = (id) => {
-    setActiveStep(id);
+    if (steps.find((s) => s.id === id).isCompleted) setActiveStep(id);
+    else toast.error("Please complete this step first.");
   };
 
   const nextStep = () => {
     if (currentIndex < steps.length - 1) {
-      if (steps[currentIndex + 1].isCompleted) {
-        goToStep(steps[currentIndex + 1].id);
-      } else {
-        toast.error("Please complete this step first.");
-      }
+      goToStep(steps[currentIndex + 1].id);
     }
   };
 
@@ -159,9 +162,15 @@ function StepsContent({ step, markComplete }) {
   const [pickedAddress, setPickedAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { location, error, loading: locationLoading } = useUserLocation();
+  const {
+    location,
+    pickLocation,
+    error,
+    loading: locationLoading,
+  } = useUserLocation();
 
   const handlePickAddress = () => {
+    pickLocation();
     console.log(location);
     toast.success(location);
     error && toast.error(error);
@@ -182,18 +191,7 @@ function StepsContent({ step, markComplete }) {
 
         {step.id === "address" && (
           <>
-            <p className="text-sm text-gray-500 mb-4">
-              {pickedAddress
-                ? pickedAddress
-                : "No address selected yet. Pick your location below."}
-            </p>
-            <Button
-              onClick={handlePickAddress}
-              disabled={loading}
-              className="w-full"
-            >
-              {loading ? "Fetching..." : "Pick Address using GPS"}
-            </Button>
+            <AddressStep onLocationPick={setPickedAddress} />
           </>
         )}
 
