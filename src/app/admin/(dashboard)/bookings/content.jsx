@@ -1,30 +1,22 @@
 "use client";
 
-import SearchField from "@/components/ui/fields/SearchField";
-import TableLayout from "@/components/shared/table/TableLayout";
-import SelectField from "@/components/ui/fields/SelectField";
+import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { BOOKING_STATUSES } from "@/config/Consts";
 import { useSetParams } from "@/hooks/setParams";
 import { useListQuery } from "@/hooks/queries";
-import FiltersBar from "@/components/shared/FiltersBar";
+import FiltersBar from "@/components/admin/shared/FiltersBar";
 
 export default function BookingsContent({ searchParams }) {
   const setParams = useSetParams();
 
-  const {
-    page: rawPage = 1,
-    perPage: rawPerPage = 10,
-    search = "",
-    sortKey = null,
-    sortDir = null,
-    bookingStatus = null,
-  } = searchParams || {};
-
-  const page = Number(rawPage);
-  const perPage = Math.min(Number(rawPerPage), 50);
-
   const { data: { bookings = [], pagination = {} } = {}, isFetching } =
-    useListQuery("bookings", "/bookings", searchParams, true);
+    useListQuery({
+      handle: "bookings",
+      url: "/bookings",
+      queryKey: ["bookings", searchParams],
+      params: searchParams,
+      requiresAdmin: true,
+    });
 
   const headings = [
     {

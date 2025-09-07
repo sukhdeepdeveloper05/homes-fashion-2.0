@@ -1,14 +1,13 @@
 "use client";
 
-import PageHeader from "@/components/shared/PageHeader";
-import TableLayout from "@/components/shared/table/TableLayout";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { PRODUCT_AVAILABILITIES, PRODUCT_STATUSES } from "@/config/Consts";
 import { use } from "react";
 import AddProductToCollectionModal from "./AddProduct";
-import SearchField from "@/components/ui/fields/SearchField";
 import { invalidate, useListQuery, useUpdateMutation } from "@/hooks/queries";
 import { useSetParams } from "@/hooks/setParams";
-import FiltersBar from "@/components/shared/FiltersBar";
+import FiltersBar from "@/components/admin/shared/FiltersBar";
 
 export default function ProductsTabPage({ params, searchParams }) {
   const { collectionId } = use(params);
@@ -24,15 +23,30 @@ export default function ProductsTabPage({ params, searchParams }) {
   const setParams = useSetParams();
 
   const { data: { products = [], pagination = {} } = {}, isFetching } =
-    useListQuery("products", "/products", {
-      collectionId,
-      page,
-      perPage,
-      search,
+    useListQuery({
+      handle: "products",
+      url: `/products`,
+      params: {
+        page,
+        perPage,
+        search,
+        collectionId,
+      },
+      queryKey: [
+        "collectionProducts",
+        "products",
+        collectionId,
+        page,
+        perPage,
+        search,
+      ],
     });
 
   const { mutateAsync: removeProduct, isPending: deleteLoading } =
-    useUpdateMutation("collection", "/collections");
+    useUpdateMutation({
+      handle: "product",
+      url: `/collections`,
+    });
 
   const headings = [
     { title: "Title", key: "title", type: "text", truncate: true },
@@ -74,6 +88,7 @@ export default function ProductsTabPage({ params, searchParams }) {
               setParams({ page: page - 1 });
             }
             invalidate("products");
+            invalidate(collectionId);
           },
           isLoading: deleteLoading,
           isDialogShown: false,

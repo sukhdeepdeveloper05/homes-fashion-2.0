@@ -1,18 +1,21 @@
 "use client";
 
-import TableLayout from "@/components/shared/table/TableLayout";
+import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { useSetParams } from "@/hooks/setParams";
 import { useListQuery } from "@/hooks/queries";
 import useProductsTableColumns from "./columns";
-import FiltersBar from "@/components/shared/FiltersBar";
+import FiltersBar from "@/components/admin/shared/FiltersBar";
 import useGetFilters from "./filters";
 
 export default function ProductsContent({ searchParams }) {
   const setParams = useSetParams();
 
   const { data: { products = [], pagination = {} } = {}, isLoading } =
-    useListQuery("products", "/products", { ...searchParams }, false, {
-      keepPreviousData: true,
+    useListQuery({
+      handle: "products",
+      url: "/products",
+      queryKey: ["products", searchParams],
+      params: searchParams,
     });
 
   const headings = useProductsTableColumns();

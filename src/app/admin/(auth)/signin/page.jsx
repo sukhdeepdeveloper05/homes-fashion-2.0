@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminSignIn } from "@/actions/auth";
+import { signIn } from "@/actions/auth";
 import Input from "@/components/ui/fields/Input";
 import Button from "@/components/ui/Button";
 import CoverImg from "@/assets/images/auth-banner.webp";
@@ -39,7 +39,7 @@ export default function AdminSignInPage() {
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["admin-signin"],
     mutationFn: async (values) => {
-      const res = await adminSignIn(values);
+      const res = await signIn(values);
       if (res?.error) throw new Error(res.error.message);
       return res;
     },

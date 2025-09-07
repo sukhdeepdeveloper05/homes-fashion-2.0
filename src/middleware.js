@@ -19,16 +19,20 @@ export default async function middleware(req) {
   const path = req.nextUrl.pathname;
 
   const user = await getAuthUser();
-
   const token = user?.token;
   const role = user?.role;
 
   const roleHome = ROLE_HOME[role];
+  const roleSignin = ROLE_SIGNIN[role];
+
   const isRoleArea =
     roleHome && (path === roleHome || path.startsWith(roleHome + "/"));
   const isAuthPage = ["/signin", "/admin/signin"].includes(path);
+  const isPublic = PUBLIC_ROUTES.includes(path);
 
+  // Case 1: Not logged in
   if (!token) {
+    // block protected areas
     if (path.startsWith("/admin") && path !== "/admin/signin") {
       return NextResponse.redirect(new URL("/admin/signin", req.url));
     }
@@ -36,16 +40,24 @@ export default async function middleware(req) {
       (path.startsWith("/partner") || path.startsWith("/customer")) &&
       path !== "/signin"
     ) {
-      return NextResponse.redirect(new URL("/signin", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
     return NextResponse.next();
   }
 
+  // Case 2: Logged in
   if (token) {
-    if (!isRoleArea && roleHome) {
+    // visiting login page while logged in → send to role home
+    if (isAuthPage && roleHome) {
       return NextResponse.redirect(new URL(roleHome, req.url));
     }
-    if (isAuthPage && roleHome) {
+
+    // trying to access a different role’s area
+    const allRoleHomes = Object.values(ROLE_HOME);
+    const otherRoleArea = allRoleHomes.find(
+      (home) => home !== roleHome && path.startsWith(home)
+    );
+    if (otherRoleArea) {
       return NextResponse.redirect(new URL(roleHome, req.url));
     }
   }

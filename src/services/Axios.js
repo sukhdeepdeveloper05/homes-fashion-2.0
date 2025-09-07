@@ -1,8 +1,10 @@
 import axios from "axios";
 import { getAuthUser, removeAuthUser, setAuthUser } from "@/actions/user";
+import { API_URL } from "@/config/Consts";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:9090",
+  baseURL: API_URL || "http://localhost:9090",
+  withCredentials: true,
   headers: {
     Accept: "application/json",
   },

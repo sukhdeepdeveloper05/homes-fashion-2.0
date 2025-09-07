@@ -5,6 +5,7 @@ import { QueryClient } from "@tanstack/react-query";
 
 import { Toaster } from "@/components/shadcn/sonner";
 import { toast } from "sonner";
+import { ProgressProvider } from "@bprogress/next/app";
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -30,8 +31,17 @@ export const queryClient = new QueryClient({
 export default function Providers({ children }) {
   return (
     <>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-      <Toaster position="top-right" theme="light" richColors={true} />
+      <ProgressProvider
+        height="3px"
+        color="var(--accent-primary)"
+        options={{ showSpinner: false }}
+        shallowRouting
+      >
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+        <Toaster position="top-right" theme="light" richColors={true} />
+      </ProgressProvider>
     </>
   );
 }

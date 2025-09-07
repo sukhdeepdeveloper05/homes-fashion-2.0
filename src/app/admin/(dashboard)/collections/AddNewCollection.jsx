@@ -1,35 +1,36 @@
 "use client";
 
-import SidebarModal from "@/components/ui/modals/SidebarModal";
+import SidebarModal from "@/components/admin/ui/modals/SidebarModal";
 import { FiLoader } from "react-icons/fi";
 import { useCreateMutation } from "@/hooks/queries";
-import { useEffect, useMemo } from "react";
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { useMemo } from "react";
+
+const collectionSchema = z.object({
+  title: z.string().nonempty({ error: "Collection Title is required" }),
+  description: z.string().nonempty({ error: "Description is required" }),
+  tags: z.string().optional(),
+  featuredImage: z.string().optional(),
+});
 
 export default function AddNewCollection() {
   const { initialData, isShown, close } = useSidebarFormContext();
 
-  const createCollectionMutation = useCreateMutation(
-    "collection",
-    "/collections"
-  );
-
-  const initialValues = {
-    title: initialData?.title || "",
-    description: initialData?.description || "",
-    tags: initialData?.tags || "",
-    featuredImage: initialData?.featuredImage || "",
-  };
-
-  const collectionSchema = z.object({
-    title: z.string().nonempty({ error: "Collection Title is required" }),
-    description: z.string().nonempty({ error: "Description is required" }),
-    tags: z.string().optional(),
-    featuredImage: z.string().optional(),
+  const createCollectionMutation = useCreateMutation({
+    handle: "collection",
+    url: "/collections",
   });
+
+  const initialValues = useMemo(
+    () => ({
+      title: initialData?.title || "",
+      description: initialData?.description || "",
+      tags: initialData?.tags || "",
+      featuredImage: initialData?.featuredImage || "",
+    }),
+    [initialData]
+  );
 
   async function handleSubmit(vals, form) {
     const cleanedVals = {

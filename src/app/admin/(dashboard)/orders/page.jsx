@@ -1,5 +1,5 @@
 import OrdersContent from "./content";
-import PageHeader from "@/components/shared/PageHeader";
+import PageHeader from "@/components/admin/shared/PageHeader";
 
 export default async function OrdersPage({ searchParams }) {
   const rawParams = await searchParams;

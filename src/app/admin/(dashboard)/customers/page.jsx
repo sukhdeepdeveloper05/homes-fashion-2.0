@@ -1,4 +1,4 @@
-import PageHeader from "@/components/shared/PageHeader";
+import PageHeader from "@/components/admin/shared/PageHeader";
 import CustomersContent from "./content";
 import UpdateCustomer from "./updateCustomer";
 

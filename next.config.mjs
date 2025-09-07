@@ -7,6 +7,10 @@ const nextConfig = {
         hostname: "69.62.124.34",
         port: "4000",
       },
+      {
+        protocol: "https",
+        hostname: "**",
+      },
     ],
   },
   experimental: {

@@ -4,10 +4,11 @@ import { PRODUCT_AVAILABILITIES, PRODUCT_STATUSES } from "@/config/Consts";
 import { useListQuery } from "@/hooks/queries";
 
 export default function useGetFilters({ searchParams }) {
-  const { data: { collections = [] } = {} } = useListQuery(
-    "collections",
-    "/collections"
-  );
+  const { data: { collections = [] } = {} } = useListQuery({
+    handle: "collections",
+    url: "/collections",
+    queryKey: ["collections"],
+  });
 
   return [
     {

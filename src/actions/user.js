@@ -25,6 +25,4 @@ export async function getAuthUser() {
 export async function removeAuthUser() {
   const cookieStore = await cookies();
   cookieStore.delete("auth_user");
-
-  redirect("/admin/signin");
 }

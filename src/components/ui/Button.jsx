@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { FiLoader } from "react-icons/fi";
 
 const sizeClasses = {
@@ -40,7 +40,7 @@ export default function Button({
     ? variantClasses[appearance]
     : variantClasses[variant][appearance];
 
-  const finalClassName = clsx(
+  const finalClassName = cn(
     "button inline-flex items-center justify-center gap-2 relative",
     sizeClasses[size],
     variantClass,
@@ -50,23 +50,15 @@ export default function Button({
 
   return (
     <button
-      className={finalClassName}
-      disabled={disabled || isLoading}
+      className={cn("inline-flex items-center gap-1.5", finalClassName)}
+      disabled={disabled}
       {...rest}
     >
-      {isLoading && (
-        <FiLoader
-          className="absolute animate-spin h-5 w-5"
-          aria-hidden="true"
-        />
+      {isLoading ? (
+        <FiLoader className="animate-spin size-6" aria-hidden="true" />
+      ) : (
+        children
       )}
-      <span
-        className={clsx("inline-flex items-center gap-1.5", {
-          "opacity-0": isLoading,
-        })}
-      >
-        {children}
-      </span>
     </button>
   );
 }

@@ -1,16 +1,14 @@
 "use client";
 
-import SidebarModal from "@/components/ui/modals/SidebarModal";
+import SidebarModal from "@/components/admin/ui/modals/SidebarModal";
 import { FiLoader } from "react-icons/fi";
 import {
   useCreateMutation,
   useListQuery,
   useUpdateMutation,
 } from "@/hooks/queries";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
 export default function AddNewProduct() {
@@ -19,21 +17,25 @@ export default function AddNewProduct() {
 
   const isEdit = Boolean(initialData);
 
-  const { data: { collections = [] } = {} } = useListQuery(
-    "collections",
-    "/collections",
-    {},
-    false
-  );
-  const { data: { categories = [] } = {} } = useListQuery(
-    "categories",
-    "/categories",
-    {},
-    false
-  );
+  const { data: { collections = [] } = {} } = useListQuery({
+    handle: "collections",
+    url: "/collections",
+    queryKey: ["collections"],
+  });
+  const { data: { categories = [] } = {} } = useListQuery({
+    handle: "categories",
+    url: "/categories",
+    queryKey: ["categories"],
+  });
 
-  const createProductMutation = useCreateMutation("product");
-  const updateProductMutation = useUpdateMutation("product", "/products");
+  const createProductMutation = useCreateMutation({
+    handle: "product",
+    url: "/products",
+  });
+  const updateProductMutation = useUpdateMutation({
+    handle: "product",
+    url: "/products",
+  });
 
   const initialValues = useMemo(
     () => ({

@@ -1,4 +1,4 @@
-import PageHeader from "@/components/shared/PageHeader";
+import PageHeader from "@/components/admin/shared/PageHeader";
 import CollectionsContent from "./content";
 import AddNewCollection from "./AddNewCollection";
 
@@ -7,7 +7,7 @@ export default async function CollectionsPage({ searchParams }) {
 
   const normalizedParams = {
     page: Number(rawParams.page) || 1,
-    perPage: Math.min(Number(rawParams.rawPerPage) || 10, 50),
+    perPage: Math.min(Number(rawParams.perPage) || 10, 50),
     search: rawParams.search ?? null,
     sortKey: rawParams.sortKey ?? null,
     sortDir: rawParams.sortDir ?? null,

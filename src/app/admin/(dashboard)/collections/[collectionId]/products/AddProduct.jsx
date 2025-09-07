@@ -1,7 +1,7 @@
 "use client";
 
 import Checkbox from "@/components/ui/fields/Checkbox";
-import SidebarModal from "@/components/ui/modals/SidebarModal";
+import SidebarModal from "@/components/admin/ui/modals/SidebarModal";
 import Image from "next/image";
 import { useState } from "react";
 import { FiLoader } from "react-icons/fi";
@@ -13,15 +13,18 @@ import {
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
 import z from "zod";
 import { toast } from "sonner";
-import { useFormField } from "@/components/shadcn/form";
 import { useController } from "react-hook-form";
+import { MEDIA_URL } from "@/config/Consts";
 
 export default function AddProductToCollectionModal({ collectionId }) {
   const { isShown, close } = useSidebarFormContext();
 
   const [search, setSearch] = useState("");
 
-  const addProductsMutation = useUpdateMutation("collection", "/collections");
+  const addProductsMutation = useUpdateMutation({
+    handle: "collection",
+    url: `/collections`,
+  });
 
   const schema = z.object({
     products: z.array(z.string().nonempty()).min(1, {
@@ -38,6 +41,7 @@ export default function AddProductToCollectionModal({ collectionId }) {
       form.reset();
       close();
       invalidate("products");
+      invalidate(collectionId);
     } catch (error) {}
   }
 
@@ -86,11 +90,15 @@ function ProductsList({ collectionId, search }) {
     isFetching,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteListQuery("products", "/products", {
-    collectionId,
-    exclude: "collectionId", // so that remaing products are fetched (excluding this collection products)
-    search,
-    perPage: 10,
+  } = useInfiniteListQuery({
+    handle: "products",
+    url: `/products`,
+    params: {
+      collectionId,
+      exclude: "collectionId",
+      search,
+    },
+    queryKey: ["collectionProducts", "products", collectionId, search],
   });
 
   const {
@@ -111,7 +119,7 @@ function ProductsList({ collectionId, search }) {
                 >
                   {product.featuredImage ? (
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${product.featuredImage.src}`}
+                      src={`${MEDIA_URL}${product.featuredImage.src}`}
                       alt=""
                       width={100}
                       height={100}

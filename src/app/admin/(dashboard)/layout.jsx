@@ -1,7 +1,7 @@
 import logo from "@/assets/images/logo.png";
 
-import Sidebar from "@/components/ui/Sidebar";
-import AuthHeader from "@/components/shared/AuthHeader";
+import Sidebar from "@/components/admin/ui/Sidebar";
+import AuthHeader from "@/components/admin/shared/AuthHeader";
 import { getAuthUser } from "@/actions/user";
 import SidebarFormContextProvider from "@/store/sidebarFormContext";
 import { SidebarContextProvider } from "@/store/sidebarContext";

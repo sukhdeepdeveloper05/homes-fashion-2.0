@@ -5,9 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BiChevronLeft } from "react-icons/bi";
 import { useDetailsQuery, useUpdateMutation } from "@/hooks/queries";
-import { CardSkeleton } from "@/components/ui/Skeletons";
+import { CardSkeleton } from "@/components/admin/ui/Skeletons";
 import DropZone from "@/components/ui/fields/DropZone";
-import { queryClient } from "@/services/Providers";
 import { motion } from "framer-motion";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
@@ -21,17 +20,18 @@ export default function CollectionLayout({ children, params }) {
   const { collectionId } = use(params);
   const pathname = usePathname();
 
-  const { data: { details = {} } = {}, isLoading } = useDetailsQuery(
-    "collection",
-    "/collections",
-    { collectionId },
-    false
-  );
+  const { data: { details = {} } = {}, isLoading } = useDetailsQuery({
+    handle: "collection",
+    queryKey: ["collectionDetails", collectionId],
+    url: `/collections`,
+    params: { id: collectionId },
+    requiresAdmin: false,
+  });
 
-  const updateCollectionMutation = useUpdateMutation(
-    "collection",
-    "/collections"
-  );
+  const updateCollectionMutation = useUpdateMutation({
+    handle: "collection",
+    url: "/collections",
+  });
 
   const selectedTab = TABS.find(
     (tab) =>

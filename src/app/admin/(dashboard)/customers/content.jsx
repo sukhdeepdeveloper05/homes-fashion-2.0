@@ -1,22 +1,22 @@
 "use client";
 
-import SearchField from "@/components/ui/fields/SearchField";
-import TableLayout from "@/components/shared/table/TableLayout";
+import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { useSetParams } from "@/hooks/setParams";
-import { useDeleteMutation, useListQuery } from "@/hooks/queries";
+import { useListQuery } from "@/hooks/queries";
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
-import { Filter } from "lucide-react";
-import FiltersBar from "@/components/shared/FiltersBar";
+import FiltersBar from "@/components/admin/shared/FiltersBar";
 
 export default function CustomersContent({ searchParams }) {
   const { setInitialData, show } = useSidebarFormContext();
   const setParams = useSetParams();
 
   const { data: { customers = [], pagination = {} } = {}, isFetching } =
-    useListQuery("customers", "/customers", searchParams, true);
-
-  // const { mutateAsync: handleDelete, isPending: deleteLoading } =
-  //   useDeleteMutation("customer");
+    useListQuery({
+      handle: "customers",
+      url: "/customers",
+      params: searchParams,
+      requiresAdmin: true,
+    });
 
   const headings = [
     {

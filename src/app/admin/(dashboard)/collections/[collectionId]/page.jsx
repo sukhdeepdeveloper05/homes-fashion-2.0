@@ -1,6 +1,6 @@
 "use client";
 
-import { DetailsSkeleton } from "@/components/ui/Skeletons";
+import { DetailsSkeleton } from "@/components/admin/ui/Skeletons";
 import { useDetailsQuery, useUpdateMutation } from "@/hooks/queries";
 import MultiSelectField from "@/components/ui/fields/MultiSelectField";
 import SelectField from "@/components/ui/fields/SelectField";
@@ -16,16 +16,18 @@ import { Form } from "@/components/shadcn/form";
 export default function GeneralTabPage({ params }) {
   const { collectionId } = use(params);
 
-  const updateCollectionMutation = useUpdateMutation(
-    "collection",
-    "/collections"
-  );
+  const updateCollectionMutation = useUpdateMutation({
+    handle: "collection",
+    url: "/collections",
+  });
 
-  const { data: { details = {} } = {}, isLoading } = useDetailsQuery(
-    "collection",
-    "/collections",
-    { collectionId }
-  );
+  const { data: { details = {} } = {}, isLoading } = useDetailsQuery({
+    handle: "collection",
+    queryKey: ["collectionDetails", collectionId],
+    url: `/collections`,
+    params: { id: collectionId },
+    requiresAdmin: false,
+  });
 
   const form = useForm({
     resolver: zodResolver(

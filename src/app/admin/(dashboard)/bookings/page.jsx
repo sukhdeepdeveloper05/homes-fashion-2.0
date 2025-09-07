@@ -1,5 +1,5 @@
 import BookingsContent from "./content";
-import PageHeader from "@/components/shared/PageHeader";
+import PageHeader from "@/components/admin/shared/PageHeader";
 
 export default async function BookingsPage({ searchParams }) {
   const rawParams = await searchParams;

@@ -1,3 +1,6 @@
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+
 export const STATUS_BADGES = {
   ACTIVE: "text-[#0CAF60] data-[hover=true]:bg-[#E7F7EF] bg-[#E7F7EF]",
   DRAFT: "text-[#E03137] data-[hover=true]:bg-[#FFEDEC] bg-[#FFEDEC]",

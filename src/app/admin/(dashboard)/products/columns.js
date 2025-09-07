@@ -5,12 +5,15 @@ import { PRODUCT_AVAILABILITIES, PRODUCT_STATUSES } from "@/config/Consts";
 export default function useProductsTableColumns() {
   const { setInitialData, show } = useSidebarFormContext();
 
-  const { mutateAsync: updateProduct } = useUpdateMutation(
-    "product",
-    "/products"
-  );
+  const { mutateAsync: updateProduct } = useUpdateMutation({
+    handle: "product",
+    url: "/products",
+  });
   const { mutateAsync: handleDelete, isPending: deleteLoading } =
-    useDeleteMutation("product");
+    useDeleteMutation({
+      handle: "product",
+      url: "/products",
+    });
 
   return [
     {

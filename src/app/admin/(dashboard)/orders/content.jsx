@@ -1,18 +1,22 @@
 "use client";
 
-import SearchField from "@/components/ui/fields/SearchField";
-import TableLayout from "@/components/shared/table/TableLayout";
-import SelectField from "@/components/ui/fields/SelectField";
+import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { ORDER_STATUSES, PYAMENT_STATUSES } from "@/config/Consts";
 import { useSetParams } from "@/hooks/setParams";
 import { useListQuery } from "@/hooks/queries";
-import FiltersBar from "@/components/shared/FiltersBar";
+import FiltersBar from "@/components/admin/shared/FiltersBar";
 
 export default function OrdersContent({ searchParams }) {
   const setParams = useSetParams();
 
   const { data: { orders = [], pagination = {} } = {}, isFetching } =
-    useListQuery("orders", "/orders", searchParams, true);
+    useListQuery({
+      handle: "orders",
+      url: "/orders",
+      queryKey: ["orders", searchParams],
+      params: searchParams,
+      requiresAdmin: true,
+    });
 
   const headings = [
     {

@@ -1,6 +1,6 @@
 "use client";
 
-import SidebarModal from "@/components/ui/modals/SidebarModal";
+import SidebarModal from "@/components/admin/ui/modals/SidebarModal";
 import { FiLoader } from "react-icons/fi";
 import { useUpdateMutation } from "@/hooks/queries";
 import { useMemo } from "react";
@@ -12,7 +12,10 @@ export default function AddNewPartner() {
 
   const isEdit = Boolean(initialData);
 
-  const updatePartnerMutation = useUpdateMutation("partner", "/partners");
+  const updatePartnerMutation = useUpdateMutation({
+    handle: "partner",
+    url: "/partners",
+  });
 
   const initialValues = useMemo(
     () => ({

@@ -1,16 +1,21 @@
 "use client";
 
 import { useSetParams } from "@/hooks/setParams";
-import TableLayout from "@/components/shared/table/TableLayout";
+import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { useListQuery } from "@/hooks/queries";
 import useCollectionColumns from "./columns";
-import FiltersBar from "@/components/shared/FiltersBar";
+import FiltersBar from "@/components/admin/shared/FiltersBar";
 
 export default function CollectionsContent({ searchParams }) {
   const setParams = useSetParams();
 
   const { data: { collections = [], pagination = {} } = {}, isFetching } =
-    useListQuery("collections", "/collections", searchParams);
+    useListQuery({
+      handle: "collections",
+      url: "/collections",
+      queryKey: ["collections", searchParams],
+      params: searchParams,
+    });
 
   const columns = useCollectionColumns();
 
@@ -46,6 +51,7 @@ export default function CollectionsContent({ searchParams }) {
         onPerPageChange={(v) => {
           setParams({ page: 1, perPage: v });
         }}
+        skeletonRows={searchParams.perPage}
       />
     </>
   );

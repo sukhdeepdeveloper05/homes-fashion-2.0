@@ -1,4 +1,6 @@
-import clsx from "clsx";
+"use client";
+
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { FiSearch, FiX, FiCommand } from "react-icons/fi";
 
@@ -37,7 +39,7 @@ export default function SearchField({
   };
 
   return (
-    <div className={`relative ${wrapperClass}`}>
+    <div className={cn("relative", wrapperClass)}>
       {iconLeft && (
         <button
           type="button"
@@ -51,12 +53,12 @@ export default function SearchField({
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className={clsx(
+        className={cn(
           "w-full rounded-lg border border-gray-300 text-foreground-primary bg-white placeholder-gray-500 outline-none",
           sizes[size],
-          inputClass,
           { "pl-11": iconLeft },
-          iconRight || clearable || shortcut ? "pr-12" : ""
+          iconRight || clearable || shortcut ? "pr-12" : "",
+          inputClass
         )}
         placeholder={placeholder}
         onKeyUp={handleKey}

@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import { FiX, FiUpload, FiLoader } from "react-icons/fi";
-import Button from "../Button";
+import Button from "@/components/ui/Button";
 import { useUploadMutation } from "@/hooks/queries";
 import clsx from "clsx";
+import { MEDIA_URL } from "@/config/Consts";
 
 const ACCEPT_ALL = "image/*";
 
@@ -28,18 +29,7 @@ export default function DropZone({
 }) {
   const [files, setFiles] = useState(initial);
 
-  const { mutateAsync: uploadMedia, isPending } = useUploadMutation({
-    onSuccess: (response) => {
-      const newUpdatedFiles = multi
-        ? [...files, ...response.data]
-        : response.data;
-      setFiles(newUpdatedFiles);
-
-      onChange?.(
-        multi ? newUpdatedFiles.map((f) => f.id) : newUpdatedFiles[0].id
-      );
-    },
-  });
+  const { mutateAsync: uploadMedia, isPending } = useUploadMutation();
 
   const handleSelect = async (e) => {
     const chosen = Array.from(e.target.files);
@@ -47,9 +37,24 @@ export default function DropZone({
     const valid = validate ? chosen.filter(validate) : chosen;
     const limit = multi ? valid.slice(0, max - files.length) : [valid[0]];
     try {
-      if (limit.length) await uploadMedia(limit);
+      if (limit.length) {
+        const response = await uploadMedia(limit);
+        console.log(response);
+
+        const newUpdatedFiles = multi
+          ? [...files, ...response.data]
+          : response.data;
+
+        setFiles(newUpdatedFiles);
+
+        onChange?.(
+          multi ? newUpdatedFiles.map((f) => f.id) : newUpdatedFiles[0].id
+        );
+      }
     } catch (error) {
       console.log(error.message);
+    } finally {
+      e.target.value = "";
     }
   };
 
@@ -91,7 +96,7 @@ export default function DropZone({
         ) : !multi && files[0] ? (
           <>
             <Image
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${files[0].src}`}
+              src={`${MEDIA_URL}${files[0].src}`}
               alt="preview"
               fill
               sizes="500px"
@@ -129,7 +134,7 @@ export default function DropZone({
           {files.map((f, i) => (
             <div key={i} className={`relative overflow-hidden ${shapeCls}`}>
               <Image
-                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${f.src}`}
+                src={`${MEDIA_URL}${f.src}`}
                 alt={`img-${i}`}
                 width={110}
                 height={110}

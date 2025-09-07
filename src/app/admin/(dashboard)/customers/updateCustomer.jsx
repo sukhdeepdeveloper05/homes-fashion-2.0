@@ -1,36 +1,43 @@
 "use client";
 
-import SidebarModal from "@/components/ui/modals/SidebarModal";
+import SidebarModal from "@/components/admin/ui/modals/SidebarModal";
 import { FiLoader } from "react-icons/fi";
 import { GENDER_OPTIONS } from "@/config/Consts";
 import { useUpdateMutation } from "@/hooks/queries";
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
 import z from "zod";
+import { useMemo } from "react";
+
+const customerSchema = z.object({
+  firstName: z.string().nonempty({ error: "First name is required" }),
+  lastName: z.string().optional(),
+  gender: z.string().nonempty({ error: "Gender is required" }),
+  dateOfBirth: z.date().optional(),
+  email: z.email({ error: "Invalid email" }),
+  avatar: z.string().optional(),
+});
 
 export default function UpdateCustomer() {
   const { initialData, isShown, close } = useSidebarFormContext();
 
-  const updateCustomerMutation = useUpdateMutation("customer", "/customers");
-
-  const initialValues = {
-    firstName: initialData?.firstName || "",
-    lastName: initialData?.lastName || "",
-    gender: initialData?.gender || "",
-    dateOfBirth: initialData?.dateOfBirth
-      ? new Date(initialData?.dateOfBirth)
-      : null,
-    email: initialData?.email || "",
-    avatar: initialData?.avatar?.id || null,
-  };
-
-  const customerSchema = z.object({
-    firstName: z.string().nonempty({ error: "First name is required" }),
-    lastName: z.string().optional(),
-    gender: z.string().nonempty({ error: "Gender is required" }),
-    dateOfBirth: z.date().optional(),
-    email: z.email({ error: "Invalid email" }),
-    avatar: z.string().optional(),
+  const updateCustomerMutation = useUpdateMutation({
+    handle: "customer",
+    url: "/customers",
   });
+
+  const initialValues = useMemo(
+    () => ({
+      firstName: initialData?.firstName || "",
+      lastName: initialData?.lastName || "",
+      gender: initialData?.gender || "",
+      dateOfBirth: initialData?.dateOfBirth
+        ? new Date(initialData?.dateOfBirth)
+        : null,
+      email: initialData?.email || "",
+      avatar: initialData?.avatar?.id || null,
+    }),
+    [initialData]
+  );
 
   async function submitHandler(vals, form) {
     await updateCustomerMutation.mutateAsync({

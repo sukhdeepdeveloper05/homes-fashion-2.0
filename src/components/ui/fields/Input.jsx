@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { motion } from "framer-motion";
-import clsx from "clsx";
 import {
   FormField,
   FormItem,
@@ -13,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input as ShadcnInput } from "@/components/shadcn/input";
+import { cn } from "@/lib/utils";
 
 export default function Input({
   name,
@@ -22,6 +21,7 @@ export default function Input({
   description,
   required,
   className,
+  beforeContent,
   ...rest
 }) {
   const [show, setShow] = useState(false);
@@ -32,21 +32,22 @@ export default function Input({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full flex flex-col gap-2">
           {label && (
             <FormLabel>
               {label} {required && <span className="text-red-500">*</span>}
             </FormLabel>
           )}
 
-          <div className="relative">
+          <div className="relative flex">
+            {beforeContent && beforeContent}
             <FormControl>
               <ShadcnInput
                 {...field}
                 {...rest}
                 type={isPassword && show ? "text" : type}
-                className={clsx(
-                  "w-full rounded-md border focus:outline-none transition px-3.5 py-3 text-base",
+                className={cn(
+                  "w-full rounded-md border focus:outline-none transition px-3.5 py-3 text-base [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
                   isPassword && "pr-10",
                   className
                 )}

@@ -1,21 +1,20 @@
 "use client";
 
-import PageHeader from "@/components/shared/PageHeader";
-import TableLayout from "@/components/shared/table/TableLayout";
+import PageHeader from "@/components/admin/shared/PageHeader";
+import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { useDetailsQuery } from "@/hooks/queries";
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
 
 export default function OrderDetailsContent({ orderId }) {
   const { setInitialData, show } = useSidebarFormContext();
 
-  const { data: { details = {} } = {}, isFetching } = useDetailsQuery(
-    "order",
-    "/orders",
-    {
-      orderId,
-    },
-    true
-  );
+  const { data: { details = {} } = {}, isFetching } = useDetailsQuery({
+    handle: "order",
+    queryKey: ["orderDetails", orderId],
+    url: `/orders`,
+    params: { id: orderId },
+    requiresAdmin: true,
+  });
 
   console.log(details);
 

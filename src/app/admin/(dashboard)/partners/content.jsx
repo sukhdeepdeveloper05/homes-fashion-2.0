@@ -1,19 +1,27 @@
 "use client";
 
-import SearchField from "@/components/ui/fields/SearchField";
-import TableLayout from "@/components/shared/table/TableLayout";
+import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { useSetParams } from "@/hooks/setParams";
 import { useDeleteMutation, useListQuery } from "@/hooks/queries";
-import FiltersBar from "@/components/shared/FiltersBar";
+import FiltersBar from "@/components/admin/shared/FiltersBar";
 
 export default function PartnersContent({ searchParams }) {
   const setParams = useSetParams();
 
   const { data: { partners = [], pagination = {} } = {}, isFetching } =
-    useListQuery("partners", "/partners", searchParams, true);
+    useListQuery({
+      handle: "partners",
+      url: "/partners",
+      queryKey: ["partners", searchParams],
+      params: searchParams,
+      requiresAdmin: true,
+    });
 
   const { mutateAsync: handleDelete, isPending: deleteLoading } =
-    useDeleteMutation("partner");
+    useDeleteMutation({
+      handle: "partner",
+      url: "/partners",
+    });
 
   const headings = [
     {
