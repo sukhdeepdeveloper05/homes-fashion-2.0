@@ -1,10 +1,10 @@
 import { getData } from "@/lib/api";
 import React from "react";
 
+export const revalidate = 0;
+
 export default async function BookingsPage() {
   const { data: bookings } = await getData("/bookings", {}, true);
-
-  console.log(bookings)
 
   return (
     <div className="container py-8">
@@ -17,7 +17,9 @@ export default async function BookingsPage() {
               key={booking.id}
               className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
             >
-              <p className="font-semibold text-lg">{booking.orderItem.product.title}</p>
+              <p className="font-semibold text-lg">
+                {booking.orderItem.product.title}
+              </p>
               <p className="text-sm text-gray-500">
                 Date: {new Date(booking.bookedAt).toLocaleDateString()}
               </p>
