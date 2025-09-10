@@ -80,7 +80,7 @@ export default function useOlaMap({
           positionOptions: {
             enableHighAccuracy: true,
           },
-          trackUserLocation: true,
+          trackUserLocation: false,
         });
 
         map.addControl(geolocate);
@@ -90,7 +90,7 @@ export default function useOlaMap({
         geolocate.on("geolocate", async () => {
           const position = geolocate.getPosition();
           const address = await fetchPlace(position.lng, position.lat);
-          toast.success(address);
+          onLocationChange(address);
         });
 
         geolocate.on("error", () => {

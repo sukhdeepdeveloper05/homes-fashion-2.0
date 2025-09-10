@@ -129,8 +129,6 @@ function MainContent({ defaultCoordinates, onSuccess }) {
     }
   };
 
-  console.log(form.watch("name"));
-
   return (
     <>
       <DialogTitle className="hidden">Select address</DialogTitle>
