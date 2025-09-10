@@ -48,7 +48,7 @@ export default function Header({ user }) {
         !isDark && "mr-(--removed-body-scroll-bar-size)"
       )}
     >
-      <div className="container mx-auto flex items-center justify-between px-16 py-7">
+      <div className="container mx-auto grid grid-cols-2 md:grid-cols-3 items-center justify-between px-16 py-7">
         <Link
           href="/"
           className="text-4xl font-bold text-foreground-primary dark:text-background-primary"
@@ -56,7 +56,7 @@ export default function Header({ user }) {
           LOGO
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 text-foreground-primary dark:text-background-primary">
+        <nav className="hidden md:flex items-center justify-center gap-8 text-foreground-primary dark:text-background-primary">
           <Link
             href="/"
             className="data-[active=true]:font-semibold"
@@ -91,7 +91,7 @@ export default function Header({ user }) {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-end gap-4">
           <CartButton />
           {!user ? (
             <Button
