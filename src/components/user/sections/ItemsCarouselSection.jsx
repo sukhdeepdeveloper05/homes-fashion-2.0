@@ -55,7 +55,7 @@ export default function ItemsCarouselSection({
   moreUrl = "",
   wrapperClass = "",
   headingClass = "",
-  itemsClass = "",
+  itemsContentClass = "",
   itemClass = "",
 }) {
   return (
@@ -76,7 +76,7 @@ export default function ItemsCarouselSection({
         <CarouselContent
           gap="1rem"
           slidesPerView={5}
-          className={cn(itemsClass)}
+          className={cn(itemsContentClass)}
         >
           {items.map((item, idx) => {
             return (

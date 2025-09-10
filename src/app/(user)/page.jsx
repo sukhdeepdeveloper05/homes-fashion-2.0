@@ -50,7 +50,11 @@ export default async function HomePage() {
 
       <section className="container mb-20">
         <Carousel opts={{ loop: false }}>
-          <CarouselContent gap="2rem" slidesPerView={3}>
+          <CarouselContent
+            gap="2rem"
+            slidesPerView={3}
+            className="max-2xl:[--carousel-item-basis:calc(100%/(var(--slides-per-view)-1))]"
+          >
             {SLIDES.map((slide) => (
               <CarouselItem
                 className="cursor-pointer rounded-xl relative"

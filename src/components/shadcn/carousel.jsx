@@ -133,10 +133,11 @@ function CarouselContent({ className, slidesPerView = 1, gap, ...props }) {
       <div
         style={{
           "--carousel-item-spacing": gap,
-          "--carousel-item-basis": `${100 / slidesPerView}%`,
+          "--slides-per-view": slidesPerView,
         }}
         className={cn(
           "flex",
+          `[--carousel-item-basis:calc(100%/var(--slides-per-view))]`,
           orientation === "horizontal"
             ? "-ml-(--carousel-item-spacing)"
             : "-mt-4 flex-col",

@@ -32,8 +32,8 @@ export function CartProvider({ children, user }) {
     onMutate: async ({ id }) => {
       setUpdatingId(id);
     },
-    onSuccess: (updatedItem) => {
-      updateItem(updatedItem);
+    onSuccess: (updatedItem, { id }) => {
+      updateItem(updatedItem, id);
     },
     onSettled: () => {
       setUpdatingId(null);
@@ -41,7 +41,14 @@ export function CartProvider({ children, user }) {
   });
 
   // 🔥 Update or replace an item in cart
-  const updateItem = (newItem) => {
+  const updateItem = (newItem, id) => {
+    if (!newItem) {
+      setCart((prev) => {
+        const updatedItems = prev.items.filter((i) => i.id !== id);
+        return recalcCart(updatedItems)
+      });
+      return;
+    }
     setCart((prev) => {
       const exists = prev.items.find((i) => i.id === newItem.id);
       let updatedItems;
