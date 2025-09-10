@@ -115,10 +115,11 @@ export default function CheckoutContent({ params, isLoggedIn }) {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY, // Your Razorpay Key ID
         ...data,
 
-        handler: async function (response) {
-          toast.success("Payment successful!");
-        },
+        // handler: async function (response) {
+        //   toast.success("Payment successful!");
+        // },
 
+        callbackUrl: window.origin + "/bookings",
         theme: {
           color: "#F37254",
         },
