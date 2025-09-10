@@ -97,6 +97,7 @@ export default function Header({ user }) {
             <Button
               appearance="solid"
               variant="primary"
+              size="small"
               onClick={() => setIsModalOpen(true)}
             >
               Log in
@@ -104,10 +105,10 @@ export default function Header({ user }) {
           ) : (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger
-                className="dark:text-background-primary shadow rounded-full border border-input"
+                className="dark:text-background-primary"
                 hideIcon
               >
-                <Avatar className="cursor-pointer text-foreground-primary size-10">
+                <Avatar className="cursor-pointer text-foreground-primary size-10 shadow rounded-full border border-input">
                   <AvatarImage src={user?.avatarUrl} alt={user?.name} />
                   <AvatarFallback className="dark:bg-background-primary">
                     <UserIcon className="w-5 h-5" />
