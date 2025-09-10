@@ -86,16 +86,10 @@ export default function useOlaMap({
 
         geolocateRef.current = geolocate;
 
-        geolocate.on("geolocate", async (event) => {
-          toast.success(event);
-          const address = await fetchPlace(
-            event.geometry.location.lng,
-            event.geometry.location.lat
-          );
-          moveMarkerTo(
-            event.geometry.location.lng,
-            event.geometry.location.lat
-          );
+        geolocate.on("geolocate", async (pos) => {
+          const { latitude, longitude } = pos.coords;
+          moveMarkerTo(longitude, latitude);
+          const address = await fetchPlace(longitude, latitude);
           onLocationChange(address);
         });
 
