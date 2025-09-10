@@ -1,12 +1,7 @@
 "use client";
 
 import Button from "@/components/ui/Button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/shadcn/card";
+import { Card, CardContent, CardFooter } from "@/components/shadcn/card";
 import { Separator } from "@/components/shadcn/separator";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,13 +10,38 @@ import { useCartContext } from "@/store/cartContext";
 import { MEDIA_URL } from "@/config/Consts";
 import { useRouter } from "next/navigation";
 import { formatPrice } from "@/utils/formatPrice";
+import { SkeletonBox } from "@/components/ui/Skeletons";
+import CartIcon from "@/assets/icons/Cart";
 
 export default function CartPage() {
   const router = useRouter();
   const { cart, removeFromCart, isLoaded } = useCartContext();
 
-  console.log(cart);
-  if (!isLoaded) return <div>Cart Loading</div>;
+  function LoadingContent() {
+    return (
+      <div className="space-y-4">
+        {[1].map((i) => (
+          <Card key={i} className="shadow-sm border gap-0 p-6">
+            <CardContent className="flex flex-col gap-0 p-0">
+              <div className="flex items-center gap-4 pb-4">
+                <SkeletonBox className="w-20 h-20 rounded-md" />
+                <div className="flex-1 space-y-2">
+                  <SkeletonBox className="w-40 h-5 rounded-md" />
+                  <SkeletonBox className="w-28 h-4 rounded-md" />
+                </div>
+              </div>
+              <Separator />
+            </CardContent>
+
+            <CardFooter className="flex justify-between p-0 pt-4 gap-3">
+              <SkeletonBox className="h-[46px] flex-1 rounded-md" />
+              <SkeletonBox className="h-[46px] flex-1 rounded-md" />
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="container max-w-2xl mx-auto py-8 flex-1 flex flex-col">
@@ -36,8 +56,11 @@ export default function CartPage() {
         <h1 className="text-2xl font-bold">Your cart</h1>
       </div>
 
-      {cart.items.length < 1 && (
-        <div className="flex items-center justify-center flex-col gap-4 flex-1">
+      {!isLoaded && <LoadingContent />}
+
+      {isLoaded && cart.items.length < 1 && (
+        <div className="flex items-center justify-center flex-col gap-4 flex-1 min-h-52">
+          <CartIcon className="w-1/4" />
           <p className="text-xl font-semibold">Cart is empty</p>
         </div>
       )}

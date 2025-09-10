@@ -36,7 +36,7 @@ export default async function HomePage() {
   const [paintingServicesRes, cleaningServicesRes, collectionsRes] =
     await Promise.all([
       getData("/products", { collectionId: "68bee6d36f8cd90948e532a9" }),
-      getData("/products", { collectionId: "688476caab9429fb11fb1bcf" }),
+      getData("/products", { collectionId: "6873c643a60ff627016702ee" }),
       getData("/collections", { sortKey: "updatedAt", sortDir: "desc" }),
     ]);
 
@@ -75,8 +75,8 @@ export default async function HomePage() {
         wrapperClass="container my-0 mb-20"
         heading="Cleaning Services"
         items={cleaningServices}
-        collectionId="688476caab9429fb11fb1bcf"
-        moreUrl={`/collections/688476caab9429fb11fb1bcf`}
+        collectionId="6873c643a60ff627016702ee"
+        moreUrl={`/collections/6873c643a60ff627016702ee`}
       />
 
       <div className="container mb-20">

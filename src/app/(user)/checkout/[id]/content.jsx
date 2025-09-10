@@ -248,7 +248,11 @@ export default function CheckoutContent({ params, isLoggedIn }) {
                 )}
 
                 {activeStep === "payment" && (
-                  <Button className="w-full" onClick={handlePayment}>
+                  <Button
+                    className="w-full"
+                    onClick={handlePayment}
+                    isLoading={createOrder.isPending}
+                  >
                     Proceed to pay
                   </Button>
                 )}

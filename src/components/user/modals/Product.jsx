@@ -15,6 +15,7 @@ import { Card } from "@/components/shadcn/card";
 import Button from "@/components/ui/Button";
 import Faqs from "../ui/Faqs";
 import AddToCartButton from "@/app/(user)/collections/[collectionId]/AddToCartButton";
+import { formatPrice } from "@/utils/formatPrice";
 
 export default function ProductModal({ product, open, onOpenChange }) {
   return (
@@ -47,6 +48,14 @@ export default function ProductModal({ product, open, onOpenChange }) {
                       <Star className="w-4 h-4 text-yellow-500" />
                       <span>{product?.rating || "4.5"}</span>
                       <span>({product?.reviews || "2k"} reviews)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-foreground-primary text-lg font-semibold">
+                        {formatPrice(product.price)}
+                      </span>
+                      <span className="text-muted-foreground line-through">
+                        {formatPrice(product.priceCompare)}
+                      </span>
                     </div>
                   </div>
                   <div>

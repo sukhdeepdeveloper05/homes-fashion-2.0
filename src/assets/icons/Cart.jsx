@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function CartIcon() {
+export default function CartIcon({ className }) {
   return (
     <svg
       width="100%"
@@ -8,6 +8,7 @@ export default function CartIcon() {
       viewBox="0 0 128 96"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <path
         fillRule="evenodd"
