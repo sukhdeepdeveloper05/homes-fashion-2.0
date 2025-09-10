@@ -90,6 +90,7 @@ export default function useOlaMap({
         geolocate.on("geolocate", async () => {
           const position = geolocate.getPosition();
           const address = await fetchPlace(position.lng, position.lat);
+          moveMarkerTo(position.lng, position.lat);
           onLocationChange(address);
         });
 
