@@ -1,7 +1,7 @@
 // cartQueries.js
 "use client";
 
-import { createData, deleteData, updateData } from "@/lib/api";
+import { createData, deleteData, getData, updateData } from "@/lib/api";
 import axios from "@/services/Axios";
 import {
   useQuery,
@@ -15,9 +15,7 @@ export function useCartQuery(user) {
   return useQuery({
     queryKey: ["cart"],
     queryFn: async () => {
-      const { data } = await axios.get("/cart", {
-        meta: { requiresAuth: true },
-      });
+      const { data } = await getData("/cart", null, true);
       return data;
     },
     enabled: !!user,
