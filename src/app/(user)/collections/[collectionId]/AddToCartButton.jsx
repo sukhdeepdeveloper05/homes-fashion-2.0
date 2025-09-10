@@ -2,7 +2,8 @@
 
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { useCart } from "@/store/cartContext";
+import { useCartContext } from "@/store/cartContext";
+import { useRef } from "react";
 
 export default function AddToCartButton({
   item,
@@ -11,20 +12,25 @@ export default function AddToCartButton({
   removeText = "Added",
   ...rest
 }) {
-  const { cart, addToCart, removeFromCart } = useCart();
+  const addId = useRef(null);
+  const { cart, isLoaded, addToCart, removeFromCart, isAdding } =
+    useCartContext();
 
-  const inCart = cart.items.findIndex((i) => i.id === item.id) >= 0;
+  const inCart = cart.items.findIndex((i) => i.product.id === item.id) >= 0;
 
   return (
     <Button
-      onClick={(e) => {
+      onClick={async (e) => {
         e.stopPropagation();
-        if (inCart) removeFromCart(item.id);
-        else addToCart(item);
+        addId.current = item.id;
+        if (inCart) return;
+        else await addToCart(item);
+        addId.current = null;
       }}
       size="small"
       className={cn("", className)}
-      disabled={inCart}
+      isLoading={isAdding && addId.current === item.id}
+      disabled={inCart || !isLoaded}
       {...rest}
     >
       {inCart ? removeText : addText}

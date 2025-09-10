@@ -1,12 +1,18 @@
-import clsx from "clsx";
 import { TableCell, TableRow } from "@/components/shadcn/table";
+import { cn } from "@/lib/utils";
+
+export function SkeletonBox({ className }) {
+  return (
+    <div className={cn("bg-gray-200 animate-pulse rounded-md", className)} />
+  );
+}
 
 export function TableSkeleton({ rows = 10, className = "", colSpan = 5 }) {
   return Array.from({ length: rows }, (_, i) => (
     <TableRow key={`skeleton-${i}`}>
       <TableCell colSpan={colSpan} className="px-0 py-3.5 group/td">
         <div
-          className={clsx(
+          className={cn(
             "h-10 w-full bg-gray-300 animate-pulse rounded-md",
             className
           )}
@@ -23,7 +29,7 @@ export function CardSkeleton({
 }) {
   return (
     <div
-      className={clsx(
+      className={cn(
         "flex min-w-80 lg:w-[19rem] rounded-lg bg-gradient-to-r from-gray-150 to-gray-300",
         cardHeight
       )}
@@ -42,7 +48,7 @@ export function CardSkeleton({
         {Array.from({ length: avatarLines }).map((_, i) => (
           <div
             key={i}
-            className={clsx("mb-2.5 h-2 rounded-full bg-gray-300", {
+            className={cn("mb-2.5 h-2 rounded-full bg-gray-300", {
               "mb-0": i === avatarLines - 1,
             })}
           />
@@ -54,8 +60,8 @@ export function CardSkeleton({
 
 export function DetailsSkeleton({ className = "", cardHeight = "h-[25rem]" }) {
   return (
-    <div role="status" className={clsx("flex", className)}>
-      <div className={clsx("flex w-full rounded-lg", cardHeight)}>
+    <div role="status" className={cn("flex", className)}>
+      <div className={cn("flex w-full rounded-lg", cardHeight)}>
         <div className="w-full p-4 md:p-6 rounded shadow bg-gradient-to-r from-gray-150 to-gray-300">
           <div className="mb-3 h-12 rounded bg-gray-300" />
           <div className="mb-3 h-56 rounded bg-gray-300" />

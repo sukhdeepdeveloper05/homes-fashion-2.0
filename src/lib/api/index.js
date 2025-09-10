@@ -1,10 +1,10 @@
-"use server";
+// "use server";
 
 import axios from "@/services/Axios";
 
-export async function getData(url = "", params = {}, requiresAdmin = false) {
+export async function getData(url = "", params = {}, requiresAuth = false) {
   try {
-    return await axios.get(url, { params, meta: { requiresAdmin } });
+    return await axios.get(url, { params, meta: { requiresAuth } });
   } catch (error) {
     throw new Error(
       error.message ?? error.data.message ?? "Something went wrong"
@@ -12,9 +12,9 @@ export async function getData(url = "", params = {}, requiresAdmin = false) {
   }
 }
 
-export async function createData(url, data, params, requiresAdmin = true) {
+export async function createData(url, data, params, requiresAuth = true) {
   try {
-    return await axios.post(url, data, { params, meta: { requiresAdmin } });
+    return await axios.post(url, data, { params, meta: { requiresAuth } });
   } catch (error) {
     throw new Error(
       error.message ?? error.data.message ?? "Something went wrong"
@@ -22,9 +22,9 @@ export async function createData(url, data, params, requiresAdmin = true) {
   }
 }
 
-export async function updateData(url, params, data, requiresAdmin = true) {
+export async function updateData(url, params, data, requiresAuth = true) {
   try {
-    return await axios.patch(url, data, { params, meta: { requiresAdmin } });
+    return await axios.patch(url, data, { params, meta: { requiresAuth } });
   } catch (error) {
     throw new Error(
       error.message ?? error.data.message ?? "Something went wrong"
@@ -32,9 +32,9 @@ export async function updateData(url, params, data, requiresAdmin = true) {
   }
 }
 
-export async function deleteData(url, params, requiresAdmin = true) {
+export async function deleteData(url, params, requiresAuth = true) {
   try {
-    return await axios.delete(url, { params, meta: { requiresAdmin } });
+    return await axios.delete(url, { params, meta: { requiresAuth } });
   } catch (error) {
     throw new Error(
       error.message ?? error.data.message ?? "Something went wrong"
@@ -42,7 +42,7 @@ export async function deleteData(url, params, requiresAdmin = true) {
   }
 }
 
-export async function uploadMedia(media, params, requiresAdmin = true) {
+export async function uploadMedia(media, params, requiresAuth = true) {
   try {
     const formData = new FormData();
 
@@ -56,7 +56,7 @@ export async function uploadMedia(media, params, requiresAdmin = true) {
     return await axios.post("/media", formData, {
       params,
       headers: { "Content-Type": "multipart/form-data" },
-      meta: { requiresAdmin },
+      meta: { requiresAuth },
     });
   } catch (error) {
     throw new Error(

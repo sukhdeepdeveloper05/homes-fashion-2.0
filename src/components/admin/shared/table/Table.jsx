@@ -18,7 +18,7 @@ import FormatTime from "@/utils/formatTime";
 import clsx from "clsx";
 import Image from "next/image";
 
-import { TableSkeleton } from "../../ui/Skeletons";
+import { TableSkeleton } from "../../../ui/Skeletons";
 import ActionsCell from "./ActionCell";
 import { MEDIA_URL } from "@/config/Consts";
 

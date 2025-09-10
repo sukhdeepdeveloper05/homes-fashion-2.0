@@ -21,7 +21,12 @@ function DropdownMenuPortal({ ...props }) {
   );
 }
 
-function DropdownMenuTrigger({ children, className, ...props }) {
+function DropdownMenuTrigger({
+  children,
+  className,
+  hideIcon = false,
+  ...props
+}) {
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
@@ -31,8 +36,14 @@ function DropdownMenuTrigger({ children, className, ...props }) {
       )}
       {...props}
     >
-      {children}
-      <ChevronDownIcon className="size-4 stroke-2 opacity-70 group-data-[state=open]/trigger:rotate-180 transition-transform text-current" />
+      {hideIcon ? (
+        <div className="flex-1 w-full h-full">{children}</div>
+      ) : (
+        <>
+          {children}
+          <ChevronDownIcon className="size-4 stroke-2 opacity-70 group-data-[state=open]/trigger:rotate-180 transition-transform text-current" />
+        </>
+      )}
     </DropdownMenuPrimitive.Trigger>
   );
 }

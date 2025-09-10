@@ -42,12 +42,14 @@ export default function AddNewProduct() {
       title: initialData?.title || "",
       description: initialData?.description || "",
       price: initialData?.price || "",
+      priceCompare: initialData?.priceCompare || "",
+      maxQuantityPerOrder: initialData?.maxQuantityPerOrder || "",
       tags: initialData?.tags
         ? initialData?.tags.length >= 1
           ? initialData?.tags.join(", ")
           : "N/A"
         : "",
-      category: initialData?.category?.id || null,
+      category: initialData?.category?.id || "",
       collectionId: initialData?.collections
         ? initialData?.collections.map((c) => c.id)
         : [],
@@ -68,6 +70,11 @@ export default function AddNewProduct() {
       .refine((val) => val >= 1, {
         message: "Price is required",
       }),
+    priceCompare: z.string().optional(),
+    maxQuantityPerOrder: z.preprocess(
+      (val) => (val === "" ? null : val),
+      z.union([z.string(), z.number(), z.null()]).optional()
+    ),
     tags: z.string().optional(),
     available: z.preprocess((val) => {
       if (typeof val === "string") {
@@ -77,9 +84,13 @@ export default function AddNewProduct() {
     }, z.boolean()),
     status: z.string(),
     collectionId: z.array(z.string().nonempty()).optional(),
-    category: z.string().nonempty({ error: "Category is required" }),
+    category: z.preprocess(
+      (val) => (val === "" ? null : val),
+      z.union([z.string(), z.null()]).optional()
+    ),
+
     featuredImage: z.string().optional(),
-    media: z.array(z.string().nonempty()),
+    media: z.array(z.string().nonempty()).optional(),
   });
 
   async function onSubmit(vals, form) {
@@ -120,6 +131,18 @@ export default function AddNewProduct() {
       placeholder: "Description",
     },
     { name: "price", label: "Price", type: "number", placeholder: "Price" },
+    {
+      name: "priceCompare",
+      label: "Compare At Price",
+      type: "number",
+      placeholder: "Compare At Price",
+    },
+    {
+      name: "maxQuantityPerOrder",
+      label: "Max Quantity Per Order",
+      type: "number",
+      placeholder: "Max Quantity Per Order",
+    },
     { name: "tags", label: "Tags", type: "text", placeholder: "Tags" },
     {
       name: "category",

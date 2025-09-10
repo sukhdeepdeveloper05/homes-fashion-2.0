@@ -1,6 +1,6 @@
 "use client";
 
-import { DetailsSkeleton } from "@/components/admin/ui/Skeletons";
+import { DetailsSkeleton } from "@/components/ui/Skeletons";
 import { useDetailsQuery, useUpdateMutation } from "@/hooks/queries";
 import MultiSelectField from "@/components/ui/fields/MultiSelectField";
 import SelectField from "@/components/ui/fields/SelectField";
@@ -26,7 +26,7 @@ export default function GeneralTabPage({ params }) {
     queryKey: ["collectionDetails", collectionId],
     url: `/collections`,
     params: { id: collectionId },
-    requiresAdmin: false,
+    requiresAuth: false,
   });
 
   const form = useForm({

@@ -12,7 +12,6 @@ import Button from "@/components/ui/Button";
 export default function ProductCard({ product }) {
   const { setProduct } = useProductContext();
 
-  console.log(product.id);
   return (
     <Card
       key={product.id}
@@ -46,7 +45,7 @@ export default function ProductCard({ product }) {
                   Starts at {formatPrice(product.price)}
                 </span>
                 <span className="line-through text-muted-foreground font-normal">
-                  {formatPrice(product.compareAtPrice || product.price * 1.3)}
+                  {formatPrice(product.priceCompare)}
                 </span>
               </p>
               <Button

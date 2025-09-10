@@ -15,7 +15,7 @@ export default function BookingsContent({ searchParams }) {
       url: "/bookings",
       queryKey: ["bookings", searchParams],
       params: searchParams,
-      requiresAdmin: true,
+      requiresAuth: true,
     });
 
   const headings = [

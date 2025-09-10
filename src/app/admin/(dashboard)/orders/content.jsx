@@ -15,7 +15,7 @@ export default function OrdersContent({ searchParams }) {
       url: "/orders",
       queryKey: ["orders", searchParams],
       params: searchParams,
-      requiresAdmin: true,
+      requiresAuth: true,
     });
 
   const headings = [

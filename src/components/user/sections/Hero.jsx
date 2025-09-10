@@ -5,7 +5,7 @@ import Image from "next/image";
 import { MEDIA_URL } from "@/config/Consts";
 import Link from "next/link";
 
-export default function HeroSection({ services, collections }) {
+export default function HeroSection({ collections }) {
   return (
     <section className="hero bg-black text-white max-h-[600px] relative mb-50 -mt-(--header-height)">
       <Image
@@ -52,14 +52,14 @@ export default function HeroSection({ services, collections }) {
           </div>
         </div>
 
-        <div className="relative z-10 mt-20 bg-white rounded-xl shadow-[0_4px_4px_0px_rgb(0,0,0,0.10)] max-w-7xl mx-auto">
+        <div className="relative z-10 mt-20 bg-white rounded-xl shadow-[0_4px_4px_0px_rgb(0,0,0,0.10)] w-fit mx-auto">
           <div className="bg-background-secondary py-5 rounded-t-xl">
             <h3 className="text-foreground-primary font-bold text-center">
               What are you looking for?
             </h3>
           </div>
 
-          <div className="flex justify-between py-5 px-12">
+          <div className="flex justify-between py-5 px-12 gap-12">
             {collections.slice(0, 8).map((collection) => (
               <Link
                 href={`/collections/${collection.id}`}

@@ -33,19 +33,20 @@ const SLIDES = [
 ];
 
 export default async function HomePage() {
-  const [servicesRes, cleaningServicesRes, collectionsRes] = await Promise.all([
-    getData("/products"),
-    getData("/products", { collectionId: "688476caab9429fb11fb1bcf" }),
-    getData("/collections", { sortKey: "updatedAt", sortDir: "desc" }),
-  ]);
+  const [paintingServicesRes, cleaningServicesRes, collectionsRes] =
+    await Promise.all([
+      getData("/products", { collectionId: "68bee6d36f8cd90948e532a9" }),
+      getData("/products", { collectionId: "688476caab9429fb11fb1bcf" }),
+      getData("/collections", { sortKey: "updatedAt", sortDir: "desc" }),
+    ]);
 
-  const { data: services } = servicesRes;
+  const { data: paintingServices } = paintingServicesRes;
   const { data: cleaningServices } = cleaningServicesRes;
   const { data: collections } = collectionsRes;
 
   return (
     <>
-      <HeroSection services={services} collections={collections} />
+      <HeroSection collections={collections} />
 
       <section className="container mb-20">
         <Carousel opts={{ loop: false }}>
@@ -74,6 +75,7 @@ export default async function HomePage() {
         wrapperClass="container my-0 mb-20"
         heading="Cleaning Services"
         items={cleaningServices}
+        collectionId="688476caab9429fb11fb1bcf"
         moreUrl={`/collections/688476caab9429fb11fb1bcf`}
       />
 
@@ -90,8 +92,9 @@ export default async function HomePage() {
       <ItemsCarouselSection
         wrapperClass="container my-0 mb-20"
         heading="Cleaning and Pest Control"
-        items={services}
-        moreUrl="/services"
+        items={paintingServices}
+        collectionId="68bee6d36f8cd90948e532a9"
+        moreUrl={`/collections/68bee6d36f8cd90948e532a9`}
       />
     </>
   );

@@ -7,13 +7,14 @@ import {
 } from "@/components/shadcn/carousel";
 import { MEDIA_URL } from "@/config/Consts";
 import { cn } from "@/lib/utils";
+import { formatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
 import Link from "next/link";
 import { FaStar } from "react-icons/fa";
 
-function ProductCard({ item }) {
+function ProductCard({ item, collectionId }) {
   return (
-    <Link href={`/services/${item.slug}`} className="">
+    <Link href={`/collections/${collectionId}`} className="">
       <div className="relative w-full aspect-square rounded-md overflow-hidden select-none">
         {item?.featuredImage?.src ? (
           <Image
@@ -40,7 +41,7 @@ function ProductCard({ item }) {
           <span>({/* {item.ratingCount} */}3k reviews)</span>
         </span>
         <p className="text-foreground-primary text-lg font-semibold">
-          ${item.price}
+          {formatPrice(item.price)}
         </p>
       </div>
     </Link>
@@ -50,6 +51,7 @@ function ProductCard({ item }) {
 export default function ItemsCarouselSection({
   heading,
   items = [],
+  collectionId,
   moreUrl = "",
   wrapperClass = "",
   headingClass = "",
@@ -79,7 +81,7 @@ export default function ItemsCarouselSection({
           {items.map((item, idx) => {
             return (
               <CarouselItem key={item.slug + idx} className={cn(itemClass)}>
-                <ProductCard item={item} />
+                <ProductCard collectionId={collectionId} item={item} />
               </CarouselItem>
             );
           })}

@@ -1,5 +1,9 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { FiLoader } from "react-icons/fi";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 const sizeClasses = {
   small: "button-small",
@@ -28,9 +32,12 @@ export default function Button({
   appearance = "solid",
   isLoading = false,
   disabled = false,
+  onClick,
   className,
   ...rest
 }) {
+  const [ripples, setRipples] = useState([]);
+
   const isLink =
     appearance === "linkBackground" ||
     appearance === "linkForeground" ||
@@ -41,23 +48,86 @@ export default function Button({
     : variantClasses[variant][appearance];
 
   const finalClassName = cn(
-    "button inline-flex items-center justify-center gap-2 relative",
+    "button inline-flex items-center justify-center gap-2 relative overflow-hidden",
     sizeClasses[size],
     variantClass,
     isLoading && "opacity-90 pointer-events-none",
     className
   );
 
+  const createRipple = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const size = Math.max(rect.width, rect.height);
+
+    const newRipple = {
+      id: Date.now(),
+      x,
+      y,
+      size,
+    };
+
+    setRipples((prev) => [...prev, newRipple]);
+
+    // cleanup after animation
+    setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
+    }, 400);
+  };
+
   return (
     <button
-      className={cn("inline-flex items-center gap-1.5", finalClassName)}
+      className={cn(
+        "relative inline-flex items-center gap-1.5",
+        finalClassName
+      )}
       disabled={disabled}
+      onClick={(e) => {
+        createRipple(e);
+        onClick?.(e);
+      }}
       {...rest}
     >
-      {isLoading ? (
-        <FiLoader className="animate-spin size-6" aria-hidden="true" />
-      ) : (
-        children
+      {/* Ripples */}
+      {ripples.map((r) => (
+        <motion.span
+          key={r.id}
+          className="absolute rounded-full bg-background-primary/70 pointer-events-none"
+          initial={{
+            width: 0,
+            height: 0,
+            top: r.y,
+            left: r.x,
+            opacity: 0.7,
+          }}
+          animate={{
+            width: r.size * 2, // expand enough to cover button
+            height: r.size * 2,
+            top: r.y - r.size,
+            left: r.x - r.size,
+            opacity: 0,
+          }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{
+            borderRadius: "9999px", // force circle
+          }}
+        />
+      ))}
+
+      <span
+        className={cn(
+          "inline-flex items-center gap-2 relative z-10",
+          isLoading && "invisible"
+        )}
+      >
+        {children}
+      </span>
+      {isLoading && (
+        <FiLoader
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin size-6"
+          aria-hidden="true"
+        />
       )}
     </button>
   );

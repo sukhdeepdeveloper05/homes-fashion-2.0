@@ -5,7 +5,7 @@ import { QueryClient } from "@tanstack/react-query";
 
 import { Toaster } from "@/components/shadcn/sonner";
 import { toast } from "sonner";
-import { ProgressProvider } from "@bprogress/next/app";
+import NextTopLoader from "nextjs-toploader";
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -31,17 +31,27 @@ export const queryClient = new QueryClient({
 export default function Providers({ children }) {
   return (
     <>
-      <ProgressProvider
+      {/* <NextTopLoader
         height="3px"
         color="var(--accent-primary)"
         options={{ showSpinner: false }}
         shallowRouting
-      >
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-        <Toaster position="top-right" theme="light" richColors={true} />
-      </ProgressProvider>
+      /> */}
+
+      <NextTopLoader
+        color="var(--accent-primary)"
+        initialPosition={0.08}
+        crawlSpeed={50}
+        height={3}
+        crawl={true}
+        showSpinner={false}
+        easing="ease"
+        speed={200}
+        shadow="0 0 10px var(--accent-primary),0 0 5px var(--accent-primary)"
+        zIndex={1600}
+      />
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <Toaster position="top-right" theme="light" richColors={true} />
     </>
   );
 }

@@ -1,10 +1,11 @@
 import axios from "axios";
 import { getAuthUser, removeAuthUser, setAuthUser } from "@/actions/user";
 import { API_URL } from "@/config/Consts";
+import { getBaseUrl } from "@/actions/getBaseUrl";
 
 const axiosInstance = axios.create({
   baseURL: API_URL || "http://localhost:9090",
-  withCredentials: true,
+  // withCredentials: true,
   headers: {
     Accept: "application/json",
   },
@@ -12,7 +13,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    if (config.meta?.requiresAdmin) {
+    if (config.meta?.requiresAuth) {
       try {
         const authUser = await getAuthUser();
 
@@ -44,8 +45,17 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const status = error?.response?.status;
 
-    if (status === 401) {
-      await removeAuthUser();
+    if ((status === 401, error.response.data.message === "jwt expired")) {
+      const baseUrl =
+        typeof window !== "undefined"
+          ? window.location.origin
+          : await getBaseUrl();
+      const res = await fetch(`${baseUrl}/api/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      console.log(data);
     }
 
     // Return consistent error object

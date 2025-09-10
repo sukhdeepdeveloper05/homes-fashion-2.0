@@ -26,12 +26,12 @@ export function useListQuery({
   queryKey = [handle],
   url,
   params = {},
-  requiresAdmin = false,
+  requiresAuth = false,
   queryOptions = {},
 }) {
   return useQuery({
     queryKey,
-    queryFn: async () => await getData(url, params, requiresAdmin),
+    queryFn: async () => await getData(url, params, requiresAuth),
     meta: {
       errorMessage: `Failed to fetch ${handle}`,
     },
@@ -48,13 +48,13 @@ export function useInfiniteListQuery({
   queryKey = [handle],
   url,
   params = {},
-  requiresAdmin = false,
+  requiresAuth = false,
   queryOptions = {},
 }) {
   return useInfiniteQuery({
     queryKey,
     queryFn: async ({ pageParam = 1 }) =>
-      await getData(url, { ...params, page: pageParam }, requiresAdmin),
+      await getData(url, { ...params, page: pageParam }, requiresAuth),
     meta: {
       errorMessage: `Failed to fetch ${handle}`,
     },
@@ -79,13 +79,13 @@ export function useDetailsQuery({
   queryKey = [handle],
   url,
   params = {},
-  requiresAdmin = false,
+  requiresAuth = false,
   queryOptions = {},
 }) {
   return useQuery({
     queryKey,
     queryFn: async () =>
-      await getData(`${url}/${params.id}`, params, requiresAdmin),
+      await getData(`${url}/${params.id}`, params, requiresAuth),
     meta: {
       errorMessage: `Failed to fetch ${handle}`,
     },

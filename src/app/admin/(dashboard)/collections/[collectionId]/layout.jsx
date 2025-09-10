@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BiChevronLeft } from "react-icons/bi";
 import { useDetailsQuery, useUpdateMutation } from "@/hooks/queries";
-import { CardSkeleton } from "@/components/admin/ui/Skeletons";
+import { CardSkeleton } from "@/components/ui/Skeletons";
 import DropZone from "@/components/ui/fields/DropZone";
 import { motion } from "framer-motion";
 
@@ -25,7 +25,7 @@ export default function CollectionLayout({ children, params }) {
     queryKey: ["collectionDetails", collectionId],
     url: `/collections`,
     params: { id: collectionId },
-    requiresAdmin: false,
+    requiresAuth: false,
   });
 
   const updateCollectionMutation = useUpdateMutation({

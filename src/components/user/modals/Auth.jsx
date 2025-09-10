@@ -22,6 +22,7 @@ import OtpPhoneIcon, { MessagePhoneIcon } from "@/assets/icons/Phone";
 import { useState } from "react";
 import InputOTP from "@/components/ui/fields/InputOpt";
 import { requestOtp, signIn } from "@/actions/auth";
+import { useRouter } from "nextjs-toploader/app";
 
 export default function AuthModal({ open, onOpenChange }) {
   const [step, setStep] = useState(1);
@@ -142,7 +143,9 @@ function LoginContent({ form, onSuccess }) {
   );
 }
 
-function OptContent({ loginForm }) {
+function OptContent({ loginForm, onSuccess }) {
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(
       z.object({
@@ -171,6 +174,8 @@ function OptContent({ loginForm }) {
     try {
       const response = await mutateAsync(data);
       toast.success(response?.message || "Login Successful");
+      onSuccess();
+      router.refresh();
     } catch (error) {
       toast.error(error?.message || "Login Failed");
     }

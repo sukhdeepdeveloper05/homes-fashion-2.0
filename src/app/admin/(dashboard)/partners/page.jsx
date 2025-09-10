@@ -19,7 +19,7 @@ export default async function PartnersPage({ searchParams }) {
         <PageHeader
           title="Partners"
           description="Manage your partners"
-          buttons={[{ identifier: "add", label: "Add Product" }]}
+          buttons={[{ identifier: "add", label: "Add Partner" }]}
         />
 
         <PartnersContent searchParams={normalizedParams} />

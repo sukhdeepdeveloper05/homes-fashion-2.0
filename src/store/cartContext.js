@@ -1,112 +1,160 @@
 "use client";
 
+import { createContext, useContext, useState, useEffect } from "react";
 import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+  useCartQuery,
+  useAddCartItem,
+  useUpdateCartItem,
+  useDeleteCartItem,
+} from "@/hooks/cartQueries";
 
 const CART_KEY = "cart";
 
-function calculateTotals(items) {
-  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + item.totalPrice, 0);
-  return { totalPrice, totalQuantity };
-}
+const CartContext = createContext();
 
-const CartContext = createContext({
-  cart: {
-    items: [],
-    totalPrice: 0,
-    totalQuantity: 0,
-  },
-  addToCart: () => {},
-  removeFromCart: () => {},
-  updateQuantity: () => {},
-  clearCart: () => {},
+const recalcCart = (items) => ({
+  items,
+  totalPrice: items.reduce((sum, i) => sum + i.totalPrice, 0),
 });
 
-export function CartProvider({ children }) {
-  const [cart, setCart] = useState({
-    items: [],
-    totalPrice: 0,
-    totalQuantity: 0,
-  });
+export function CartProvider({ children, user }) {
+  const [cart, setCart] = useState({ items: [], totalPrice: 0 });
   const [isLoaded, setIsLoaded] = useState(false);
+  const [updatingId, setUpdatingId] = useState(null);
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(CART_KEY);
-      if (stored) setCart(JSON.parse(stored));
-    } catch {}
-    setIsLoaded(true);
-  }, []);
+  // React Query hooks
+  const { data: serverCart, isLoading } = useCartQuery(user);
+  const addItemMutation = useAddCartItem();
+  const deleteItemMutation = useDeleteCartItem();
 
-  useEffect(() => {
-    const syncCart = (e) => {
-      if (e.key === CART_KEY && e.newValue) {
-        setCart(JSON.parse(e.newValue));
+  // ✅ Attach onSuccess directly here
+  const updateItemMutation = useUpdateCartItem({
+    onMutate: async ({ id }) => {
+      setUpdatingId(id);
+    },
+    onSuccess: (updatedItem) => {
+      updateItem(updatedItem);
+    },
+    onSettled: () => {
+      setUpdatingId(null);
+    },
+  });
+
+  // 🔥 Update or replace an item in cart
+  const updateItem = (newItem) => {
+    setCart((prev) => {
+      const exists = prev.items.find((i) => i.id === newItem.id);
+      let updatedItems;
+
+      if (exists) {
+        if (newItem.quantity <= 0) {
+          updatedItems = prev.items.filter((i) => i.id !== newItem.id);
+        } else {
+          updatedItems = prev.items.map((i) =>
+            i.id === newItem.id ? { ...i, ...newItem } : i
+          );
+        }
+      } else {
+        updatedItems = [...prev.items, newItem];
       }
-    };
-    window.addEventListener("storage", syncCart);
-    return () => window.removeEventListener("storage", syncCart);
-  }, []);
 
+      return recalcCart(updatedItems);
+    });
+  };
+
+  // Load cart when user changes
   useEffect(() => {
-    if (isLoaded) {
+    if (user) {
+      const mergeGuestCart = async () => {
+        try {
+          const stored = localStorage.getItem(CART_KEY);
+          if (stored) {
+            const guestCart = JSON.parse(stored);
+            if (guestCart.items?.length) {
+              for (const item of guestCart.items) {
+                await addItemMutation.mutateAsync({
+                  product: item.product.id,
+                  quantity: item.quantity,
+                });
+              }
+              localStorage.removeItem(CART_KEY);
+            }
+          }
+        } catch (err) {
+          console.error("Failed to merge guest cart", err);
+        }
+      };
+
+      if (!isLoading && serverCart) {
+        setCart(serverCart);
+        setIsLoaded(true);
+        // mergeGuestCart();
+      }
+    } else {
+      try {
+        const stored = localStorage.getItem(CART_KEY);
+        if (stored) setCart(JSON.parse(stored));
+      } catch {}
+      setIsLoaded(true);
+    }
+  }, [user, serverCart, isLoading]);
+
+  // Sync cart to localStorage only for guests
+  useEffect(() => {
+    if (isLoaded && !user) {
       localStorage.setItem(CART_KEY, JSON.stringify(cart));
     }
-  }, [cart, isLoaded]);
+  }, [cart, isLoaded, user]);
 
-  const addToCart = useCallback((product) => {
-    setCart((prev) => {
-      const existing = prev.items.find((item) => item.id === product.id);
-      let updatedItems;
-      if (existing) {
-        updatedItems = prev.items.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        updatedItems = [
-          ...prev.items,
-          { ...product, quantity: 1, totalPrice: product.price },
-        ];
+  // Cart functions
+  const addToCart = async (product) => {
+    if (user) {
+      const data = await addItemMutation.mutateAsync({
+        product: product.id,
+        quantity: 1,
+      });
+      updateItem(data); // ✅ always trust server response
+    } else {
+      const existing = cart.items.find((item) => item.id === product.id);
+      if (!existing) {
+        updateItem({
+          id: product.id,
+          product,
+          quantity: 1,
+          pricePerItem: product.price,
+          totalPrice: product.price,
+        });
       }
-      return { items: updatedItems, ...calculateTotals(updatedItems) };
-    });
-  }, []);
+    }
+  };
 
-  const removeFromCart = useCallback((id) => {
-    setCart((prev) => {
-      const updatedItems = prev.items.filter((item) => item.id !== id);
-      return { items: updatedItems, ...calculateTotals(updatedItems) };
-    });
-  }, []);
+  const removeFromCart = async (id) => {
+    if (user) {
+      await deleteItemMutation.mutateAsync(id);
+    }
+    setCart((prev) => recalcCart(prev.items.filter((item) => item.id !== id)));
+  };
 
-  const updateQuantity = useCallback((id, quantity) => {
-    setCart((prev) => {
-      const updatedItems = prev.items
-        .map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                quantity: Math.max(0, quantity),
-                totalPrice: item.price * quantity,
-              }
-            : item
-        )
-        .filter((item) => item.quantity > 0);
-      return { items: updatedItems, ...calculateTotals(updatedItems) };
-    });
-  }, []);
-
-  const clearCart = useCallback(() => {
-    setCart({ items: [], totalPrice: 0, totalQuantity: 0 });
-  }, []);
+  const updateQuantity = async (id, quantity) => {
+    setUpdatingId(id);
+    try {
+      if (user) {
+        // ✅ No need to manually update state — server response updates it
+        await updateItemMutation.mutateAsync({ id, quantity });
+      } else {
+        const item = cart.items.find((i) => i.id === id);
+        if (item) {
+          updateItem({
+            ...item,
+            quantity,
+            totalPrice: item.pricePerItem * quantity,
+          });
+        }
+      }
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   return (
     <CartContext.Provider
@@ -115,8 +163,11 @@ export function CartProvider({ children }) {
         addToCart,
         removeFromCart,
         updateQuantity,
-        clearCart,
-        isLoaded,
+        updateItemMutation,
+        isLoaded: isLoaded && !isLoading,
+        isAdding: addItemMutation.isPending,
+        updatingId,
+        isDeleting: deleteItemMutation.isPending,
       }}
     >
       {children}
@@ -124,8 +175,9 @@ export function CartProvider({ children }) {
   );
 }
 
-export function useCart() {
+export function useCartContext() {
   const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCart must be used inside <CartProvider>");
+  if (!ctx)
+    throw new Error("useCartContext must be used inside <CartProvider>");
   return ctx;
 }

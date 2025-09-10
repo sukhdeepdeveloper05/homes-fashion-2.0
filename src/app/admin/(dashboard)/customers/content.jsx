@@ -15,7 +15,7 @@ export default function CustomersContent({ searchParams }) {
       handle: "customers",
       url: "/customers",
       params: searchParams,
-      requiresAdmin: true,
+      requiresAuth: true,
     });
 
   const headings = [

@@ -1,7 +1,10 @@
 import { useDeleteMutation } from "@/hooks/queries";
 
 export default function useCollectionColumns() {
-  const deleteCollectionMutation = useDeleteMutation("collection");
+  const deleteCollectionMutation = useDeleteMutation({
+    handle: "collection",
+    url: "/collections",
+  });
 
   return [
     { title: "Title", key: "title", type: "text" },

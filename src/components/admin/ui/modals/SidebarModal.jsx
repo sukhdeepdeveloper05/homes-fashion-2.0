@@ -70,8 +70,8 @@ export default function SidebarModal({
     }
   }, [defaultValues, form]);
 
-  // const { errors } = form.formState;
-  // console.log(errors);
+  const { errors } = form.formState;
+  console.log(errors);
 
   const shapeItem = (item, idx) => {
     const Component = componentMap[item.type] ?? componentMap.default;

@@ -13,7 +13,7 @@ export default function OrderDetailsContent({ orderId }) {
     queryKey: ["orderDetails", orderId],
     url: `/orders`,
     params: { id: orderId },
-    requiresAdmin: true,
+    requiresAuth: true,
   });
 
   console.log(details);

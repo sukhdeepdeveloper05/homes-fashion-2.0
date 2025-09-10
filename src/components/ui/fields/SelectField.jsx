@@ -49,7 +49,7 @@ export default function SelectField({
     setSelected(
       options.find((opt) => String(opt.value) === String(newValue)) ?? undefined
     );
-    onChange?.(parsedValue !== "null" ? parsedValue : null);
+    onChange?.(parsedValue !== "null" ? parsedValue : "");
   };
 
   return (

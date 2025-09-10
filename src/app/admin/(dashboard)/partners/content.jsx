@@ -14,7 +14,7 @@ export default function PartnersContent({ searchParams }) {
       url: "/partners",
       queryKey: ["partners", searchParams],
       params: searchParams,
-      requiresAdmin: true,
+      requiresAuth: true,
     });
 
   const { mutateAsync: handleDelete, isPending: deleteLoading } =
