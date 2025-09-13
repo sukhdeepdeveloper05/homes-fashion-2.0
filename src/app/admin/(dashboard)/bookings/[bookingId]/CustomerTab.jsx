@@ -1,8 +1,8 @@
 import { MEDIA_URL } from "@/config/Consts";
-import formatDate from "@/utils/formatDate";
 import Image from "next/image";
 
 import { SkeletonBox } from "@/components/ui/Skeletons";
+import formatDate from "@/utils/formatDate";
 
 export function CustomerSkeleton() {
   return (

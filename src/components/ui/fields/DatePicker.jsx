@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { CalendarIcon } from "lucide-react";
 import { Controller } from "react-hook-form";
-import { format } from "date-fns";
 
 import { Calendar } from "@/components/shadcn/calendar";
 import { Label } from "@/components/shadcn/label";
