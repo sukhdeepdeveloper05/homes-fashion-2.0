@@ -41,7 +41,7 @@ export default function AssignPartnerModal() {
     try {
       await assignPartnerMutation.mutateAsync({
         id: bookingId,
-        values: { partner: values.partner },
+        values: { partnerId: values.partner },
       });
       form.reset();
       close();
@@ -69,7 +69,7 @@ export default function AssignPartnerModal() {
       open={isShown}
       onClose={close}
       schema={schema}
-      defaultValues={{ partner: partner?.id || partner || "" }}
+      defaultValues={{ partner: partner?.id || "" }}
       title={`Assign Partner`}
       list={fields}
       submitLabel={"Assign"}

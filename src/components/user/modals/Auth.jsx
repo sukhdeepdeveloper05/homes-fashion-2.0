@@ -70,8 +70,10 @@ function LoginContent({ form, onSuccess }) {
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["user-signin"],
     mutationFn: async (values) => {
-      console.log("+91" + values.phone);
-      await requestOtp({ phone: "+91" + values.phone, userType: "customer" });
+      return await requestOtp({
+        phone: "+91" + values.phone,
+        userType: "customer",
+      });
     },
   });
 
@@ -160,14 +162,12 @@ function OptContent({ loginForm, onSuccess }) {
 
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["user-signin-verify"],
-    mutationFn: async (values) => {
-      console.log(values.otp);
+    mutationFn: async (values) =>
       await signIn({
         phone: "+91" + loginForm.watch("phone"),
         secretCode: values.otp,
         userType: "customer",
-      });
-    },
+      }),
   });
 
   async function onSubmit(data) {
@@ -177,7 +177,7 @@ function OptContent({ loginForm, onSuccess }) {
       onSuccess();
       router.refresh();
     } catch (error) {
-      toast.error(error?.message || "Login Failed");
+      toast.error(error?.message || "Invalid OTP");
     }
   }
 
@@ -210,6 +210,7 @@ function OptContent({ loginForm, onSuccess }) {
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
+                  autofocus={true}
                   className="[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               )}

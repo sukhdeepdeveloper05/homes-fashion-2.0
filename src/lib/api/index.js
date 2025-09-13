@@ -1,4 +1,4 @@
-"use server";
+// "use server";
 
 import axios from "@/services/Axios";
 
@@ -6,7 +6,6 @@ export async function getData({ url = "", params = {}, requiresAuth = false }) {
   try {
     return await axios.get(url, { params, meta: { requiresAuth } });
   } catch (error) {
-    console.log(error);
     throw new Error(
       error.message ?? error.data.message ?? "Something went wrong"
     );

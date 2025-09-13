@@ -279,12 +279,6 @@ export default function CheckoutContent({ params, isLoggedIn }) {
                 {formatPrice(item?.totalPrice)}
               </span>
             </div>
-            <div className="flex justify-between items-center">
-              <span>Taxes & Fee</span>
-              <span className="font-semibold">
-                {formatPrice((item?.totalPrice * TAX_RATE) / 100)}
-              </span>
-            </div>
             <div className="border-t pt-4 flex justify-between items-center">
               <span className="font-semibold">Total</span>
               <span className="font-bold">{formatPrice(item?.totalPrice)}</span>

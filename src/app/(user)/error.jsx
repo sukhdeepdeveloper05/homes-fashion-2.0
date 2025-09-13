@@ -17,10 +17,10 @@ export default function Error({ error, reset }) {
           <p className="text-xl font-semibold">
             {error?.message || "Something went wrong"}
           </p>
-          {error?.button ?? (
-            <Button onClick={() => window.location.reload()}>Reload</Button>
-          )}
         </>
+      )}
+      {error?.button ?? (
+        <Button onClick={() => window.location.reload()}>Reload</Button>
       )}
     </div>
   );

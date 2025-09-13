@@ -79,7 +79,7 @@ export default function BookingsContent({ searchParams }) {
       title: "Partner",
       key: "partner",
       type: "text",
-      render: (row) => row.partner || "--",
+      render: (row) => row?.partner?.name || "--",
     },
     {
       title: "Booking Status",
