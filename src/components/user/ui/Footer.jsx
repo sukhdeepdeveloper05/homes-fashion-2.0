@@ -1,4 +1,4 @@
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo.webp";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

@@ -5,7 +5,11 @@ import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { PRODUCT_AVAILABILITIES, PRODUCT_STATUSES } from "@/config/Consts";
 import { use } from "react";
 import AddProductToCollectionModal from "./AddProduct";
-import { invalidate, useListQuery, useUpdateMutation } from "@/hooks/queries";
+import {
+  invalidateQueries,
+  useListQuery,
+  useUpdateMutation,
+} from "@/hooks/queries";
 import { useSetParams } from "@/hooks/setParams";
 import FiltersBar from "@/components/admin/shared/FiltersBar";
 
@@ -87,8 +91,8 @@ export default function ProductsTabPage({ params, searchParams }) {
             ) {
               setParams({ page: page - 1 });
             }
-            invalidate("products");
-            invalidate(collectionId);
+            invalidateQueries("products");
+            invalidateQueries(collectionId);
           },
           isLoading: deleteLoading,
           isDialogShown: false,

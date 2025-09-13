@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import { useUploadMutation } from "@/hooks/queries";
 import clsx from "clsx";
 import { MEDIA_URL } from "@/config/Consts";
+import { cn } from "@/lib/utils";
 
 const ACCEPT_ALL = "image/*";
 
@@ -26,6 +27,8 @@ export default function DropZone({
   className = "",
   imageClass = "",
   imageProps = {},
+  inputProps = {},
+  createMedia = true,
 }) {
   const [files, setFiles] = useState(initial);
 
@@ -37,19 +40,24 @@ export default function DropZone({
     const valid = validate ? chosen.filter(validate) : chosen;
     const limit = multi ? valid.slice(0, max - files.length) : [valid[0]];
     try {
-      if (limit.length) {
-        const response = await uploadMedia(limit);
-        console.log(response);
+      if (limit.length > 0) {
+        if (createMedia) {
+          const response = await uploadMedia(limit);
+          console.log(response);
 
-        const newUpdatedFiles = multi
-          ? [...files, ...response.data]
-          : response.data;
+          const newUpdatedFiles = multi
+            ? [...files, ...response.data]
+            : response.data;
 
-        setFiles(newUpdatedFiles);
+          setFiles(newUpdatedFiles);
 
-        onChange?.(
-          multi ? newUpdatedFiles.map((f) => f.id) : newUpdatedFiles[0].id
-        );
+          onChange?.(
+            multi ? newUpdatedFiles.map((f) => f.id) : newUpdatedFiles[0].id
+          );
+        } else {
+          setFiles(multi ? [...files, ...limit] : limit);
+          onChange?.(multi ? [...files, ...limit] : limit);
+        }
       }
     } catch (error) {
       console.log(error.message);
@@ -66,6 +74,8 @@ export default function DropZone({
 
   const shapeCls = shape === "circle" ? "rounded-full" : "rounded-lg";
 
+  console.log(initial);
+
   return (
     <div className={clsx("flex flex-col gap-2", className)}>
       {label && (
@@ -78,31 +88,40 @@ export default function DropZone({
       )}
 
       <div
-        className={clsx(
+        className={cn(
           "relative flex items-center justify-center border border-dashed border-gray-300 bg-white cursor-pointer",
           multi ? "h-44" : "w-full h-44",
           shapeCls,
           shapeClass,
           {
             "h-auto aspect-square": !multi && files[0],
-          },
-          {
-            "!border-0": shapeClass,
           }
         )}
       >
         {isPending ? (
           <FiLoader className="animate-spin text-2xl text-foreground-primary" />
-        ) : !multi && files[0] ? (
+        ) : !multi && files.length > 0 ? (
           <>
-            <Image
-              src={`${MEDIA_URL}${files[0].src}`}
-              alt="preview"
-              fill
-              sizes="500px"
-              className={clsx("object-contain", shapeCls, imageClass)}
-              {...imageProps}
-            />
+            {files[0] instanceof File ? (
+              <Image
+                src={URL.createObjectURL(files[0])}
+                alt="preview"
+                fill
+                sizes="500px"
+                className={clsx("object-contain", shapeCls, imageClass)}
+                {...imageProps}
+              />
+            ) : (
+              <Image
+                src={`${MEDIA_URL}${files[0]?.src}`}
+                alt="preview"
+                fill
+                sizes="500px"
+                className={clsx("object-contain", shapeCls, imageClass)}
+                {...imageProps}
+              />
+            )}
+
             <Button
               onClick={() => remove(files[0])}
               className="!absolute right-1.5 top-1.5 z-10 !h-5 !w-5 rounded-md p-0 border-0 bg-red-600"
@@ -119,6 +138,7 @@ export default function DropZone({
         )}
 
         <input
+          {...inputProps}
           type="file"
           id={name}
           name={name}
@@ -136,8 +156,8 @@ export default function DropZone({
               <Image
                 src={`${MEDIA_URL}${f.src}`}
                 alt={`img-${i}`}
-                width={110}
-                height={110}
+                width={400}
+                height={400}
                 className={`border border-gray-200 aspect-square w-full object-contain ${shapeCls}`}
               />
               <Button

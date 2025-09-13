@@ -91,7 +91,7 @@ function CartCardItem({ item }) {
         {item.product.title}
       </span>
       <div className="flex items-center gap-4">
-        <QuantityButton item={item} />
+        <QuantityButton key={item.id} item={item} />
         <div className="flex flex-col items-end min-w-20">
           <span>{formatPrice(item.product.price * item.quantity)}</span>
           {/* <span>{item.quantity}</span> */}

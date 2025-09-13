@@ -1,17 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import {
   FiDownload,
   FiEye,
   FiEdit2,
   FiCheck,
   FiMoreVertical,
-  FiLoader,
 } from "react-icons/fi";
-import { BiTrash } from "react-icons/bi";
-import DeleteModal from "@/components/admin/ui/modals/DeleteModal";
+import DeleteButton from "@/components/ui/DeleteButton";
 
 export default function ActionsCell({ row, actions }) {
   return (
@@ -54,7 +51,14 @@ export default function ActionsCell({ row, actions }) {
       )}
 
       {actions?.delete && !row.hideDelete && (
-        <DeleteActionButton col={{ actions }} row={row} />
+        <DeleteButton
+          deleteId={row.id}
+          onDelete={actions?.delete?.onDelete}
+          isLoading={actions?.delete?.isLoading}
+          showDialog={actions?.delete?.showDialog}
+          title={actions?.delete?.title}
+          description={actions?.delete?.description}
+        />
       )}
 
       {actions?.menu && (
@@ -66,54 +70,5 @@ export default function ActionsCell({ row, actions }) {
         </button>
       )}
     </div>
-  );
-}
-
-function DeleteActionButton({ col, row }) {
-  const [isDeleting, setIsDeleting] = useState(col.actions.delete?.isLoading);
-  const [showModal, setShowModal] = useState(false);
-
-  const handleDelete = async () => {
-    setIsDeleting(true);
-    try {
-      await col.actions?.delete?.onDelete?.(row.id);
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  return (
-    <>
-      <button
-        onClick={() => {
-          if (col.actions.delete.showDialog) {
-            setShowModal(true);
-          } else {
-            handleDelete();
-          }
-        }}
-        disabled={isDeleting}
-        className="rounded-md bg-red-600 size-8 flex items-center justify-center text-lg"
-      >
-        {isDeleting && !col.actions.delete.showDialog ? (
-          <FiLoader className="animate-spin text-white" />
-        ) : (
-          <BiTrash className="text-white" />
-        )}
-      </button>
-
-      <DeleteModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        onConfirm={async () => {
-          await handleDelete(row.id);
-          setShowModal(false);
-        }}
-        title={col.actions.delete.title}
-        deleteLoading={isDeleting}
-      />
-    </>
   );
 }

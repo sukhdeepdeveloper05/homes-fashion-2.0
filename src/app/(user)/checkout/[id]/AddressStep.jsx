@@ -1,6 +1,8 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/shadcn/radio-group";
-import SelectAddressModal from "./SelectAddressModal";
+import AddressModal from "@/components/ui/AddressModal";
 import { cn } from "@/lib/utils";
 import Button from "@/components/ui/Button";
 import { queryClient } from "@/services/Providers";
@@ -62,7 +64,7 @@ export default function AddressStep({
         <Button onClick={() => setAddressModalOpen(true)} className="w-full">
           Add new Address
         </Button>
-        <SelectAddressModal
+        <AddressModal
           open={addressModalOpen}
           onOpenChange={setAddressModalOpen}
           onSuccess={(address) => {

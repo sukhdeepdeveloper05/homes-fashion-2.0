@@ -3,21 +3,20 @@
 import useLocationSearch from "@/hooks/location/locationSearch";
 import { useState } from "react";
 
-export default function LocationSearch({
-  moveMarkerTo,
-  onLocationChange,
-}) {
+export default function LocationSearch({ moveMarkerTo, onLocationChange }) {
   const [searchTerm, setSearchTerm] = useState("");
 
+  // console.log(searchTerm);
+
   const { searchResults, loading, handleSearch, selectLocation } =
-    useLocationSearch(
-      setSearchTerm,
-      moveMarkerTo,
-      onLocationChange
-    );
+    useLocationSearch(setSearchTerm, moveMarkerTo, onLocationChange);
 
   const onInputChange = (e) => {
     const value = e.target.value;
+    if (value.trim() === "") {
+      setSearchTerm("");
+      return;
+    }
     setSearchTerm(value);
     handleSearch(value);
   };

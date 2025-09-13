@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { FiLoader } from "react-icons/fi";
 import {
-  invalidate,
+  invalidateQueries,
   useInfiniteListQuery,
   useUpdateMutation,
 } from "@/hooks/queries";
@@ -40,8 +40,8 @@ export default function AddProductToCollectionModal({ collectionId }) {
       });
       form.reset();
       close();
-      invalidate("products");
-      invalidate(collectionId);
+      invalidateQueries("products");
+      invalidateQueries(collectionId);
     } catch (error) {}
   }
 

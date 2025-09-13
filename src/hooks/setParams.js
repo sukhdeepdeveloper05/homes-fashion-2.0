@@ -10,7 +10,7 @@ const order = [
   "bookingStatus",
   "available",
   "collectionId",
-  "sortKey",
+  "sortBy",
   "sortDir",
   "page",
   "perPage",

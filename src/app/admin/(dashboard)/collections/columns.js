@@ -7,7 +7,7 @@ export default function useCollectionColumns() {
   });
 
   return [
-    { title: "Title", key: "title", type: "text" },
+    { title: "Title", key: "title", type: "text", sortable: true },
     {
       title: "Tags",
       key: "tags",

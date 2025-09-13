@@ -37,10 +37,10 @@ export default function CollectionsContent({ searchParams }) {
         headings={columns}
         rows={collections}
         loading={isFetching}
-        sortKey={searchParams.sortKey}
+        sortBy={searchParams.sortBy}
         sortDir={searchParams.sortDir}
         onSort={(k, d) => {
-          setParams({ page: 1, sortKey: k, sortDir: d });
+          setParams({ page: 1, sortBy: k, sortDir: d });
         }}
         pagination={{
           total: pagination.total,

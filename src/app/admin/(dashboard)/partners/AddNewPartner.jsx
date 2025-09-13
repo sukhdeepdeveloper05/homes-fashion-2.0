@@ -2,7 +2,7 @@
 
 import SidebarModal from "@/components/admin/ui/modals/SidebarModal";
 import { FiLoader } from "react-icons/fi";
-import { useUpdateMutation } from "@/hooks/queries";
+import { useCreateMutation, useUpdateMutation } from "@/hooks/queries";
 import { useMemo } from "react";
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
 import z from "zod";
@@ -12,48 +12,83 @@ export default function AddNewPartner() {
 
   const isEdit = Boolean(initialData);
 
+  const createPartnerMutation = useCreateMutation({
+    handle: "partner",
+    url: "/partners",
+    hasBinary: true,
+  });
+
   const updatePartnerMutation = useUpdateMutation({
     handle: "partner",
     url: "/partners",
+    hasBinary: true,
   });
 
   const initialValues = useMemo(
     () => ({
-      name: initialData?.name || "",
+      firstName: initialData?.firstName || "",
+      lastName: initialData?.lastName || "",
       email: initialData?.email || "",
+      gender: initialData?.gender || "",
+      dateOfBirth: initialData?.dateOfBirth
+        ? new Date(initialData?.dateOfBirth)
+        : null,
       phone: initialData?.phone || "",
-      country: initialData?.country || "",
-      status: initialData?.status || "",
+      avatar: initialData?.avatar?.id || null,
     }),
     [initialData]
   );
 
   const partnerSchema = z.object({
-    name: z.string().nonempty({ error: "Name is required" }),
+    firstName: z.string().nonempty({ error: "First Name is required" }),
+    lastName: z.string().optional(),
     email: z.string().nonempty({ error: "Email is required" }),
-    phone: z
-      .string()
-      .max(10, { error: "Invalid phone number" })
-      .nonempty({ error: "Phone is required" }),
-    country: z.string().nonempty({ error: "Country is required" }),
-    status: z.string().nonempty({ error: "Status is required" }),
+    gender: z.string().nullable(),
+    dateOfBirth: z.date().optional(),
+    phone: z.preprocess(
+      (val) => {
+        if (typeof val !== "string") return val;
+        const trimmed = val.trim();
+        return trimmed.startsWith("+91") ? trimmed : `+91${trimmed}`;
+      },
+      z
+        .string()
+        .nonempty({ message: "Phone is required" })
+        .regex(/^\+91\d{10}$/, {
+          message: "Must be a valid 10-digit Indian phone number",
+        })
+    ),
+    avatar: z.union([z.string(), z.instanceof(File)]).optional(),
   });
 
   async function handleSubmit(vals, form) {
-    await updatePartnerMutation.mutateAsync({
-      id: initialData?.id,
-      vals,
-    });
+    console.log("create partner", vals);
+    if (isEdit) {
+      await updatePartnerMutation.mutateAsync({
+        id: initialData?.id,
+        values: vals,
+      });
+    } else {
+      await createPartnerMutation.mutateAsync({
+        values: vals,
+      });
+    }
     form.reset();
     close();
   }
 
   const fields = [
     {
-      name: "name",
-      label: "Name",
+      name: "firstName",
+      label: "First Name",
       type: "text",
-      placeholder: "Name",
+      placeholder: "First Name",
+    },
+    {
+      name: "lastName",
+      label: "Last Name",
+      type: "text",
+      placeholder: "Last Name",
     },
     {
       name: "email",
@@ -62,31 +97,47 @@ export default function AddNewPartner() {
       placeholder: "Email",
     },
     {
+      name: "gender",
+      label: "Gender",
+      type: "select",
+      options: [
+        { value: "male", label: "Male" },
+        { value: "female", label: "Female" },
+        { value: "other", label: "Other" },
+        { value: "rather not say", label: "Rather not say" },
+      ],
+    },
+    {
+      name: "dateOfBirth",
+      label: "Date of Birth",
+      type: "date",
+      placeholder: "Date of Birth",
+    },
+    {
       name: "phone",
       label: "Phone",
       type: "text",
       placeholder: "Phone",
     },
     {
-      name: "country",
-      label: "Country",
-      type: "text",
-      placeholder: "Country",
+      name: "avatar",
+      label: "Avatar",
+      type: "dropzone",
+      placeholder: "Select an Avatar",
+      createMedia: false,
+      initial: initialData?.avatar && [initialData?.avatar],
+      onChange: (files, form) => {
+        console.log(files);
+        form.setValue("avatar", files[0]);
+      },
     },
-    // {
-    //   name: "status",
-    //   label: "Status",
-    //   type: "select",
-    //   options: [...PARTNER_STATUSES],
-    //   placeholder: "Select status",
-    // },
   ];
 
   return (
     <SidebarModal
       open={isShown}
       onClose={close}
-      title={`${isEdit ? "Edit" : "Add"} Product`}
+      title={`${isEdit ? "Edit" : "Add"} Partner`}
       list={fields}
       defaultValues={initialValues}
       schema={partnerSchema}

@@ -1,3 +1,4 @@
+import AssignPartnerSidebar from "./AssignPartner";
 import BookingsContent from "./content";
 import PageHeader from "@/components/admin/shared/PageHeader";
 
@@ -8,8 +9,8 @@ export default async function BookingsPage({ searchParams }) {
     page: Number(rawParams.page) || 1,
     perPage: Math.min(Number(rawParams.rawPerPage) || 10, 50),
     search: rawParams.search ?? null,
-    sortKey: rawParams.sortKey ?? null,
-    sortDir: rawParams.sortDir ?? null,
+    sortBy: rawParams.sortBy ?? "bookedAt",
+    sortDir: rawParams.sortDir ?? "asc",
     bookingStatus: rawParams.bookingStatus ?? null,
   };
 
@@ -19,6 +20,8 @@ export default async function BookingsPage({ searchParams }) {
         <PageHeader title="Bookings" description="Manage your bookings" />
 
         <BookingsContent searchParams={normalizedParams} />
+
+        <AssignPartnerSidebar />
       </div>
     </>
   );

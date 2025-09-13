@@ -24,6 +24,8 @@ import { removeAuthUser } from "@/actions/user";
 import { useListQuery } from "@/hooks/queries";
 import { useRouter } from "nextjs-toploader/app";
 import CartButton from "./CartButton";
+import logo from "@/assets/images/logo.webp";
+import Image from "next/image";
 
 const darkRoutes = ["/"];
 
@@ -48,13 +50,17 @@ export default function Header({ user }) {
         !isDark && "mr-(--removed-body-scroll-bar-size)"
       )}
     >
-      <div className="container mx-auto grid grid-cols-2 md:grid-cols-3 items-center justify-between px-16 py-7">
-        <Link
-          href="/"
-          className="text-4xl font-bold text-foreground-primary dark:text-background-primary"
-        >
-          LOGO
-        </Link>
+      <div className="grid grid-cols-2 md:grid-cols-3 items-center justify-between px-16 py-7">
+        <div className="flex items-center">
+          <Link href="/" className="inline-flex">
+            <Image
+              src={logo}
+              alt="logo"
+              priority
+              className={"w-24 transition-opacity duration-200 dark:invert"}
+            />
+          </Link>
+        </div>
 
         <nav className="hidden md:flex items-center justify-center gap-8 text-foreground-primary dark:text-background-primary">
           <Link

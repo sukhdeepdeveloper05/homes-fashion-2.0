@@ -3,10 +3,13 @@
 import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { BOOKING_STATUSES } from "@/config/Consts";
 import { useSetParams } from "@/hooks/setParams";
-import { useListQuery } from "@/hooks/queries";
+import { useListQuery, useUpdateMutation } from "@/hooks/queries";
 import FiltersBar from "@/components/admin/shared/FiltersBar";
+import { useSidebarFormContext } from "@/store/sidebarFormContext";
 
 export default function BookingsContent({ searchParams }) {
+  const { setInitialData, show } = useSidebarFormContext();
+
   const setParams = useSetParams();
 
   const { data: { bookings = [], pagination = {} } = {}, isFetching } =
@@ -17,6 +20,14 @@ export default function BookingsContent({ searchParams }) {
       params: searchParams,
       requiresAuth: true,
     });
+
+  const updateBookingMutation = useUpdateMutation({
+    handle: "booking",
+    url: `/bookings`,
+    invalidate: false,
+  });
+
+  console.log(bookings[0]);
 
   const headings = [
     {
@@ -30,13 +41,13 @@ export default function BookingsContent({ searchParams }) {
       title: "Product Title",
       key: "productTitle",
       type: "text",
-      render: (row) => row?.product?.title,
+      render: (row) => row.orderItem.product?.title,
     },
     {
       title: "Quantity",
       key: "quantity",
       type: "text",
-      render: (row) => row.quantity,
+      render: (row) => row.orderItem.quantity,
     },
     {
       title: "Total Price",
@@ -49,12 +60,14 @@ export default function BookingsContent({ searchParams }) {
       key: "bookedAt",
       type: "date",
       showTime: true,
+      sortable: true,
     },
     {
       title: "Scheduled at",
       key: "scheduledAt",
       type: "date",
       showTime: true,
+      sortable: true,
     },
     {
       title: "Customer",
@@ -63,11 +76,23 @@ export default function BookingsContent({ searchParams }) {
       render: (row) => row.customer.name,
     },
     {
+      title: "Partner",
+      key: "partner",
+      type: "text",
+      render: (row) => row.partner || "--",
+    },
+    {
       title: "Booking Status",
-      key: "bookingStatus",
+      key: "status",
       type: "status",
       options: BOOKING_STATUSES,
-      hideOptions: true,
+      hideOptions: false,
+      onChange: async (bookingId, value) => {
+        await updateBookingMutation.mutateAsync({
+          id: bookingId,
+          values: { status: value },
+        });
+      },
     },
     {
       title: "Action",
@@ -75,7 +100,10 @@ export default function BookingsContent({ searchParams }) {
       type: "actions",
       actions: {
         view: { href: `/admin/bookings/` }, // id will be added
-        // edit: (row) => setSelected(row),
+        edit: (row) => {
+          setInitialData(row);
+          show();
+        },
         // delete: {
         //   onDelete: async (id) =>
         //     await something(id),
@@ -110,9 +138,9 @@ export default function BookingsContent({ searchParams }) {
         headings={headings}
         rows={bookings}
         loading={isFetching}
-        sortKey={searchParams.sortKey}
+        sortBy={searchParams.sortBy}
         sortDir={searchParams.sortDir}
-        onSort={(k, d) => setParams({ page: 1, sortKey: k, sortDir: d })}
+        onSort={(k, d) => setParams({ page: 1, sortBy: k, sortDir: d })}
         pagination={{
           total: pagination.total,
           page: searchParams.page,

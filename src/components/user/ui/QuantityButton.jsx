@@ -3,46 +3,74 @@
 import { cn } from "@/lib/utils";
 import { useCartContext } from "@/store/cartContext";
 import { FiMinus, FiPlus } from "react-icons/fi";
+import { useEffect, useState, useRef } from "react";
 
 export default function QuantityButton({ item, className }) {
-  const { updateQuantity, updatingId } = useCartContext();
+  const { updateQuantity } = useCartContext();
+  const [localQty, setLocalQty] = useState(item.quantity);
+  const [isLoading, setIsLoading] = useState(false);
+  const debounceTimer = useRef(null);
 
-  const isUpdating = updatingId === item.id; // ✅ only disable this item
+  useEffect(() => {
+    setLocalQty(item.quantity);
+  }, [item.quantity]);
+
+  const triggerUpdate = (newQty) => {
+    setLocalQty(newQty);
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        await updateQuantity(item.id, newQty);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300);
+  };
 
   const increment = () => {
-    if (isUpdating) return;
-    if (item.quantity < item.product.maxQuantityPerOrder) {
-      updateQuantity(item.id, item.quantity + 1);
+    if (isLoading) return;
+    if (localQty < item.product.maxQuantityPerOrder) {
+      triggerUpdate(localQty + 1);
     }
   };
 
   const decrement = () => {
-    if (isUpdating) return;
-    updateQuantity(item.id, item.quantity - 1);
+    if (isLoading) return;
+    if (localQty <= 1) {
+      triggerUpdate(0);
+      return;
+    }
+    triggerUpdate(localQty - 1);
   };
 
   return (
     <div
       className={cn(
         "flex items-center border rounded-md overflow-hidden w-fit h-8 bg-accent-primary/20 border-accent-primary/70",
-        isUpdating &&
-          "opacity-80 pointer-events-none animate-pulse animation-duration-[800ms]", // ✅ disable whole button
+        isLoading &&
+          "opacity-80 pointer-events-none animate-pulse animation-duration-[800ms]",
         className
       )}
     >
       <button
         onClick={decrement}
-        className="text-accent-primary hover:not-disabled:bg-accent-primary/30 size-8 flex items-center justify-center"
+        className="text-accent-primary hover:not-disabled:bg-accent-primary/30 size-8 flex items-center justify-center disabled:opacity-50"
+        disabled={isLoading || localQty <= 0}
       >
         <FiMinus />
       </button>
       <span className="px-2 py-1 text-accent-primary font-medium min-w-9 text-center cursor-default">
-        {item.quantity}
+        {localQty}
       </span>
       <button
         onClick={increment}
         className="text-accent-primary hover:not-disabled:bg-accent-primary/30 size-8 flex items-center justify-center disabled:opacity-50"
-        disabled={item.quantity >= item.product.maxQuantityPerOrder}
+        disabled={isLoading || localQty >= item.product.maxQuantityPerOrder}
       >
         <FiPlus />
       </button>

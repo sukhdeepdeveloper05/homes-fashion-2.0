@@ -15,6 +15,7 @@ export default function SelectField({
   name,
   options = [],
   hideOptions = false,
+  canEmpty = false,
   value,
   onChange,
   placeholder = "Select",
@@ -27,6 +28,7 @@ export default function SelectField({
   required = false,
   allowCreate = false,
   onCreate = () => {},
+  form,
 }) {
   const [selected, setSelected] = useState(
     options.find((opt) => String(opt.value) === String(value))
@@ -45,6 +47,10 @@ export default function SelectField({
     const parsedValue = isNaN(Number(newValue))
       ? String(newValue)
       : Number(newValue);
+
+    if (form) {
+      form.setValue(name, parsedValue !== "null" ? parsedValue : "");
+    }
 
     setSelected(
       options.find((opt) => String(opt.value) === String(newValue)) ?? undefined

@@ -6,7 +6,7 @@ export default function TableLayout({
   headings = [],
   loading = false,
   pagination = null,
-  sortKey,
+  sortBy,
   sortDir,
   onSort,
   onPerPageChange,
@@ -20,7 +20,7 @@ export default function TableLayout({
         headings={headings}
         rows={rows}
         isLoading={loading}
-        sortKey={sortKey}
+        sortBy={sortBy}
         sortDir={sortDir}
         onSort={onSort}
         className={tableClass}

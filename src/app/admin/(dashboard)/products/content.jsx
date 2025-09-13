@@ -30,9 +30,9 @@ export default function ProductsContent({ searchParams }) {
         headings={headings}
         rows={products}
         loading={isLoading}
-        sortKey={searchParams.sortKey}
+        sortBy={searchParams.sortBy}
         sortDir={searchParams.sortDir}
-        onSort={(k, d) => setParams({ page: 1, sortKey: k, sortDir: d })}
+        onSort={(k, d) => setParams({ page: 1, sortBy: k, sortDir: d })}
         pagination={{
           total: pagination.total,
           page: searchParams.page,

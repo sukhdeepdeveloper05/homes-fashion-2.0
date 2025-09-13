@@ -1,4 +1,4 @@
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo.webp";
 
 import Sidebar from "@/components/admin/ui/Sidebar";
 import AuthHeader from "@/components/admin/shared/AuthHeader";

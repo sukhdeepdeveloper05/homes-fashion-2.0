@@ -7,9 +7,9 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/fields/Input";
 import LocationSearch from "@/components/ui/fields/LocationSearch";
 import useOlaMap from "@/hooks/location/olaMap";
-import { useCreateMutation } from "@/hooks/queries";
+import { useCreateMutation, useUpdateMutation } from "@/hooks/queries";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -27,49 +27,57 @@ const addressSchema = z.object({
   coordinates: z.object({ lat: z.number(), lng: z.number() }),
 });
 
-const defaultValues = {
-  label: "Home",
-  name: "",
-  houseNumber: "",
-  landmark: "",
-  coordinates: null,
-  placeId: "",
-  formattedAddress: "",
-  zipCode: "",
-  state: "",
-  city: "",
-  street: "",
-};
-
-export default function SelectAddressModal({ open, onOpenChange, onSuccess }) {
+export default function AddressModal({
+  open,
+  onOpenChange,
+  onSuccess,
+  initialData,
+}) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="flex min-w-[950px] min-h-[650px] p-0 overflow-hidden"
         overlayClassName="overlay"
         showCloseButton={false}
+        aria-describedby={undefined}
       >
         <MainContent
-          onSuccess={onSuccess}
           defaultCoordinates={{
-            lat: 30.67925024285887,
-            lng: 76.70350083846176,
+            lat: initialData?.coordinates?.lat || 30.67925024285887,
+            lng: initialData?.coordinates?.lng || 76.70350083846176,
           }}
+          initialData={initialData}
+          onSuccess={onSuccess}
         />
       </DialogContent>
     </Dialog>
   );
 }
 
-function MainContent({ defaultCoordinates, onSuccess }) {
+function MainContent({ defaultCoordinates, initialData, onSuccess }) {
+  const defaultValues = {
+    label: initialData?.label || "Home",
+    name: initialData?.name || "",
+    houseNumber: initialData?.houseNumber || "",
+    landmark: initialData?.landmark || "",
+    placeId: initialData?.placeId || "",
+    formattedAddress: initialData?.formattedAddress || "",
+    zipCode: initialData?.zipCode || "",
+    state: initialData?.state || "",
+    city: initialData?.city || "",
+    street: initialData?.street || "",
+    coordinates: initialData?.coordinates || defaultCoordinates,
+  };
+
   const mapContainerRef = useRef(null);
 
-  const onLocationChange = async (place) => {
-    console.log(place);
+  const onLocationChange = useCallback(async (place) => {
+    if (!place) return;
 
     const rooftopPlace = place?.result
       ? place.result
       : place?.results &&
+        place.results.length > 0 &&
         place.results[0].geometry.location_type !== "range_interpolated"
       ? place.results[0]
       : place.results.find((p) => p.geometry.location_type === "rooftop") ||
@@ -82,34 +90,36 @@ function MainContent({ defaultCoordinates, onSuccess }) {
     const getComponent = (type) =>
       components.find((c) => c.types.includes(type))?.long_name || "";
 
-    form.reset(
-      {
-        ...form.getValues(), // keep existing values (label, houseNumber, landmark)
-        name: rooftopPlace.name,
-        placeId: rooftopPlace.place_id,
-        formattedAddress: rooftopPlace.formatted_address || "",
-        zipCode: getComponent("postal_code"),
-        state: getComponent("administrative_area_level_1"),
-        city: getComponent("locality") || getComponent("sublocality"),
-        street:
-          getComponent("administrative_area_level_3") ||
-          getComponent("administrative_area_level_2"),
-        coordinates: {
-          lat: rooftopPlace.geometry.location.lat,
-          lng: rooftopPlace.geometry.location.lng,
-        },
-      }
-      // { keepDefaultValues: true } // prevents wiping untouched fields
-    );
-  };
+    form.reset({
+      ...form.getValues(),
+      name: rooftopPlace.name,
+      placeId: rooftopPlace.place_id,
+      formattedAddress: rooftopPlace.formatted_address || "",
+      zipCode: getComponent("postal_code"),
+      state: getComponent("administrative_area_level_1"),
+      city: getComponent("locality") || getComponent("sublocality"),
+      street:
+        getComponent("administrative_area_level_3") ||
+        getComponent("administrative_area_level_2"),
+      coordinates: {
+        lat: rooftopPlace.geometry.location.lat,
+        lng: rooftopPlace.geometry.location.lng,
+      },
+    });
+  }, []);
 
-  const { moveMarkerTo, geolocateRef } = useOlaMap({
+  const { moveMarkerTo, geolocate } = useOlaMap({
     mapContainerRef,
     onLocationChange,
     defaultCoordinates,
   });
 
   const { mutateAsync: createAddress } = useCreateMutation({
+    handle: "address",
+    url: "/addresses",
+  });
+
+  const { mutateAsync: updateAddress } = useUpdateMutation({
     handle: "address",
     url: "/addresses",
   });
@@ -121,9 +131,18 @@ function MainContent({ defaultCoordinates, onSuccess }) {
 
   const onSubmit = async (data) => {
     try {
-      const response = await createAddress({ values: data });
-      console.log("create address", response.data);
-      await onSuccess(response.data);
+      if (initialData?.id) {
+        const response = await updateAddress({
+          id: initialData.id,
+          values: data,
+        });
+        console.log("update address", response.data);
+        await onSuccess(response.data);
+      } else {
+        const response = await createAddress({ values: data });
+        console.log("create address", response.data);
+        await onSuccess(response.data);
+      }
     } catch (error) {
       console.log(error.message);
     }
@@ -147,7 +166,7 @@ function MainContent({ defaultCoordinates, onSuccess }) {
             <button
               className="text-sm text-blue-500 mt-2"
               onClick={() => {
-                geolocateRef.current.trigger();
+                geolocate();
               }}
             >
               Use current location
@@ -200,7 +219,7 @@ function MainContent({ defaultCoordinates, onSuccess }) {
               isLoading={form.formState.isSubmitting}
               disabled={!form.formState.isValid}
             >
-              Save and Proceed to Slots
+              {initialData?.id ? "Update Address" : "Save Address"}
             </Button>
           </div>
         </div>

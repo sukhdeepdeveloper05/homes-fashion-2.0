@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/shadcn/dialog";
-import Button from "../../../ui/Button";
+import Button from "@/components/ui/Button";
 
 export default function DeleteModal({
   open,

@@ -13,30 +13,36 @@ import { FiMail, FiMapPin, FiLock, FiDownload } from "react-icons/fi";
 import { LuPhone } from "react-icons/lu";
 import SelectField from "@/components/ui/fields/SelectField";
 import StatusSelectField from "@/components/ui/fields/StatusSelectField";
-import FormatDate from "@/utils/FormatDate";
-import FormatTime from "@/utils/formatTime";
+import formatDate from "@/utils/formatDate";
+import formatTime from "@/utils/formatTime";
 import clsx from "clsx";
 import Image from "next/image";
 
 import { TableSkeleton } from "../../../ui/Skeletons";
 import ActionsCell from "./ActionCell";
 import { MEDIA_URL } from "@/config/Consts";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { cn } from "@/lib/utils";
 
 export default function Table({
   headings = [],
   rows = [],
   isLoading = true,
-  sortKey,
+  sortBy,
   sortDir,
   onSort,
   skeletonRows = 10,
   emptyClass = "",
 }) {
-  const [localSort, setLocalSort] = useState({ key: sortKey, dir: sortDir });
+  const [localSort, setLocalSort] = useState({ key: sortBy, dir: sortDir });
 
   const handleSort = (key) => {
     const dir =
-      localSort.key === key && localSort.dir === "asc" ? "desc" : "asc";
+      localSort.key === key
+        ? localSort.dir === "asc"
+          ? "desc"
+          : "asc"
+        : localSort.dir || "asc";
     setLocalSort({ key, dir });
     onSort?.(key, dir);
   };
@@ -70,13 +76,27 @@ export default function Table({
               <TableHead
                 key={h.key}
                 onClick={() => h.sortable && handleSort(h.key)}
-                className={clsx(
-                  "whitespace-nowrap px-4 py-5 text-sm font-bold text-gray-600 transition-colors last-of-type:text-right first:rounded-l-lg last:rounded-r-lg",
+                className={cn(
+                  "whitespace-nowrap px-4 py-5 text-sm font-bold text-gray-600 transition-colors last-of-type:text-right first:rounded-l-lg last:rounded-r-lg group/tr",
                   h.sortable && "cursor-pointer hover:text-gray-500",
                   h?.columnClass
                 )}
               >
-                <span>{h.title}</span>
+                <p className="flex items-center group-last-of-type/tr:justify-end">
+                  <span>{h.title}</span>
+                  {h.sortable && (
+                    <span
+                      className="ml-2 opacity-0 group-hover/tr:opacity-100 data-[active=true]:opacity-100 transition-opacity duration-200 ease-in-out"
+                      data-active={localSort.key === h.key}
+                    >
+                      {localSort.dir === "desc" ? (
+                        <IoIosArrowUp />
+                      ) : (
+                        <IoIosArrowDown />
+                      )}
+                    </span>
+                  )}
+                </p>
               </TableHead>
             ))}
           </TableRow>
@@ -176,7 +196,10 @@ const cellRenderers = {
       options={col?.options}
       value={cellValue}
       size="xs"
-      onChange={(val) => col?.onChange(row.id, val)}
+      onChange={async (val) => {
+        if (typeof col?.onChange !== "function") return;
+        await col?.onChange(row.id, val);
+      }}
       hideOptions={col?.hideOptions}
       dropdownClass="w-full"
     />
@@ -187,9 +210,9 @@ const cellRenderers = {
   ),
 
   date: (_, col, __, cellValue) => (
-    <span>
-      {col.showTime && <FormatTime date={cellValue} />}
-      <FormatDate date={cellValue} />
+    <span className="flex items-center gap-2">
+      <span>{col.showTime && formatTime(cellValue)}</span>
+      <span>{formatDate(cellValue)}</span>
     </span>
   ),
 

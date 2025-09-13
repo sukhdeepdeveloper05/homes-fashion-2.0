@@ -12,6 +12,10 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
+    if (config.meta?.hasBinary) {
+      config.headers["Content-Type"] = "multipart/form-data";
+    }
+
     if (config.meta?.requiresAuth) {
       try {
         const authUser = await getAuthUser();
@@ -57,6 +61,8 @@ axiosInstance.interceptors.response.use(
         await removeAuthUser();
       }
     }
+
+    console.log(error);
 
     // Return consistent error object
     return Promise.reject(

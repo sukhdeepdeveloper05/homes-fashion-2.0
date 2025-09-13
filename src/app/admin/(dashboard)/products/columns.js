@@ -8,6 +8,7 @@ export default function useProductsTableColumns() {
   const { mutateAsync: updateProduct } = useUpdateMutation({
     handle: "product",
     url: "/products",
+    invalidate: false,
   });
   const { mutateAsync: handleDelete, isPending: deleteLoading } =
     useDeleteMutation({

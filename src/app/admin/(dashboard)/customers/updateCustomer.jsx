@@ -66,7 +66,6 @@ export default function UpdateCustomer() {
       type: "select",
       required: true,
       options: GENDER_OPTIONS,
-      onChange: (val, form) => form.setValue("gender", val),
     },
     {
       name: "dateOfBirth",
@@ -84,7 +83,7 @@ export default function UpdateCustomer() {
       label: "Avatar",
       type: "dropzone",
       placeholder: "Select an Avatar",
-      initial: [initialData?.avatar],
+      initial: initialData?.avatar && [initialData?.avatar],
       onChange: (files, form) => {
         form.setValue("avatar", files);
       },

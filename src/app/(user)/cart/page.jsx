@@ -28,6 +28,7 @@ export default function CartPage() {
                 <div className="flex-1 space-y-2">
                   <SkeletonBox className="w-40 h-5 rounded-md" />
                   <SkeletonBox className="w-28 h-4 rounded-md" />
+                  <SkeletonBox className="w-28 h-4 rounded-md" />
                 </div>
               </div>
               <Separator />
@@ -80,9 +81,10 @@ export default function CartPage() {
                 <div>
                   <h2 className="text-2xl font-bold">{item.product.title}</h2>
                   <p className="text-sm text-muted-foreground">
-                    Quantity {item.quantity} • Total Price{" "}
+                    Quantity {item.quantity} x{" "}
                     {formatPrice(item.pricePerItem * item.quantity)}
                   </p>
+                  <p className=" text-foreground-primary font-medium">Total Price: {formatPrice(item.pricePerItem * item.quantity)}</p>
                 </div>
               </div>
               <Separator />

@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 // ------------------ Helpers ------------------
 
-export function invalidate(key) {
+export function invalidateQueries(key) {
   queryClient.invalidateQueries({
     predicate: (query) => query.queryKey.includes(key),
   });
@@ -31,7 +31,7 @@ export function useListQuery({
 }) {
   return useQuery({
     queryKey,
-    queryFn: async () => await getData(url, params, requiresAuth),
+    queryFn: async () => await getData({ url, params, requiresAuth }),
     meta: {
       errorMessage: `Failed to fetch ${handle}`,
     },
@@ -54,7 +54,11 @@ export function useInfiniteListQuery({
   return useInfiniteQuery({
     queryKey,
     queryFn: async ({ pageParam = 1 }) =>
-      await getData(url, { ...params, page: pageParam }, requiresAuth),
+      await getData({
+        url,
+        params: { ...params, page: pageParam },
+        requiresAuth,
+      }),
     meta: {
       errorMessage: `Failed to fetch ${handle}`,
     },
@@ -85,7 +89,7 @@ export function useDetailsQuery({
   return useQuery({
     queryKey,
     queryFn: async () =>
-      await getData(`${url}/${params.id}`, params, requiresAuth),
+      await getData({ url: `${url}/${params.id}`, params, requiresAuth }),
     meta: {
       errorMessage: `Failed to fetch ${handle}`,
     },
@@ -103,14 +107,15 @@ export function useCreateMutation({
   url,
   params = {},
   mutationOptions = {},
+  hasBinary = false,
 }) {
   return useMutation({
     mutationKey: [`create${handle}`],
     mutationFn: async ({ values }) =>
-      await createData(url, values, { ...params }, true),
+      await createData({ url, data: values, params, hasBinary }),
     onSuccess: () => {
       toast.success(`${handle} created successfully`);
-      invalidate(`${handle}s`);
+      invalidateQueries(`${handle}s`);
     },
     onError: (error) => {
       toast.error(error?.message || `Failed to create ${handle}`);
@@ -124,14 +129,21 @@ export function useUpdateMutation({
   url,
   params = {},
   mutationOptions = {},
+  invalidate = true,
+  hasBinary = false,
 }) {
   return useMutation({
     mutationKey: [`update${handle}`],
     mutationFn: async ({ id, values }) =>
-      await updateData(`${url}/${id}`, { id, ...params }, values, true),
+      await updateData({
+        url: `${url}${id ? `/${id}` : ""}`,
+        params: { id, ...params },
+        data: values,
+        hasBinary,
+      }),
     onSuccess: (_, { id, values }) => {
       toast.success(`${handle} updated successfully`);
-      invalidate(`${handle}s`);
+      invalidate && invalidateQueries(`${handle}s`);
 
       queryClient.setQueryData([`${handle}Details`, id], (oldData) => ({
         ...oldData,
@@ -151,10 +163,15 @@ export function useUpdateMutation({
 export function useDeleteMutation({ handle, url, mutationOptions = {} }) {
   return useMutation({
     mutationKey: [`delete${handle}`],
-    mutationFn: async (id) => await deleteData(`${url}/${id}`, { id }, true),
+    mutationFn: async (id) =>
+      await deleteData({
+        url: `${url}/${id}`,
+        params: { id },
+        requiresAuth: true,
+      }),
     onSuccess: () => {
       toast.success(`${handle} deleted successfully`);
-      invalidate(`${handle}s`);
+      invalidateQueries(`${handle}s`);
     },
     onError: (error) => {
       toast.error(error?.message || `Failed to delete ${handle}`);
@@ -166,7 +183,8 @@ export function useDeleteMutation({ handle, url, mutationOptions = {} }) {
 export function useUploadMutation({ mutationOptions = {} } = {}) {
   return useMutation({
     mutationKey: [`upload`],
-    mutationFn: async (media) => await uploadMedia(media, null, true),
+    mutationFn: async (media) =>
+      await uploadMedia({ media, requiresAuth: true }),
     onError: (error) => {
       toast.error(error?.message || `Upload Failed`);
     },
@@ -177,7 +195,7 @@ export function useUploadMutation({ mutationOptions = {} } = {}) {
 export function useLoginMutation({ mutationOptions = {} } = {}) {
   return useMutation({
     mutationKey: [`login`],
-    mutationFn: async (data) => await createData("/auth/login", data),
+    mutationFn: async (data) => await createData({ url: "/auth/login", data }),
     onError: (error) => {
       toast.error(error?.message || `Login Failed`);
     },

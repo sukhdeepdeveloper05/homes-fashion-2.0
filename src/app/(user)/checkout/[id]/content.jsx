@@ -1,29 +1,26 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Button from "@/components/ui/Button";
 import { useCartContext } from "@/store/cartContext";
 import { formatPrice } from "@/utils/formatPrice";
 import { toast } from "sonner";
-import { notFound } from "next/navigation";
 
 import SlotStep from "./SlotStep";
 import AddressStep from "./AddressStep";
-import {
-  useCreateMutation,
-  useListQuery,
-  useUpdateMutation,
-} from "@/hooks/queries";
+import { useCreateMutation, useListQuery } from "@/hooks/queries";
 import { SkeletonBox } from "@/components/ui/Skeletons";
 import { Separator } from "@/components/shadcn/separator";
 import QuantityButton from "@/components/user/ui/QuantityButton";
-import { useUpdateCartItem } from "@/hooks/cartQueries";
+import { useRouter } from "next/navigation";
 
 const TAX_RATE = 5;
 
 export default function CheckoutContent({ params, isLoggedIn }) {
+  const router = useRouter();
+
   if (!isLoggedIn) {
     throw new Error("You must be logged in to checkout");
   }
@@ -33,11 +30,15 @@ export default function CheckoutContent({ params, isLoggedIn }) {
   const {
     cart,
     updateItemMutation,
-    updatingId,
     isLoaded: isCartLoaded,
+    isUpdating,
   } = useCartContext();
 
-  const item = cart.items.find((i) => i.id === checkoutId);
+  let item;
+
+  if (isCartLoaded) {
+    item = cart.items.find((i) => i.id === checkoutId);
+  }
 
   const [steps, setSteps] = useState([
     { id: "address", label: "Address", data: null },
@@ -105,21 +106,17 @@ export default function CheckoutContent({ params, isLoggedIn }) {
 
   async function handlePayment() {
     try {
-      // 1. Create an order on your backend
       const { data } = await createOrder.mutateAsync({
         values: { cartItemId: checkoutId },
       });
 
-      // Your backend should return: { orderId, amount, currency }
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY, // Your Razorpay Key ID
         ...data,
 
-        // handler: async function (response) {
-        //   toast.success("Payment successful!");
-        // },
-
-        callbackUrl: window.origin + "/bookings",
+        handler: () => {
+          router.push("/bookings");
+        },
         theme: {
           color: "#F37254",
         },
@@ -127,13 +124,7 @@ export default function CheckoutContent({ params, isLoggedIn }) {
 
       const rzp1 = new window.Razorpay(options);
       rzp1.on("payment.failed", function (response) {
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
+        toast.error(response.error.reason);
       });
       rzp1.open();
     } catch (err) {
@@ -143,7 +134,9 @@ export default function CheckoutContent({ params, isLoggedIn }) {
   }
 
   if (isCartLoaded && !item) {
-    notFound();
+    throw {
+      message: "Item not found in cart",
+    };
   }
 
   if (!isCartLoaded || isSavedAddressesLoading) {
@@ -200,7 +193,7 @@ export default function CheckoutContent({ params, isLoggedIn }) {
               disabled={currentIndex === steps.length - 1}
               onClick={nextStep}
               size="small"
-              isLoading={updatingId === checkoutId}
+              isLoading={isUpdating}
             >
               Next
             </Button>
@@ -312,8 +305,6 @@ const handleAddressStep = async (
   if (!currentStep.data) return false;
 
   // If same as existing, skip mutation
-  // console.log(item.address.id, currentStep.data.id);
-
   if (item.address && item.address.id === currentStep.data.id) {
     return true;
   }
@@ -335,9 +326,6 @@ const handleSlotStep = async (
 ) => {
   if (!currentStep.data) return false;
 
-  console.log(new Date(item.scheduledAt).getTime());
-  console.log(new Date(currentStep.data).getTime());
-  console.log(item.scheduledAt === currentStep.data);
   // If same as existing, skip mutation
   if (item.scheduledAt && item.scheduledAt === currentStep.data) {
     return true;

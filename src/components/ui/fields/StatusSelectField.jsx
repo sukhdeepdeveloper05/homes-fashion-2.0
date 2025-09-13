@@ -12,6 +12,7 @@ import {
 } from "@/components/shadcn/select";
 import clsx from "clsx";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 export default function StatusSelectField({
   name,
@@ -76,9 +77,9 @@ export default function StatusSelectField({
         disabled={disabled || hideOptions}
       >
         <SelectTrigger
-          className={clsx(
+          className={cn(
             "w-fit uppercase text-xs font-semibold truncate border-0 py-1.5 data-[options-hidden=true]:pointer-events-none disabled:opacity-100",
-            STATUS[selected?.key ?? ""],
+            STATUS[selected?.key],
             { "opacity-50 pointer-events-none": isLoading }
           )}
           data-loading={isLoading}
@@ -89,7 +90,11 @@ export default function StatusSelectField({
 
         <SelectContent>
           {options.map((opt) => (
-            <SelectItem key={String(opt.value)} value={String(opt.value)}>
+            <SelectItem
+              className="cursor-pointer"
+              key={String(opt.value)}
+              value={String(opt.value)}
+            >
               {opt.label}
             </SelectItem>
           ))}

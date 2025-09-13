@@ -2,18 +2,15 @@ import { Card, CardContent } from "@/components/shadcn/card";
 import CartCard from "@/components/user/ui/CartCard";
 import { MEDIA_URL } from "@/config/Consts";
 import { getData } from "@/lib/api";
-import { formatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
-import Link from "next/link";
 import { cache } from "react";
 import { FaCheck } from "react-icons/fa6";
-import AddToCartButton from "./AddToCartButton";
 import ProductCard from "./ProductCard";
 
 export const revalidate = 0;
 
 const getCollectionDetails = cache(async (collectionId) => {
-  return getData("/collections", { collectionId });
+  return getData({ url: "/collections", params: { collectionId } });
 });
 
 export async function generateMetadata({ params }) {
@@ -30,7 +27,7 @@ export default async function CollectionPage({ params }) {
 
   const [detailsRes, collectionProductsRes] = await Promise.all([
     getCollectionDetails(collectionId),
-    getData("/products", { collectionId }),
+    getData({ url: "/products", params: { collectionId } }),
   ]);
 
   const { data: details } = detailsRes;
@@ -68,7 +65,7 @@ export default async function CollectionPage({ params }) {
             <CardContent className="p-0 flex justify-between">
               <div className="flex flex-col gap-3">
                 <h3 className="text-xl text-foreground-primary font-semibold">
-                  UC Promise
+                  {process.env.NEXT_PUBLIC_APP_NAME} Promise
                 </h3>
                 <ul className="flex flex-col gap-1">
                   <li className="flex items-center text-sm">

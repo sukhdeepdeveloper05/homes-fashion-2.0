@@ -1,16 +1,16 @@
-export default function FormatDate({ date }) {
+export default function formatDate(
+  date,
+  locales = "en-IN",
+  options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }
+) {
   if (!date) return null;
 
   const dateObj = new Date(date);
-  const formatted = dateObj.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const formatted = dateObj.toLocaleDateString(locales, options);
 
   return formatted;
 }
-
-/* usage
-<FormatDate date="2025-07-12T21:24:13.147Z" />  // → July 12, 2025
-*/

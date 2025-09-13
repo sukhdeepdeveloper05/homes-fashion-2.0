@@ -9,8 +9,8 @@ export default async function CollectionsPage({ searchParams }) {
     page: Number(rawParams.page) || 1,
     perPage: Math.min(Number(rawParams.perPage) || 10, 50),
     search: rawParams.search ?? null,
-    sortKey: rawParams.sortKey ?? null,
-    sortDir: rawParams.sortDir ?? null,
+    sortBy: rawParams.sortBy ?? "updatedAt",
+    sortDir: rawParams.sortDir ?? "desc",
   };
 
   return (

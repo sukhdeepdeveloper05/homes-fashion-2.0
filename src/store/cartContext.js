@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import {
   useCartQuery,
   useAddCartItem,
@@ -10,7 +16,16 @@ import {
 
 const CART_KEY = "cart";
 
-const CartContext = createContext();
+const CartContext = createContext({
+  cart: { items: [], totalPrice: 0 },
+  isLoaded: false,
+  addToCart: async () => {},
+  removeFromCart: async () => {},
+  updateQuantity: async () => {},
+  isAdding: false,
+  isUpdating: false,
+  isDeleting: false,
+});
 
 const recalcCart = (items) => ({
   items,
@@ -20,23 +35,17 @@ const recalcCart = (items) => ({
 export function CartProvider({ children, user }) {
   const [cart, setCart] = useState({ items: [], totalPrice: 0 });
   const [isLoaded, setIsLoaded] = useState(false);
-  const [updatingId, setUpdatingId] = useState(null);
 
   // React Query hooks
   const { data: serverCart, isLoading } = useCartQuery(user);
-  const addItemMutation = useAddCartItem();
+  const { mutateAsync: addItemMutation, isPending: isAdding } =
+    useAddCartItem();
   const deleteItemMutation = useDeleteCartItem();
 
   // ✅ Attach onSuccess directly here
   const updateItemMutation = useUpdateCartItem({
-    onMutate: async ({ id }) => {
-      setUpdatingId(id);
-    },
     onSuccess: (updatedItem, { id }) => {
       updateItem(updatedItem, id);
-    },
-    onSettled: () => {
-      setUpdatingId(null);
     },
   });
 
@@ -45,7 +54,7 @@ export function CartProvider({ children, user }) {
     if (!newItem) {
       setCart((prev) => {
         const updatedItems = prev.items.filter((i) => i.id !== id);
-        return recalcCart(updatedItems)
+        return recalcCart(updatedItems);
       });
       return;
     }
@@ -69,29 +78,29 @@ export function CartProvider({ children, user }) {
     });
   };
 
+  const mergeGuestCart = useCallback(async () => {
+    try {
+      const stored = localStorage.getItem(CART_KEY);
+      if (stored) {
+        const guestCart = JSON.parse(stored);
+        if (guestCart.items?.length) {
+          for (const item of guestCart.items) {
+            await addItemMutation({
+              product: item.product.id,
+              quantity: item.quantity,
+            });
+          }
+          localStorage.removeItem(CART_KEY);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to merge guest cart", err);
+    }
+  }, [addItemMutation]);
+
   // Load cart when user changes
   useEffect(() => {
     if (user) {
-      const mergeGuestCart = async () => {
-        try {
-          const stored = localStorage.getItem(CART_KEY);
-          if (stored) {
-            const guestCart = JSON.parse(stored);
-            if (guestCart.items?.length) {
-              for (const item of guestCart.items) {
-                await addItemMutation.mutateAsync({
-                  product: item.product.id,
-                  quantity: item.quantity,
-                });
-              }
-              localStorage.removeItem(CART_KEY);
-            }
-          }
-        } catch (err) {
-          console.error("Failed to merge guest cart", err);
-        }
-      };
-
       if (!isLoading && serverCart) {
         setCart(serverCart);
         setIsLoaded(true);
@@ -116,7 +125,7 @@ export function CartProvider({ children, user }) {
   // Cart functions
   const addToCart = async (product) => {
     if (user) {
-      const data = await addItemMutation.mutateAsync({
+      const data = await addItemMutation({
         product: product.id,
         quantity: 1,
       });
@@ -143,23 +152,18 @@ export function CartProvider({ children, user }) {
   };
 
   const updateQuantity = async (id, quantity) => {
-    setUpdatingId(id);
-    try {
-      if (user) {
-        // ✅ No need to manually update state — server response updates it
-        await updateItemMutation.mutateAsync({ id, quantity });
-      } else {
-        const item = cart.items.find((i) => i.id === id);
-        if (item) {
-          updateItem({
-            ...item,
-            quantity,
-            totalPrice: item.pricePerItem * quantity,
-          });
-        }
+    if (user) {
+      // ✅ No need to manually update state — server response updates it
+      await updateItemMutation.mutateAsync({ id, quantity });
+    } else {
+      const item = cart.items.find((i) => i.id === id);
+      if (item) {
+        updateItem({
+          ...item,
+          quantity,
+          totalPrice: item.pricePerItem * quantity,
+        });
       }
-    } finally {
-      setUpdatingId(null);
     }
   };
 
@@ -172,8 +176,8 @@ export function CartProvider({ children, user }) {
         updateQuantity,
         updateItemMutation,
         isLoaded: isLoaded && !isLoading,
-        isAdding: addItemMutation.isPending,
-        updatingId,
+        isAdding: isAdding,
+        isUpdating: updateItemMutation.isPending,
         isDeleting: deleteItemMutation.isPending,
       }}
     >

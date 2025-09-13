@@ -13,6 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/shadcn/popover";
 import { cn } from "@/lib/utils";
+import formatDate from "@/utils/formatDate";
 
 export default function DatePicker({ control, name, label }) {
   const [open, setOpen] = useState(false);
@@ -23,7 +24,11 @@ export default function DatePicker({ control, name, label }) {
       name={name}
       render={({ field }) => (
         <div className="flex flex-col gap-2 relative">
-          {label && <Label htmlFor={name}>{label}</Label>}
+          {label && (
+            <Label className="text-base" htmlFor={name}>
+              {label}
+            </Label>
+          )}
 
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -35,7 +40,9 @@ export default function DatePicker({ control, name, label }) {
                   !field.value && "text-gray-400"
                 )}
               >
-                {field.value ? format(field.value, "dd/MM/yyyy") : "dd/mm/yyyy"}
+                {field.value
+                  ? formatDate(field.value, "en-IN", {})
+                  : "dd/mm/yyyy"}
                 <CalendarIcon className="w-5 h-5 opacity-50" />
               </button>
             </PopoverTrigger>
@@ -44,6 +51,10 @@ export default function DatePicker({ control, name, label }) {
                 mode="single"
                 selected={field.value}
                 onSelect={(date) => {
+                  if (!date) {
+                    setOpen(false);
+                    return;
+                  }
                   field.onChange(new Date(date));
                   setOpen(false); // close after selecting
                 }}

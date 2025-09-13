@@ -4,9 +4,12 @@ import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { useSetParams } from "@/hooks/setParams";
 import { useDeleteMutation, useListQuery } from "@/hooks/queries";
 import FiltersBar from "@/components/admin/shared/FiltersBar";
+import { formatPhoneNumber } from "@/utils/formatPhone";
+import { useSidebarFormContext } from "@/store/sidebarFormContext";
 
 export default function PartnersContent({ searchParams }) {
   const setParams = useSetParams();
+  const { setInitialData, show } = useSidebarFormContext();
 
   const { data: { partners = [], pagination = {} } = {}, isFetching } =
     useListQuery({
@@ -30,20 +33,39 @@ export default function PartnersContent({ searchParams }) {
       type: "text",
     },
     {
-      title: "Status",
-      key: "status",
-      type: "status",
-      options: [
-        { value: "ACTIVE", label: "Active" },
-        { value: "ARCHIVED", label: "Archived" },
-      ],
+      title: "Email",
+      key: "email",
+      type: "text",
+      icon: "email",
+    },
+    {
+      title: "Phone Number",
+      key: "phone",
+      type: "text",
+      icon: "phone",
+      render: (row) => formatPhoneNumber(row.phone),
+    },
+    {
+      title: "Gender",
+      key: "gender",
+      type: "text",
+      capitalize: true,
+    },
+    {
+      title: "Date of Birth",
+      key: "dateOfBirth",
+      type: "date",
     },
     {
       title: "Action",
       key: "actions",
       type: "actions",
       actions: {
-        view: { href: `/admin/partners/` }, // id will be added
+        // view: { href: `/admin/partners/` },
+        edit: (row) => {
+          setInitialData(row);
+          show();
+        },
         delete: {
           onDelete: async (id) => await handleDelete(id),
           isFetching: deleteLoading,
@@ -72,9 +94,9 @@ export default function PartnersContent({ searchParams }) {
         headings={headings}
         rows={partners}
         loading={isFetching}
-        sortKey={searchParams.sortKey}
+        sortBy={searchParams.sortBy}
         sortDir={searchParams.sortDir}
-        onSort={(k, d) => setParams({ page: 1, sortKey: k, sortDir: d })}
+        onSort={(k, d) => setParams({ page: 1, sortBy: k, sortDir: d })}
         pagination={{
           total: pagination.total,
           page: searchParams.page,

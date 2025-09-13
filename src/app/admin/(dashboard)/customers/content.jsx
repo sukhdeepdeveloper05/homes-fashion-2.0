@@ -5,6 +5,7 @@ import { useSetParams } from "@/hooks/setParams";
 import { useListQuery } from "@/hooks/queries";
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
 import FiltersBar from "@/components/admin/shared/FiltersBar";
+import { formatPhoneNumber } from "@/utils/formatPhone";
 
 export default function CustomersContent({ searchParams }) {
   const { setInitialData, show } = useSidebarFormContext();
@@ -35,6 +36,7 @@ export default function CustomersContent({ searchParams }) {
       key: "phone",
       type: "text",
       icon: "phone",
+      render: (row) => formatPhoneNumber(row.phone),
     },
     {
       title: "Gender",
@@ -84,9 +86,9 @@ export default function CustomersContent({ searchParams }) {
         headings={headings}
         rows={customers}
         loading={isFetching}
-        sortKey={searchParams.sortKey}
+        sortBy={searchParams.sortBy}
         sortDir={searchParams.sortDir}
-        onSort={(k, d) => setParams({ page: 1, sortKey: k, sortDir: d })}
+        onSort={(k, d) => setParams({ page: 1, sortBy: k, sortDir: d })}
         pagination={{
           total: pagination.total,
           page: searchParams.page,

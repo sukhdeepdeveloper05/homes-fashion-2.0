@@ -9,11 +9,15 @@ export const STATUS_BADGES = {
   OUT_OF_STOCK: "text-[#E03137] data-[hover=true]:bg-[#FFEDEC] bg-[#FFEDEC]",
 
   PAID: "text-[#0CAF60] data-[hover=true]:bg-[#E7F7EF] bg-[#E7F7EF]",
-  PENDING: "text-[#E6BB20] data-[hover=true]:bg-[#FFF6D3] bg-[#FFF6D3]",
-  FAILED: "text-[#E6BB20] data-[hover=true]:bg-[#FFF6D3] bg-[#FFF6D3]",
+  FAILED: "text-[#E03137] data-[hover=true]:bg-[#FFEDEC] bg-[#FFEDEC]",
 
   FULFILLED: "text-[#0CAF60] data-[hover=true]:bg-[#E7F7EF] bg-[#E7F7EF]",
   UN_FULFILLED: "text-[#E6BB20] data-[hover=true]:bg-[#FFF6D3] bg-[#FFF6D3]",
+
+  PENDING: "text-[#E6BB20] data-[hover=true]:bg-[#FFF6D3] bg-[#FFF6D3]",
+  COMPLETED: "text-[#0CAF60] data-[hover=true]:bg-[#E7F7EF] bg-[#E7F7EF]",
+  CONFIRMED: "text-[#007bff] data-[hover=true]:bg-[#007bff] bg-[#e9f4ff]",
+  CANCELLED: "text-[#E03137] data-[hover=true]:bg-[#FFEDEC] bg-[#FFEDEC]",
 };
 
 export const PRODUCT_STATUSES = [

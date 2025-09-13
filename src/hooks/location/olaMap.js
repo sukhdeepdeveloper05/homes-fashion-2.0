@@ -3,18 +3,6 @@
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
-const fetchPlace = async (lng, lat) => {
-  try {
-    const res = await fetch(
-      `https://api.olamaps.io/places/v1/reverse-geocode?latlng=${lat},${lng}&api_key=${process.env.NEXT_PUBLIC_OLAMAPS_API_KEY}`
-    );
-    const place = await res.json();
-    return place;
-  } catch (err) {
-    console.error("Reverse geocoding failed:", err);
-  }
-};
-
 export default function useOlaMap({
   mapContainerRef,
   onLocationChange,
@@ -24,6 +12,27 @@ export default function useOlaMap({
   const olaInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const geolocateRef = useRef(null);
+  const activeRequestRef = useRef(null);
+
+  const fetchPlace = async (lng, lat) => {
+    if (activeRequestRef.current) {
+      activeRequestRef.current.abort();
+    }
+
+    activeRequestRef.current = new AbortController();
+
+    try {
+      const res = await fetch(
+        `https://api.olamaps.io/places/v1/reverse-geocode?latlng=${lat},${lng}&api_key=${process.env.NEXT_PUBLIC_OLAMAPS_API_KEY}`,
+        { signal: activeRequestRef.current.signal }
+      );
+      return await res.json();
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        console.error("Reverse geocode failed:", err);
+      }
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -41,7 +50,7 @@ export default function useOlaMap({
             "https://api.olamaps.io/styleEditor/v1/styleEdit/styles/2a1a672a-a4cc-43f4-bbeb-5feb452becc4/my-styles",
           container: mapContainerRef.current,
           center: [defaultLng, defaultLat],
-          zoom: 15,
+          zoom: 16,
         });
 
         if (map instanceof Promise) {
@@ -52,7 +61,7 @@ export default function useOlaMap({
         mapRef.current = map;
 
         const address = await fetchPlace(defaultLng, defaultLat);
-        onLocationChange(address);
+        if (address) onLocationChange(address);
 
         // Add draggable marker
         markerRef.current = olaInstance
@@ -64,7 +73,7 @@ export default function useOlaMap({
         markerRef.current.on("dragend", async () => {
           const lngLat = markerRef.current.getLngLat();
           const address = await fetchPlace(lngLat.lng, lngLat.lat);
-          onLocationChange(address);
+          if (address) onLocationChange(address);
         });
 
         // Map click -> move marker & fetch place
@@ -75,27 +84,31 @@ export default function useOlaMap({
           onLocationChange(address);
         });
 
-        const geolocate = olaInstance.addGeolocateControls({
-          positionOptions: {
-            enableHighAccuracy: true,
-          },
-          trackUserLocation: false,
-        });
+        if (!geolocateRef.current) {
+          const geolocate = olaInstance.addGeolocateControls({
+            positionOptions: {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0,
+            },
+            trackUserLocation: false,
+          });
 
-        map.addControl(geolocate);
+          map.addControl(geolocate);
 
-        geolocateRef.current = geolocate;
+          geolocateRef.current = geolocate;
 
-        geolocate.on("geolocate", async (pos) => {
-          const { latitude, longitude } = pos.coords;
-          moveMarkerTo(longitude, latitude);
-          const address = await fetchPlace(longitude, latitude);
-          onLocationChange(address);
-        });
+          geolocate.on("geolocate", async (pos) => {
+            const { latitude, longitude } = pos.coords;
+            moveMarkerTo(longitude, latitude);
+            const address = await fetchPlace(longitude, latitude);
+            onLocationChange(address);
+          });
 
-        geolocate.on("error", () => {
-          toast.error("Could not get your location");
-        });
+          geolocate.on("error", () => {
+            toast.error("Could not get your location");
+          });
+        }
       } catch (err) {
         console.error("Failed to initialize OlaMaps:", err);
       }
@@ -104,11 +117,13 @@ export default function useOlaMap({
     return () => {
       isMounted = false;
       try {
-        mapRef.current?.remove?.();
-        olaInstanceRef.current?.destroy?.();
+        markerRef.current?.off("dragend");
+        mapRef.current?.off("click");
+        geolocateRef.current?.off("geolocate");
+        geolocateRef.current?.off("error");
       } catch {}
     };
-  }, []);
+  }, [mapContainerRef, defaultLat, defaultLng, onLocationChange]);
 
   const moveMarkerTo = async (lng, lat) => {
     const map = mapRef.current;
@@ -127,5 +142,11 @@ export default function useOlaMap({
     }
   };
 
-  return { mapRef, mapContainerRef, markerRef, moveMarkerTo, geolocateRef };
+  return {
+    mapRef,
+    mapContainerRef,
+    markerRef,
+    moveMarkerTo,
+    geolocate: () => geolocateRef.current?.trigger?.(),
+  };
 }

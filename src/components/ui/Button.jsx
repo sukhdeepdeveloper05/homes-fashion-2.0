@@ -51,7 +51,8 @@ export default function Button({
     "button inline-flex items-center justify-center gap-2 relative overflow-hidden",
     sizeClasses[size],
     variantClass,
-    isLoading && "opacity-90 pointer-events-none",
+    isLoading &&
+      "opacity-90 animate-pulse animation-duration-[800ms] animation-timing-function-[cubic-bezier(0.4, 0, 0.2, 1)]",
     className
   );
 
@@ -82,14 +83,13 @@ export default function Button({
         "relative inline-flex items-center gap-1.5",
         finalClassName
       )}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       onClick={(e) => {
         createRipple(e);
         onClick?.(e);
       }}
       {...rest}
     >
-      {/* Ripples */}
       {ripples.map((r) => (
         <motion.span
           key={r.id}
@@ -117,18 +117,18 @@ export default function Button({
 
       <span
         className={cn(
-          "inline-flex items-center gap-2 relative z-10",
-          isLoading && "invisible"
+          "inline-flex items-center gap-2 relative z-10"
+          // isLoading && "invisible"
         )}
       >
         {children}
       </span>
-      {isLoading && (
+      {/* {isLoading && (
         <FiLoader
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin size-6"
           aria-hidden="true"
         />
-      )}
+      )} */}
     </button>
   );
 }

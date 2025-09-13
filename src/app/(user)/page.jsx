@@ -35,9 +35,18 @@ const SLIDES = [
 export default async function HomePage() {
   const [paintingServicesRes, cleaningServicesRes, collectionsRes] =
     await Promise.all([
-      getData("/products", { collectionId: "68bee6d36f8cd90948e532a9" }),
-      getData("/products", { collectionId: "6873c643a60ff627016702ee" }),
-      getData("/collections", { sortKey: "updatedAt", sortDir: "desc" }),
+      getData({
+        url: "/products",
+        params: { collectionId: "68bee6d36f8cd90948e532a9" },
+      }),
+      getData({
+        url: "/products",
+        params: { collectionId: "6873c643a60ff627016702ee" },
+      }),
+      getData({
+        url: "/collections",
+        params: { sortBy: "updatedAt", sortDir: "desc" },
+      }),
     ]);
 
   const { data: paintingServices } = paintingServicesRes;

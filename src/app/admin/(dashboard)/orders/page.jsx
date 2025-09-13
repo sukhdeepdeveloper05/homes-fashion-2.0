@@ -8,8 +8,8 @@ export default async function OrdersPage({ searchParams }) {
     page: Number(rawParams.page) || 1,
     perPage: Math.min(Number(rawParams.rawPerPage) || 10, 50),
     search: rawParams.search ?? null,
-    sortKey: rawParams.sortKey ?? null,
-    sortDir: rawParams.sortDir ?? null,
+    sortBy: rawParams.sortBy ?? "updatedAt",
+    sortDir: rawParams.sortDir ?? "desc",
     orderStatus: rawParams.orderStatus ?? null,
     paymentStatus: rawParams.paymentStatus ?? null,
   };

@@ -10,6 +10,10 @@ export default async function CheckoutPage({ params }) {
   return (
     <>
       <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
+      <Script
+        src="https://www.unpkg.com/olamaps-web-sdk@latest/dist/olamaps-web-sdk.umd.js"
+        async
+      ></Script>
       <CheckoutContent params={params} isLoggedIn={!!user} />
     </>
   );

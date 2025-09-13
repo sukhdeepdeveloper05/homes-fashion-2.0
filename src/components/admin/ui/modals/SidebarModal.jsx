@@ -70,9 +70,6 @@ export default function SidebarModal({
     }
   }, [defaultValues, form]);
 
-  const { errors } = form.formState;
-  console.log(errors);
-
   const shapeItem = (item, idx) => {
     const Component = componentMap[item.type] ?? componentMap.default;
 
@@ -91,6 +88,8 @@ export default function SidebarModal({
       />
     );
   };
+
+  // console.log(form.formState.errors);
 
   return (
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose?.()}>

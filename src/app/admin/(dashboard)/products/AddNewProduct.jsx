@@ -70,7 +70,11 @@ export default function AddNewProduct() {
       .refine((val) => val >= 1, {
         message: "Price is required",
       }),
-    priceCompare: z.string().optional(),
+    priceCompare: z
+      .union([z.string(), z.number()])
+      .transform((val) => Number(val))
+      .nullable()
+      .optional(),
     maxQuantityPerOrder: z.preprocess(
       (val) => (val === "" ? null : val),
       z.union([z.string(), z.number(), z.null()]).optional()
@@ -85,11 +89,11 @@ export default function AddNewProduct() {
     status: z.string(),
     collectionId: z.array(z.string().nonempty()).optional(),
     category: z.preprocess(
-      (val) => (val === "" ? null : val),
+      (val) => null,
       z.union([z.string(), z.null()]).optional()
     ),
 
-    featuredImage: z.string().optional(),
+    featuredImage: z.string().nullable().optional(),
     media: z.array(z.string().nonempty()).optional(),
   });
 
@@ -151,7 +155,6 @@ export default function AddNewProduct() {
       placeholder: "Category",
       options: categories.map((c) => ({ value: c?.id, label: c?.title })),
       value: initialValues.category,
-      onChange: (value, form) => form.setValue("category", value),
     },
     {
       name: "collectionId",
@@ -172,7 +175,6 @@ export default function AddNewProduct() {
         { value: false, label: "Out of Stock" },
       ],
       value: initialValues.available,
-      onChange: (val, form) => form.setValue("available", val),
       placeholder: "Availability",
     },
     {
@@ -184,7 +186,6 @@ export default function AddNewProduct() {
         { value: "draft", label: "Draft" },
       ],
       value: initialValues.status,
-      onChange: (val, form) => form.setValue("status", val),
       placeholder: "Select status",
     },
     {
