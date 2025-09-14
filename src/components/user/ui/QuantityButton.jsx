@@ -15,11 +15,26 @@ export default function QuantityButton({ item, className }) {
     setLocalQty(item.quantity);
   }, [item.quantity]);
 
-  const triggerUpdate = (newQty) => {
-    setLocalQty(newQty);
+  const triggerUpdate = (newQty, immediate = false) => {
+    if (newQty >= 1) {
+      setLocalQty(newQty);
+    }
 
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
+    }
+
+    if (immediate) {
+      // no debounce
+      (async () => {
+        setIsLoading(true);
+        try {
+          await updateQuantity(item.id, newQty);
+        } finally {
+          setIsLoading(false);
+        }
+      })();
+      return;
     }
 
     debounceTimer.current = setTimeout(async () => {
@@ -29,7 +44,7 @@ export default function QuantityButton({ item, className }) {
       } finally {
         setIsLoading(false);
       }
-    }, 300);
+    }, 200);
   };
 
   const increment = () => {
@@ -42,7 +57,7 @@ export default function QuantityButton({ item, className }) {
   const decrement = () => {
     if (isLoading) return;
     if (localQty <= 1) {
-      triggerUpdate(0);
+      triggerUpdate(0, true);
       return;
     }
     triggerUpdate(localQty - 1);

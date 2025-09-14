@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Carousel,
   CarouselContent,
@@ -5,12 +7,28 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/shadcn/carousel";
+import { SkeletonBox } from "@/components/ui/Skeletons";
 import { MEDIA_URL } from "@/config/Consts";
+import { useListQuery } from "@/hooks/queries";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
 import Link from "next/link";
 import { FaStar } from "react-icons/fa";
+
+// 🟢 Skeleton Card
+function ProductCardSkeleton({ id }) {
+  return (
+    <div>
+      <SkeletonBox className="w-full aspect-square rounded-md bg-gray-200" />
+      <div className="mt-2 space-y-2">
+        <SkeletonBox className="h-5 w-3/4 bg-gray-200 rounded" />
+        <SkeletonBox className="h-4 w-1/2 bg-gray-200 rounded" />
+        <SkeletonBox className="h-6 w-1/3 bg-gray-200 rounded" />
+      </div>
+    </div>
+  );
+}
 
 function ProductCard({ item, collectionId }) {
   return (
@@ -50,16 +68,31 @@ function ProductCard({ item, collectionId }) {
 
 export default function ItemsCarouselSection({
   heading,
-  items = [],
+  items,
   collectionId,
   moreUrl = "",
   wrapperClass = "",
   headingClass = "",
   itemsContentClass = "",
   itemClass = "",
+  dataKey = "",
 }) {
+  const { data, isLoading } = useListQuery({
+    key: dataKey,
+    url: dataKey,
+    handle: "items",
+    queryKey: ["products", collectionId],
+    requiresAuth: false,
+    params: { collectionId },
+    queryOptions: {
+      enabled: !items,
+    },
+  });
+
+  const slides = items || data?.items || [];
+
   return (
-    <section className={cn("w-full my-12", wrapperClass)}>
+    <section className={cn("w-full", wrapperClass)}>
       <div className="flex items-center justify-between mb-4">
         {heading && (
           <h1 className={cn("text-3xl font-bold", headingClass)}>{heading}</h1>
@@ -72,23 +105,33 @@ export default function ItemsCarouselSection({
         </Link>
       </div>
 
-      <Carousel>
-        <CarouselContent
-          gap="1rem"
-          slidesPerView={5}
-          className={cn(itemsContentClass)}
-        >
-          {items.map((item, idx) => {
-            return (
-              <CarouselItem key={item.slug + idx} className={cn(itemClass)}>
+      {isLoading ? (
+        // 🟢 Skeleton carousel while loading
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <ProductCardSkeleton key={collectionId + i} id={collectionId + i} />
+          ))}
+        </div>
+      ) : (
+        <Carousel>
+          <CarouselContent
+            gap="1rem"
+            slidesPerView={5}
+            className={cn(itemsContentClass)}
+          >
+            {slides.map((item, idx) => (
+              <CarouselItem
+                key={collectionId + item.slug + idx}
+                className={cn(itemClass)}
+              >
                 <ProductCard collectionId={collectionId} item={item} />
               </CarouselItem>
-            );
-          })}
-        </CarouselContent>
-        <CarouselPrevious hideWhenDisabled />
-        <CarouselNext hideWhenDisabled />
-      </Carousel>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious hideWhenDisabled />
+          <CarouselNext hideWhenDisabled />
+        </Carousel>
+      )}
     </section>
   );
 }

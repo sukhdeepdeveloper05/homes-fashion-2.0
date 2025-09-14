@@ -3,7 +3,6 @@
 import { Card, CardContent } from "@/components/shadcn/card";
 import { formatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
-import React, { useState } from "react";
 import AddToCartButton from "./AddToCartButton";
 import { MEDIA_URL } from "@/config/Consts";
 import { useProductContext } from "@/store/productContext";

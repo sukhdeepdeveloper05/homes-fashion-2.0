@@ -174,8 +174,8 @@ function OptContent({ loginForm, onSuccess }) {
     try {
       const response = await mutateAsync(data);
       toast.success(response?.message || "Login Successful");
-      onSuccess();
       router.refresh();
+      onSuccess();
     } catch (error) {
       toast.error(error?.message || "Invalid OTP");
     }
@@ -210,7 +210,7 @@ function OptContent({ loginForm, onSuccess }) {
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
-                  autofocus={true}
+                  autoFocus={true}
                   className="[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               )}

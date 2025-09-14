@@ -68,7 +68,7 @@ export default function Sidebar({ logo, routes = [], footerRoutes = [] }) {
         >
           {isSidebarOpen && (
             <button onClick={() => router.push("/")}>
-              <Image
+              {/* <Image
                 src={logo}
                 alt="logo"
                 priority
@@ -76,7 +76,9 @@ export default function Sidebar({ logo, routes = [], footerRoutes = [] }) {
                   "opacity-0 w-0": !isSidebarOpen,
                   "opacity-100 w-auto": isSidebarOpen,
                 })}
-              />
+              /> */}
+              <span>Homes</span>
+              <span>Fashion</span>
             </button>
           )}
           <button onClick={toggleSidebar} className="cursor-pointer h-16">

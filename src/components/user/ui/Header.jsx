@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AuthModal from "../modals/Auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -24,15 +24,19 @@ import { removeAuthUser } from "@/actions/user";
 import { useListQuery } from "@/hooks/queries";
 import { useRouter } from "nextjs-toploader/app";
 import CartButton from "./CartButton";
-import logo from "@/assets/images/logo.webp";
-import Image from "next/image";
-
-const darkRoutes = ["/"];
+import Logo from "@/components/ui/Logo";
+import { useError } from "@/store/error";
+// import logo from "@/assets/images/logo.webp";
+// import Image from "next/image";
 
 export default function Header({ user }) {
   const router = useRouter();
   const pathname = usePathname();
-  const isDark = darkRoutes.includes(pathname);
+
+  const { isError } = useError();
+
+  const darkRoutes = ["/"];
+  const isDark = !isError && darkRoutes.includes(pathname);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -53,12 +57,13 @@ export default function Header({ user }) {
       <div className="grid grid-cols-2 md:grid-cols-3 items-center justify-between px-16 py-7">
         <div className="flex items-center">
           <Link href="/" className="inline-flex">
-            <Image
+            {/* <Image
               src={logo}
               alt="logo"
               priority
               className={"w-24 transition-opacity duration-200 dark:invert"}
-            />
+            /> */}
+            <Logo />
           </Link>
         </div>
 
@@ -71,7 +76,13 @@ export default function Header({ user }) {
             Home
           </Link>
           <DropdownMenu modal={false}>
-            <DropdownMenuTrigger className="dark:text-background-primary py-[7px]">
+            <DropdownMenuTrigger
+              className="dark:text-background-primary py-[7px] data-[active=true]:font-semibold"
+              data-active={
+                pathname.startsWith("/services") ||
+                pathname.startsWith("/collections")
+              }
+            >
               <span className="flex items-center gap-2">Services</span>
             </DropdownMenuTrigger>
 
@@ -80,7 +91,11 @@ export default function Header({ user }) {
                 <DropdownMenuItem asChild key={collection.id}>
                   <Link
                     href={"/collections/" + collection.id}
-                    className="cursor-pointer"
+                    className="cursor-pointer data-[active=true]:font-semibold"
+                    data-active={
+                pathname.startsWith("/services") ||
+                pathname.startsWith("/collections") && pathname.startsWith("/collections/" + collection.id)
+              }
                   >
                     {collection.title}
                   </Link>

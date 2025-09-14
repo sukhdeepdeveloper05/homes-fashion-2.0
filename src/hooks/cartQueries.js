@@ -12,7 +12,7 @@ export function useCartQuery(user) {
       const { data } = await getData({ url: "/cart", requiresAuth: true });
       return data;
     },
-    enabled: !!user,
+    enabled: !!user && user.role === "customer",
   });
 }
 

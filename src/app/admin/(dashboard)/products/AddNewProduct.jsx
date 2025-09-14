@@ -61,41 +61,46 @@ export default function AddNewProduct() {
     [initialData]
   );
 
-  const productSchema = z.object({
-    title: z.string().nonempty({ error: "Product Title is required" }),
-    description: z.string().nonempty({ error: "Description is required" }),
-    price: z
-      .union([z.string(), z.number()])
-      .transform((val) => Number(val))
-      .refine((val) => val >= 1, {
-        message: "Price is required",
-      }),
-    priceCompare: z
-      .union([z.string(), z.number()])
-      .transform((val) => Number(val))
-      .nullable()
-      .optional(),
-    maxQuantityPerOrder: z.preprocess(
-      (val) => (val === "" ? null : val),
-      z.union([z.string(), z.number(), z.null()]).optional()
-    ),
-    tags: z.string().optional(),
-    available: z.preprocess((val) => {
-      if (typeof val === "string") {
-        return val.toLowerCase() === "true"; // "true" → true, "false" → false
+  const productSchema = z
+    .object({
+      title: z.string().nonempty({ error: "Product Title is required" }),
+      description: z.string().nonempty({ error: "Description is required" }),
+      price: z
+        .union([z.string(), z.number()])
+        .transform((val) => Number(val))
+        .refine((val) => val >= 1, {
+          message: "Price is required",
+        }),
+      priceCompare: z
+        .union([z.string(), z.number()])
+        .transform((val) => Number(val))
+        .nullable()
+        .optional(),
+      maxQuantityPerOrder: z.preprocess(
+        (val) => (val === "" ? null : val),
+        z.union([z.string(), z.number(), z.null()]).optional()
+      ),
+      tags: z.string().optional(),
+      available: z.preprocess((val) => {
+        if (typeof val === "string") {
+          return val.toLowerCase() === "true"; // "true" → true, "false" → false
+        }
+        return Boolean(val);
+      }, z.boolean()),
+      status: z.string(),
+      collectionId: z.array(z.string().nonempty()),
+      category: z.union([z.string(), z.null()]).optional(),
+      featuredImage: z.string().nullable().optional(),
+      media: z.array(z.string().nonempty()).optional(),
+    })
+    .superRefine((data, ctx) => {
+      if (data.priceCompare != null && data.priceCompare <= data.price) {
+        ctx.addIssue({
+          message: "Compare at price must be greater than price",
+          path: ["priceCompare"], // highlight error on priceCompare
+        });
       }
-      return Boolean(val);
-    }, z.boolean()),
-    status: z.string(),
-    collectionId: z.array(z.string().nonempty()).optional(),
-    category: z.preprocess(
-      (val) => null,
-      z.union([z.string(), z.null()]).optional()
-    ),
-
-    featuredImage: z.string().nullable().optional(),
-    media: z.array(z.string().nonempty()).optional(),
-  });
+    });
 
   async function onSubmit(vals, form) {
     console.log(vals);

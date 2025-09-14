@@ -40,7 +40,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  --header-height: 98px;
+  --header-height: 110px;
   --footer-height: 409px;
 }
 
@@ -105,11 +105,11 @@ body {
   font-family: var(--font-montserrat), Helvetica, sans-serif;
 }
 
-button {
-  @apply cursor-pointer disabled:cursor-default;
-}
-
 @layer utilities {
+  button {
+    @apply cursor-pointer disabled:cursor-default;
+  }
+
   .container {
     @apply px-16 mx-auto;
 

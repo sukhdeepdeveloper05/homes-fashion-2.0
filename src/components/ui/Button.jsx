@@ -52,7 +52,7 @@ export default function Button({
     sizeClasses[size],
     variantClass,
     isLoading &&
-      "opacity-90 animate-pulse animation-duration-[800ms] animation-timing-function-[cubic-bezier(0.4, 0, 0.2, 1)]",
+      "opacity-90 animate-pulse animation-duration-[800ms] animation-timing-function-[cubic-bezier(0.4, 0, 0.2, 1)] cursor-default",
     className
   );
 
@@ -83,8 +83,10 @@ export default function Button({
         "relative inline-flex items-center gap-1.5",
         finalClassName
       )}
-      disabled={disabled || isLoading}
+      disabled={disabled}
       onClick={(e) => {
+        e.stopPropagation();
+        if (isLoading) return;
         createRipple(e);
         onClick?.(e);
       }}

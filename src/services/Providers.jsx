@@ -31,13 +31,6 @@ export const queryClient = new QueryClient({
 export default function Providers({ children }) {
   return (
     <>
-      {/* <NextTopLoader
-        height="3px"
-        color="var(--accent-primary)"
-        options={{ showSpinner: false }}
-        shallowRouting
-      /> */}
-
       <NextTopLoader
         color="var(--accent-primary)"
         initialPosition={0.08}

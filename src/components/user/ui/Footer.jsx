@@ -3,6 +3,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FaFacebookF, FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import Logo from "@/components/ui/Logo";
 
 const footerLinks = [
   {
@@ -42,12 +43,15 @@ export default function UserFooter() {
       <div className="container">
         <div className="flex justify-between">
           <div className="flex flex-col max-w-96">
-            <Image
+            <div>
+              {/* <Image
               src={logo}
               alt="logo"
               priority
               className={cn("max-w-32 transition-opacity duration-200")}
-            />
+            /> */}
+              <Logo />
+            </div>
 
             <p className="text-foreground-primary mt-6">
               Creating cutting-edge home services that revolutionize the way

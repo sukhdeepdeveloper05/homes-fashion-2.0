@@ -73,8 +73,7 @@ export async function uploadMedia({ media, params, requiresAuth = true }) {
     }
     return await axios.post("/media", formData, {
       params,
-      headers: { "Content-Type": "multipart/form-data" },
-      meta: { requiresAuth },
+      meta: { requiresAuth, hasBinary: true },
     });
   } catch (error) {
     throw new Error(

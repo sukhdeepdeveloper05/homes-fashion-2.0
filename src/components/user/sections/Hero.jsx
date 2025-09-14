@@ -4,6 +4,7 @@ import { FiSearch } from "react-icons/fi";
 import Image from "next/image";
 import { MEDIA_URL } from "@/config/Consts";
 import Link from "next/link";
+import ServiceSearch from "../ui/ServiceSearch";
 
 export default function HeroSection({ collections }) {
   return (
@@ -29,8 +30,8 @@ export default function HeroSection({ collections }) {
             </p>
           </div>
 
-          <div className="bg-white rounded-lg flex items-center px-4 py-3.5 mt-14">
-            <div className="flex items-center gap-1.5 max-w-3xs w-full">
+          <div className="bg-white rounded-lg flex items-center mt-14">
+            {/* <div className="flex items-center gap-1.5 max-w-3xs w-full">
               <HiOutlineLocationMarker className="text-xl text-foreground-tertiary min-w-5" />
               <input
                 type="text"
@@ -39,16 +40,9 @@ export default function HeroSection({ collections }) {
               />
             </div>
 
-            <div className="devider min-w-0.5 h-7 mx-1 bg-foreground-tertiary/20 rounded-full" />
+            <div className="devider min-w-0.5 h-7 mx-1 bg-foreground-tertiary/20 rounded-full" /> */}
 
-            <div className="flex items-center gap-1.5 pl-3.5 w-full">
-              <FiSearch className="text-xl text-foreground-tertiary min-w-5" />
-              <input
-                type="text"
-                placeholder="Find your service"
-                className="text-foreground-primary text-sm w-full"
-              />
-            </div>
+            <ServiceSearch />
           </div>
         </div>
 

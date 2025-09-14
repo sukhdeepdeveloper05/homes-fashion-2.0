@@ -13,6 +13,7 @@ import {
   useUpdateCartItem,
   useDeleteCartItem,
 } from "@/hooks/cartQueries";
+import { invalidateQueries } from "@/hooks/queries";
 
 const CART_KEY = "cart";
 
@@ -25,6 +26,7 @@ const CartContext = createContext({
   isAdding: false,
   isUpdating: false,
   isDeleting: false,
+  isLoggedIn: false,
 });
 
 const recalcCart = (items) => ({
@@ -37,7 +39,7 @@ export function CartProvider({ children, user }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   // React Query hooks
-  const { data: serverCart, isLoading } = useCartQuery(user);
+  const { data: serverCart, isFetching } = useCartQuery(user);
   const { mutateAsync: addItemMutation, isPending: isAdding } =
     useAddCartItem();
   const deleteItemMutation = useDeleteCartItem();
@@ -78,42 +80,55 @@ export function CartProvider({ children, user }) {
     });
   };
 
-  const mergeGuestCart = useCallback(async () => {
-    try {
-      const stored = localStorage.getItem(CART_KEY);
-      if (stored) {
-        const guestCart = JSON.parse(stored);
-        if (guestCart.items?.length) {
-          for (const item of guestCart.items) {
+  const mergeGuestCart = useCallback(
+    async (cart) => {
+      try {
+        if (stored) {
+          const guestCart = JSON.parse(cart);
+          if (guestCart.items?.length > 0) {
+            const ids = guestCart.items.map((i) => i.product.id);
             await addItemMutation({
-              product: item.product.id,
+              product: ids,
               quantity: item.quantity,
             });
-          }
-          localStorage.removeItem(CART_KEY);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to merge guest cart", err);
-    }
-  }, [addItemMutation]);
 
-  // Load cart when user changes
+            setCart({
+              items: [],
+              totalPrice: 0,
+            });
+
+            invalidateQueries("cart");
+
+            localStorage.removeItem(CART_KEY);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to merge guest cart", err);
+      }
+    },
+    [addItemMutation]
+  );
+
   useEffect(() => {
-    if (user) {
-      if (!isLoading && serverCart) {
+    const stored = localStorage.getItem(CART_KEY);
+    if (user && user.role === "customer") {
+      if (stored) {
+        localStorage.removeItem(CART_KEY);
+        setCart({ items: [], totalPrice: 0 });
+        mergeGuestCart(stored);
+      }
+
+      if (!isFetching && serverCart) {
         setCart(serverCart);
         setIsLoaded(true);
-        // mergeGuestCart();
       }
     } else {
       try {
-        const stored = localStorage.getItem(CART_KEY);
         if (stored) setCart(JSON.parse(stored));
       } catch {}
       setIsLoaded(true);
     }
-  }, [user, serverCart, isLoading]);
+  }, [user, serverCart, isFetching, mergeGuestCart]);
 
   // Sync cart to localStorage only for guests
   useEffect(() => {
@@ -129,7 +144,7 @@ export function CartProvider({ children, user }) {
         product: product.id,
         quantity: 1,
       });
-      updateItem(data); // ✅ always trust server response
+      updateItem(data);
     } else {
       const existing = cart.items.find((item) => item.id === product.id);
       if (!existing) {
@@ -161,7 +176,7 @@ export function CartProvider({ children, user }) {
         updateItem({
           ...item,
           quantity,
-          totalPrice: item.pricePerItem * quantity,
+          totalPrice: (item?.pricePerItem || item?.product?.price) * quantity,
         });
       }
     }
@@ -175,10 +190,11 @@ export function CartProvider({ children, user }) {
         removeFromCart,
         updateQuantity,
         updateItemMutation,
-        isLoaded: isLoaded && !isLoading,
+        isLoaded: isLoaded && !isFetching,
         isAdding: isAdding,
         isUpdating: updateItemMutation.isPending,
         isDeleting: deleteItemMutation.isPending,
+        isLoggedIn: !!user,
       }}
     >
       {children}

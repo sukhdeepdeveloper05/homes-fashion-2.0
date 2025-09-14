@@ -12,37 +12,39 @@ import { useRouter } from "next/navigation";
 import { formatPrice } from "@/utils/formatPrice";
 import { SkeletonBox } from "@/components/ui/Skeletons";
 import CartIcon from "@/assets/icons/Cart";
+import AuthModal from "@/components/user/modals/Auth";
+import { useState } from "react";
 
-export default function CartPage() {
-  const router = useRouter();
-  const { cart, removeFromCart, isLoaded } = useCartContext();
-
-  function LoadingContent() {
-    return (
-      <div className="space-y-4">
-        {[1].map((i) => (
-          <Card key={i} className="shadow-sm border gap-0 p-6">
-            <CardContent className="flex flex-col gap-0 p-0">
-              <div className="flex items-center gap-4 pb-4">
-                <SkeletonBox className="w-20 h-20 rounded-md" />
-                <div className="flex-1 space-y-2">
-                  <SkeletonBox className="w-40 h-5 rounded-md" />
-                  <SkeletonBox className="w-28 h-4 rounded-md" />
-                  <SkeletonBox className="w-28 h-4 rounded-md" />
-                </div>
+function LoadingContent() {
+  return (
+    <div className="space-y-4">
+      {[1].map((i) => (
+        <Card key={i} className="shadow-sm border gap-0 p-6">
+          <CardContent className="flex flex-col gap-0 p-0">
+            <div className="flex items-center gap-4 pb-4">
+              <SkeletonBox className="w-20 h-20 rounded-md" />
+              <div className="flex-1 space-y-2">
+                <SkeletonBox className="w-40 h-5 rounded-md" />
+                <SkeletonBox className="w-28 h-4 rounded-md" />
+                <SkeletonBox className="w-28 h-4 rounded-md" />
               </div>
-              <Separator />
-            </CardContent>
+            </div>
+            <Separator />
+          </CardContent>
 
-            <CardFooter className="flex justify-between p-0 pt-4 gap-3">
-              <SkeletonBox className="h-[46px] flex-1 rounded-md" />
-              <SkeletonBox className="h-[46px] flex-1 rounded-md" />
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    );
-  }
+          <CardFooter className="flex justify-between p-0 pt-4 gap-3">
+            <SkeletonBox className="h-[46px] flex-1 rounded-md" />
+            <SkeletonBox className="h-[46px] flex-1 rounded-md" />
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  );
+}
+export default function CartPage() {
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const { cart, removeFromCart, isLoaded, isLoggedIn } = useCartContext();
 
   return (
     <div className="container max-w-2xl mx-auto py-8 flex-1 flex flex-col">
@@ -66,51 +68,65 @@ export default function CartPage() {
         </div>
       )}
 
-      <div className="space-y-4">
-        {cart.items.map((item) => (
-          <Card key={item.id} className="shadow-sm border gap-0 p-6">
-            <CardContent className="flex flex-col gap-0 p-0">
-              <div className="flex items-center gap-4 pb-4">
-                <Image
-                  src={MEDIA_URL + item.product.featuredImage.src}
-                  alt={item.product.title}
-                  width={400}
-                  height={400}
-                  className="rounded-md object-cover aspect-square w-20"
-                />
-                <div>
-                  <h2 className="text-2xl font-bold">{item.product.title}</h2>
-                  <p className="text-sm text-muted-foreground">
-                    Quantity {item.quantity} x{" "}
-                    {formatPrice(item.pricePerItem * item.quantity)}
-                  </p>
-                  <p className=" text-foreground-primary font-medium">Total Price: {formatPrice(item.pricePerItem * item.quantity)}</p>
+      {isLoaded && cart.items.length > 0 && (
+        <div className="space-y-4">
+          {cart.items.map((item) => (
+            <Card key={item.id} className="shadow-sm border gap-0 p-6">
+              <CardContent className="flex flex-col gap-0 p-0">
+                <div className="flex items-center gap-4 pb-4">
+                  <Image
+                    src={MEDIA_URL + item.product.featuredImage.src}
+                    alt={item.product.title}
+                    width={400}
+                    height={400}
+                    className="rounded-md object-cover aspect-square w-20"
+                  />
+                  <div>
+                    <h2 className="text-2xl font-bold">{item.product.title}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Quantity {item.quantity} x{" "}
+                      {formatPrice(item?.pricePerItem || item.product.price)}
+                    </p>
+                    <p className=" text-foreground-primary font-medium">
+                      Total Price: {formatPrice(item?.totalPrice)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <Separator />
-            </CardContent>
+                <Separator />
+              </CardContent>
 
-            <CardFooter className="flex justify-between p-0 pt-4 gap-3">
-              <Button
-                className="flex-1"
-                variant="primary"
-                appearance="outline"
-                onClick={() => {
-                  removeFromCart(item.id);
-                }}
-              >
-                Remove
-              </Button>
-              <Link
-                href={`/checkout/${item.id}`}
-                className="button inline-flex items-center justify-center gap-2 relative button-medium button-primary__solid flex-1"
-              >
-                Checkout
-              </Link>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+              <CardFooter className="flex justify-between p-0 pt-4 gap-3">
+                <Button
+                  className="flex-1"
+                  variant="primary"
+                  appearance="outline"
+                  onClick={() => {
+                    removeFromCart(item.id);
+                  }}
+                >
+                  Remove
+                </Button>
+                {isLoggedIn ? (
+                  <Link
+                    href={`/checkout/${item.id}`}
+                    className="button inline-flex items-center justify-center gap-2 relative button-medium button-primary__solid flex-1"
+                  >
+                    Checkout
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => setIsOpen(true)}
+                    className="button inline-flex items-center justify-center gap-2 relative button-medium button-primary__solid flex-1"
+                  >
+                    Checkout
+                  </button>
+                )}
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
+      {!isLoggedIn && <AuthModal open={isOpen} onOpenChange={setIsOpen} />}
     </div>
   );
 }
