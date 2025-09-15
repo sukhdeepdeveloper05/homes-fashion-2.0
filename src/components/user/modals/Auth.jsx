@@ -48,7 +48,7 @@ export default function AuthModal({ open, onOpenChange }) {
       }}
     >
       <DialogContent
-        className="sm:max-w-md rounded-2xl min-w-[580px]"
+        className="rounded-2xl !max-w-[580px] w-[calc(100%-40px)] p-5"
         overlayClassName="overlay"
         showCloseButton={false}
       >
@@ -93,7 +93,7 @@ function LoginContent({ form, onSuccess }) {
         <DialogTitle className="text-xl font-bold mb-4">
           <MessagePhoneIcon />
         </DialogTitle>
-        <DialogDescription className="gap-y-1 flex flex-col">
+        <DialogDescription className="gap-y-1 flex flex-col items-start text-left">
           <span className="text-[28px] font-bold text-foreground-primary">
             Enter your phone number
           </span>
@@ -117,10 +117,10 @@ function LoginContent({ form, onSuccess }) {
               beforeContent={
                 <button
                   disabled
-                  className="px-6 py-3 rounded-l-lg border-input border border-r-0 text-muted-foreground flex items-center justify-center gap-0.5"
+                  className="px-4 py-3 rounded-l-lg border-input border border-r-0 text-muted-foreground flex items-center justify-center gap-0.5"
                 >
                   <span>+91</span>
-                  <IoIosArrowDown className="opacity-60" />
+                  {/* <IoIosArrowDown className="opacity-60" /> */}
                 </button>
               }
             />
@@ -187,7 +187,7 @@ function OptContent({ loginForm, onSuccess }) {
         <DialogTitle className="text-xl font-bold mb-4">
           <OtpPhoneIcon />
         </DialogTitle>
-        <DialogDescription className="gap-y-1 flex flex-col">
+        <DialogDescription className="gap-y-1 flex flex-col items-start text-left">
           <span className="text-[28px] font-bold text-foreground-primary">
             Enter verification code
           </span>
