@@ -34,31 +34,37 @@ export default async function CollectionPage({ params }) {
   const { data: collectionProducts } = collectionProductsRes;
 
   return (
-    <div className="container py-8">
-      <div className="grid grid-cols-12 gap-14">
-        <main className="col-span-8 space-y-8">
-          <h1 className="text-4xl text-foreground-primary font-semibold mb-8 text-center">
-            {details.title}
-          </h1>
-          <div className="rounded-2xl overflow-hidden">
-            <Image
-              src={`${MEDIA_URL}${details.featuredImage?.src}`}
-              width={1600}
-              height={900}
-              priority
-              alt={details.featuredImage?.altText || details.title}
-              className="object-cover object-bottom aspect-video"
-            />
+    <div className="container py-10 lg:py-14 xl:py-20">
+      <div className="md:grid md:grid-cols-[1fr_340px] lg:grid-cols-[1fr_auto] gap-5 lg:gap-8 xl:gap-14">
+        <div className="space-y-10 lg:space-y-14">
+          <div className="space-y-6 lg:space-y-8">
+            <div className="rounded-lg overflow-hidden">
+              <Image
+                src={`${MEDIA_URL}${details.featuredImage?.src}`}
+                width={1600}
+                height={900}
+                priority
+                alt={details.featuredImage?.altText || details.title}
+                className="object-cover object-bottom aspect-video"
+              />
+            </div>
+            <h1 className="text-2xl lg:text-3xl xl:text-4xl text-foreground-primary font-bold mb-3 lg:mb-5 text-center">
+              {details.title}
+            </h1>
+
+            <p className="ms:text-lg text-foreground-primary text-center">
+              {details.description}
+            </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 grid-cols-1 gap-8">
+          <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
             {collectionProducts.map((product) => (
               <ProductCard product={product} key={product.id} />
             ))}
           </div>
-        </main>
+        </div>
 
-        <aside className="col-span-4 sticky top-[calc(var(--header-height)+2rem)] ml-6 self-start space-y-3 min-w-96">
+        <aside className="hidden md:block sticky top-[calc(var(--header-height)+2rem)] self-start space-y-3 lg:min-w-96">
           <CartCard />
 
           <Card className="p-6">

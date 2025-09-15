@@ -28,7 +28,10 @@ export default function AddToCartButton({
         addId.current = null;
       }}
       size="small"
-      className={cn("", className)}
+      className={cn(
+        "",
+        className
+      )}
       isLoading={isAdding && addId.current === item.id}
       disabled={inCart || !isLoaded}
       {...rest}

@@ -25,6 +25,7 @@ function DropdownMenuTrigger({
   children,
   className,
   hideIcon = false,
+  iconClass = "",
   ...props
 }) {
   return (
@@ -41,7 +42,9 @@ function DropdownMenuTrigger({
       ) : (
         <>
           {children}
-          <ChevronDownIcon className="size-4 stroke-2 opacity-70 group-data-[state=open]/trigger:rotate-180 transition-transform text-current" />
+          <ChevronDownIcon
+            className={`size-4 stroke-2 opacity-70 group-data-[state=open]/trigger:rotate-180 transition-transform text-current ${iconClass}`}
+          />
         </>
       )}
     </DropdownMenuPrimitive.Trigger>

@@ -10,6 +10,13 @@ import {
 import ItemsCarouselSection from "@/components/user/sections/ItemsCarouselSection";
 import { getData } from "@/lib/api";
 import HeroSection from "@/components/user/sections/Hero";
+import PromotionCarousel from "@/components/user/sections/PromotionCarousel";
+import hammer from "@/assets/images/hammer.png";
+import paintBrush from "@/assets/images/paint-brush.png";
+import vaccumCleaner from "@/assets/images/vaccum-cleaner.png";
+import CollectionsGrid from "@/components/user/sections/CollectionsGrid";
+
+import cleaningTeam from "@/assets/images/cleaning-team.webp";
 
 export const revalidate = 0;
 
@@ -32,36 +39,63 @@ const SLIDES = [
   },
 ];
 
+const promoItems = [
+  {
+    text: "Walls Painted With Perfection",
+    image: paintBrush,
+  },
+  {
+    text: "Fresh Homes, Happy Living",
+    image: vaccumCleaner,
+  },
+  {
+    text: "Upgrade Your Home Today",
+    image: hammer,
+  },
+];
+
 export default async function HomePage() {
-  const [paintingServicesRes, cleaningServicesRes, collectionsRes] =
-    await Promise.all([
-      getData({
-        url: "/products",
-        params: { collectionId: "68bee6d36f8cd90948e532a9" },
-      }),
-      getData({
-        url: "/products",
-        params: { collectionId: "6873c643a60ff627016702ee" },
-      }),
-      getData({
-        url: "/collections",
-        params: { sortBy: "updatedAt", sortDir: "desc" },
-      }),
-    ]);
+  const [
+    paintingServicesRes,
+    cleaningServicesRes,
+    renovationServicesRes,
+    collectionsRes,
+  ] = await Promise.all([
+    getData({
+      url: "/products",
+      params: { collectionId: "68bee6d36f8cd90948e532a9" },
+    }),
+    getData({
+      url: "/products",
+      params: { collectionId: "6873c643a60ff627016702ee" },
+    }),
+    getData({
+      url: "/products",
+      params: { collectionId: "68c6cd986b7f9ed03ff446f6" },
+    }),
+    getData({
+      url: "/collections",
+      // params: { sortBy: "updatedAt", sortDir: "desc" },
+    }),
+  ]);
 
   const { data: paintingServices } = paintingServicesRes;
   const { data: cleaningServices } = cleaningServicesRes;
+  const { data: renovationServices } = renovationServicesRes;
   const { data: collections } = collectionsRes;
 
   return (
-    <>
+    <div className="mt-(--header-height)">
       <HeroSection collections={collections} />
+      <PromotionCarousel items={promoItems} autoplay={true} interval={2500} />
 
-      <section className="container mb-20">
+      <CollectionsGrid collections={collections} />
+
+      {/* <section className="container mt-20 mb-20">
         <Carousel opts={{ loop: false }}>
           <CarouselContent
             gap="2rem"
-            slidesPerView={3}
+            slidesPerViewDesktop={3}
             className="max-2xl:[--carousel-item-basis:calc(100%/(var(--slides-per-view)-1))]"
           >
             {SLIDES.map((slide) => (
@@ -82,33 +116,40 @@ export default async function HomePage() {
           <CarouselPrevious hideWhenDisabled />
           <CarouselNext hideWhenDisabled />
         </Carousel>
-      </section>
+      </section> */}
 
       <ItemsCarouselSection
-        wrapperClass="container my-0 mb-20"
+        wrapperClass="container my-0 mb-16 md:mb-20"
         heading="Cleaning Services"
         items={cleaningServices}
         collectionId="6873c643a60ff627016702ee"
         moreUrl={`/collections/6873c643a60ff627016702ee`}
       />
 
-      <div className="container mb-20">
+      {/* <div className="container mb-20">
         <Image
-          src="https://res.cloudinary.com/urbanclap/image/upload/t_high_res_template/w_1232,dpr_4,fl_progressive:steep,q_auto:low,f_auto,c_limit/images/supply/customer-app-supply/1752250436156-db21b3.jpeg"
-          alt=""
+          src={cleaningTeam}
+          alt="Cleaning Team"
           width={1280}
           height={100}
           className="w-full"
         />
-      </div>
+      </div> */}
 
       <ItemsCarouselSection
-        wrapperClass="container my-0 mb-20"
-        heading="Cleaning and Pest Control"
+        wrapperClass="container my-0 mb-16 md:mb-20"
+        heading="Painting Services"
         items={paintingServices}
         collectionId="68bee6d36f8cd90948e532a9"
         moreUrl={`/collections/68bee6d36f8cd90948e532a9`}
       />
-    </>
+      <ItemsCarouselSection
+        wrapperClass="container my-0 mb-16 md:mb-20"
+        heading="Renovation Services"
+        items={renovationServices}
+        collectionId="68c6cd986b7f9ed03ff446f6"
+        moreUrl={`/collections/68c6cd986b7f9ed03ff446f6`}
+      />
+    </div>
   );
 }

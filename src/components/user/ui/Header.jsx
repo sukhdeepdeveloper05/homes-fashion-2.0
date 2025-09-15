@@ -49,12 +49,12 @@ export default function Header({ user }) {
   return (
     <header
       className={cn(
-        "fixed inset-0 z-50 bottom-auto bg-background-primary",
-        isDark && "dark absolute bg-transparent",
-        !isDark && "mr-(--removed-body-scroll-bar-size)"
+        "bg-background-primary",
+        isDark && "dark absolute inset-0 z-50 bottom-auto bg-transparent",
+        !isDark && "bg-white sticky top-0 z-50"
       )}
     >
-      <div className="grid grid-cols-2 md:grid-cols-3 items-center justify-between px-16 py-7">
+      <div className="grid grid-cols-2 md:grid-cols-[140px_1fr_140px] xl:grid-cols-3 items-center justify-between px-5 lg:px-10 py-3 lg:py-5 border-b dark:border-white/20 border-black/10">
         <div className="flex items-center">
           <Link href="/" className="inline-flex">
             {/* <Image
@@ -67,35 +67,37 @@ export default function Header({ user }) {
           </Link>
         </div>
 
-        <nav className="hidden md:flex items-center justify-center gap-8 text-foreground-primary dark:text-background-primary">
+        <nav className="hidden md:flex items-center justify-center gap-10 text-foreground-primary dark:text-background-primary">
           <Link
             href="/"
-            className="data-[active=true]:font-semibold"
+            className="font-medium data-[active=true]:font-bold uppercase"
             data-active={pathname === "/"}
           >
             Home
           </Link>
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger
-              className="dark:text-background-primary py-[7px] data-[active=true]:font-semibold"
+              className="relative dark:text-background-primary py-[7px] font-medium data-[active=true]:font-semibold uppercase"
               data-active={
                 pathname.startsWith("/services") ||
                 pathname.startsWith("/collections")
               }
+              iconClass="absolute -right-5"
             >
               <span className="flex items-center gap-2">Services</span>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="w-48 " align="start">
+            <DropdownMenuContent className="w-56 p-2" align="start">
               {collections?.slice(0, 3).map((collection) => (
                 <DropdownMenuItem asChild key={collection.id}>
                   <Link
                     href={"/collections/" + collection.id}
-                    className="cursor-pointer data-[active=true]:font-semibold"
+                    className="!text-base cursor-pointer data-[active=true]:font-semibold"
                     data-active={
-                pathname.startsWith("/services") ||
-                pathname.startsWith("/collections") && pathname.startsWith("/collections/" + collection.id)
-              }
+                      pathname.startsWith("/services") ||
+                      (pathname.startsWith("/collections") &&
+                        pathname.startsWith("/collections/" + collection.id))
+                    }
                   >
                     {collection.title}
                   </Link>
@@ -105,14 +107,14 @@ export default function Header({ user }) {
           </DropdownMenu>
           <Link
             href="/contact-us"
-            className="data-[active=true]:font-semibold"
+            className="font-medium data-[active=true]:font-bold uppercase"
             data-active={pathname.startsWith("/contact-us")}
           >
             Contact Us
           </Link>
         </nav>
 
-        <div className="flex items-center justify-end gap-4">
+        <div className="flex items-center justify-end gap-2 sm:gap-4">
           <CartButton />
           {!user ? (
             <Button
@@ -167,8 +169,6 @@ export default function Header({ user }) {
           )}
         </div>
       </div>
-      <div className="border-t dark:border-white/[7%] border-black/[7%]"></div>
-
       <AuthModal
         open={isModalOpen}
         onOpenChange={() => {

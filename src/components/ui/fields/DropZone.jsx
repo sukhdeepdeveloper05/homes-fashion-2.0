@@ -74,7 +74,7 @@ export default function DropZone({
 
   const shapeCls = shape === "circle" ? "rounded-full" : "rounded-lg";
 
-  console.log(initial);
+  console.log(files);
 
   return (
     <div className={clsx("flex flex-col gap-2", className)}>

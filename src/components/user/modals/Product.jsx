@@ -38,17 +38,17 @@ export default function ProductModal({ product, open, onOpenChange }) {
                 />
               </div>
               {/* Product Info */}
-              <div className="sspace-y-4">
-                <DialogHeader className="p-6 flex flex-row items-center justify-between">
+              <div className="">
+                <DialogHeader className="px-5 py-4 flex flex-row items-center justify-between">
                   <div>
-                    <DialogTitle className="text-xl font-semibold">
+                    <DialogTitle className="text-xl font-semibold mb-2">
                       {product.title}
                     </DialogTitle>
-                    <div className="flex items-center text-sm text-muted-foreground gap-1">
+                    {/* <div className="flex items-center text-sm text-muted-foreground gap-1">
                       <Star className="w-4 h-4 text-yellow-500" />
                       <span>{product?.rating || "4.5"}</span>
                       <span>({product?.reviews || "2k"} reviews)</span>
-                    </div>
+                    </div> */}
                     <div className="flex items-center gap-2">
                       <span className="text-foreground-primary text-lg font-semibold">
                         {formatPrice(product.price)}
@@ -69,6 +69,15 @@ export default function ProductModal({ product, open, onOpenChange }) {
                   </p>
                 )}
 
+                <Separator />
+                {product?.description && (
+                  <div className="px-5 py-4">
+                    <h4 className="text-lg font-semibold mb-2">
+                      Product Description
+                    </h4>
+                    <p>{product.description}</p>
+                  </div>
+                )}
                 {product.media.length > 0 && (
                   <>
                     <Separator />
@@ -90,8 +99,7 @@ export default function ProductModal({ product, open, onOpenChange }) {
                   </>
                 )}
 
-                <Separator />
-                <Faqs />
+                {/* <Faqs /> */}
               </div>
             </div>
           </div>

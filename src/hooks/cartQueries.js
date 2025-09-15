@@ -19,10 +19,10 @@ export function useCartQuery(user) {
 // Add item to cart
 export function useAddCartItem() {
   return useMutation({
-    mutationFn: async ({ product, quantity }) => {
+    mutationFn: async (values) => {
       const { data } = await createData({
         url: "/cart",
-        data: { product, quantity },
+        data:values,
         requiresAuth: true,
       });
       return data;

@@ -66,7 +66,7 @@ export default function QuantityButton({ item, className }) {
   return (
     <div
       className={cn(
-        "flex items-center border rounded-md overflow-hidden w-fit h-8 bg-accent-primary/20 border-accent-primary/70",
+        "flex items-center border rounded-md overflow-hidden w-fit h-9 bg-accent-primary/20 border-accent-primary/70",
         isLoading &&
           "opacity-80 pointer-events-none animate-pulse animation-duration-[800ms]",
         className
@@ -74,7 +74,7 @@ export default function QuantityButton({ item, className }) {
     >
       <button
         onClick={decrement}
-        className="text-accent-primary hover:not-disabled:bg-accent-primary/30 size-8 flex items-center justify-center disabled:opacity-50"
+        className="text-accent-primary hover:not-disabled:bg-accent-primary/30 size-8 h-9 flex items-center justify-center disabled:opacity-50"
         disabled={isLoading || localQty <= 0}
       >
         <FiMinus />
@@ -84,7 +84,7 @@ export default function QuantityButton({ item, className }) {
       </span>
       <button
         onClick={increment}
-        className="text-accent-primary hover:not-disabled:bg-accent-primary/30 size-8 flex items-center justify-center disabled:opacity-50"
+        className="text-accent-primary hover:not-disabled:bg-accent-primary/30 size-8 h-9 flex items-center justify-center disabled:opacity-50"
         disabled={isLoading || localQty >= item.product.maxQuantityPerOrder}
       >
         <FiPlus />

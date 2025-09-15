@@ -45,7 +45,7 @@ export default function SavedAddressesPage() {
         async
       ></Script>
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 max-sm:flex-col max-sm:gap-4">
           <h1 className="text-2xl font-bold">Saved Addresses</h1>
           <Button
             size="small"

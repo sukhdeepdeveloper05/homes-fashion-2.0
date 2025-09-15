@@ -40,7 +40,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  --header-height: 110px;
+  --header-height: 99px;
   --footer-height: 409px;
 }
 
@@ -111,7 +111,7 @@ body {
   }
 
   .container {
-    @apply px-16 mx-auto;
+    @apply px-5 lg:px-10 mx-auto;
 
     @media (width <= 80rem) {
       @apply max-w-full;

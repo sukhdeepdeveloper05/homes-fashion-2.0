@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/shadcn/button";
 import Autoplay from "embla-carousel-autoplay";
+import AutoScroll from "embla-carousel-auto-scroll";
 
 const CarouselContext = React.createContext(null);
 
@@ -25,8 +26,12 @@ function Carousel({
   setApi,
   plugins = [],
   autoPlay = false,
+  autoScroll = false,
+  delay = 4000,
   className,
   children,
+  autoPlayProps = {},
+  autoScrollProps = {},
   ...props
 }) {
   const autoPlayPlugin = autoPlay
@@ -35,7 +40,21 @@ function Carousel({
           playOnInit: true,
           stopOnInteraction: false,
           stopOnFocusIn: false,
-          delay: 4000,
+          delay,
+          ...autoPlayProps,
+        }),
+      ]
+    : [];
+  const autoScrollPlugin = autoScroll
+    ? [
+        AutoScroll({
+          playOnInit: true,
+          loop: true,
+          stopOnInteraction: false,
+          stopOnFocusIn: false,
+          stopOnMouseEnter: true,
+          startDelay: 0,
+          ...autoScrollProps,
         }),
       ]
     : [];
@@ -45,7 +64,7 @@ function Carousel({
       ...opts,
       axis: orientation === "horizontal" ? "x" : "y",
     },
-    [...autoPlayPlugin, ...plugins]
+    [...autoPlayPlugin, ...autoScrollPlugin, ...plugins]
   );
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
@@ -121,7 +140,14 @@ function Carousel({
   );
 }
 
-function CarouselContent({ className, slidesPerView = 1, gap, ...props }) {
+function CarouselContent({
+  className,
+  slidesPerViewDesktop = 5,
+  slidesPerViewTablet = 2,
+  slidesPerViewMobile = 1,
+  gap,
+  ...props
+}) {
   const { carouselRef, orientation } = useCarousel();
 
   return (
@@ -133,11 +159,12 @@ function CarouselContent({ className, slidesPerView = 1, gap, ...props }) {
       <div
         style={{
           "--carousel-item-spacing": gap,
-          "--slides-per-view": slidesPerView,
+          "--slides-per-view-desktop": slidesPerViewDesktop,
+          "--slides-per-view-tablet": slidesPerViewTablet,
+          "--slides-per-view-mobile": slidesPerViewMobile,
         }}
         className={cn(
           "flex",
-          `[--carousel-item-basis:calc(100%/var(--slides-per-view))]`,
           orientation === "horizontal"
             ? "-ml-(--carousel-item-spacing)"
             : "-mt-4 flex-col",
@@ -149,7 +176,12 @@ function CarouselContent({ className, slidesPerView = 1, gap, ...props }) {
   );
 }
 
-function CarouselItem({ className, children, ...props }) {
+function CarouselItem({
+  slideWidthAuto = false,
+  className,
+  children,
+  ...props
+}) {
   const { orientation } = useCarousel();
 
   return (
@@ -158,8 +190,9 @@ function CarouselItem({ className, children, ...props }) {
       aria-roledescription="slide"
       data-slot="carousel-item"
       className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
-        `basis-(--carousel-item-basis)`,
+        "min-w-0 shrink-0 grow-0",
+        !slideWidthAuto &&
+          `basis-[calc(100%/var(--slides-per-view-mobile))] lg:basis-[calc(100%/var(--slides-per-view-tablet))] xl:basis-[calc(100%/var(--slides-per-view-desktop))]`,
         orientation === "horizontal" ? "pl-(--carousel-item-spacing)" : "pt-4"
       )}
       {...props}

@@ -8,12 +8,12 @@ export default function useCollectionColumns() {
 
   return [
     { title: "Title", key: "title", type: "text", sortable: true },
-    {
-      title: "Tags",
-      key: "tags",
-      type: "text",
-      render: ({ tags }) => (tags ? tags.join(", ") : "N/A"),
-    },
+    // {
+    //   title: "Tags",
+    //   key: "tags",
+    //   type: "text",
+    //   render: ({ tags }) => (tags ? tags.join(", ") : "N/A"),
+    // },
     { title: "Products Count", key: "productsCount", type: "text" },
     { title: "Created At", key: "createdAt", type: "date" },
     { title: "Updated At", key: "updatedAt", type: "date" },

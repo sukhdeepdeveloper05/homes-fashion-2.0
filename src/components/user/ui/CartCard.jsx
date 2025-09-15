@@ -53,20 +53,21 @@ export default function CartCard({
     );
 
   return (
-    <Card className="p-6">
+    <Card className="p-0">
       <CardContent className={cn("p-0", className)}>
         {cart.items.length > 0 && (
           <div>
-            <h2 className="text-foreground-primary font-semibold text-xl">
-              Cart
-            </h2>
-            <div className="flex flex-col gap-4 pb-6 mt-2">
+            <div className="p-4 border-b border-gray-200">
+              <h2 className="text-foreground-primary font-semibold text-xl">
+                Cart
+              </h2>
+            </div>
+            <div className="flex flex-col gap-4 px-4 py-5 max-h-96 overflow-auto">
               {cart.items.map((item) => (
                 <CartCardItem key={item.product.id} item={item} />
               ))}
             </div>
-            <Separator />
-            <div className="pt-6">
+            <div className="p-4 border-t border-gray-200">
               <Link
                 href="/cart"
                 className="button button-primary__solid w-full flex justify-between py-3 px-4 text-sm"
@@ -87,7 +88,7 @@ export default function CartCard({
 function CartCardItem({ item }) {
   return (
     <div className="flex items-center justify-between gap-4 text-sm">
-      <span className="text-foreground-primary text-sm line-clamp-2">
+      <span className="text-foreground-primary font-semibold line-clamp-2">
         {item.product.title}
       </span>
       <div className="flex items-center gap-4">

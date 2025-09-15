@@ -127,8 +127,7 @@ export default function AddNewPartner() {
       createMedia: false,
       initial: initialData?.avatar && [initialData?.avatar],
       onChange: (files, form) => {
-        console.log(files);
-        form.setValue("avatar", files[0]);
+        files && form.setValue("avatar", files[0]);
       },
     },
   ];

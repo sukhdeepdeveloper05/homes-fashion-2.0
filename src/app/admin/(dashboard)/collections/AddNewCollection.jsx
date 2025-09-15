@@ -10,7 +10,7 @@ import { useMemo } from "react";
 const collectionSchema = z.object({
   title: z.string().nonempty({ error: "Collection Title is required" }),
   description: z.string().nonempty({ error: "Description is required" }),
-  tags: z.string().optional(),
+  // tags: z.string().optional(),
   featuredImage: z.string().optional(),
 });
 
@@ -26,17 +26,14 @@ export default function AddNewCollection() {
     () => ({
       title: initialData?.title || "",
       description: initialData?.description || "",
-      tags: initialData?.tags || "",
+      // tags: initialData?.tags || "",
       featuredImage: initialData?.featuredImage || "",
     }),
     [initialData]
   );
 
   async function handleSubmit(vals, form) {
-    const cleanedVals = {
-      ...vals,
-      tags: vals.tags.split(/\s*,\s*/).filter(Boolean),
-    };
+    const cleanedVals = vals;
     try {
       await createCollectionMutation.mutateAsync({ values: cleanedVals });
       form.reset();
@@ -60,19 +57,20 @@ export default function AddNewCollection() {
       placeholder: "Description",
     },
 
-    {
-      name: "tags",
-      label: "Tags",
-      type: "text",
-      placeholder: "Tags",
-    },
+    // {
+    //   name: "tags",
+    //   label: "Tags",
+    //   type: "text",
+    //   placeholder: "Tags",
+    // },
     {
       name: "featuredImage",
       label: "Featured Image",
       type: "dropzone",
       placeholder: "Select Featured Image",
-      initial: [initialData?.featuredImage],
+      initial: initialData?.featuredImage ? [initialData?.featuredImage] : [],
       onChange: (file, form) => {
+        console.log(file, "file");
         form.setValue("featuredImage", file);
       },
     },

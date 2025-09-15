@@ -23,7 +23,7 @@ export default function SlotStep({ step, updateSlot }) {
   return (
     <div className="flex flex-col gap-4">
       {/* Date Picker */}
-      <div className="grid grid-cols-8 gap-3">
+      <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
         {slots.map((slot) => {
           const day = slot.date.toLocaleDateString("en-IN", {
             weekday: "short",

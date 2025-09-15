@@ -30,7 +30,9 @@ export default function BookingsPage() {
 
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-6">My Bookings</h1>
+      <h1 className="text-2xl font-bold mb-6 max-sm:text-center">
+        My Bookings
+      </h1>
 
       {isLoading ? renderLoading() : null}
       {!isLoading && bookings?.length === 0 ? <p>No bookings found.</p> : null}

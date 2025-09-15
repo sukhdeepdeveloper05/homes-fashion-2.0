@@ -41,9 +41,9 @@ export default function ContactForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => onSubmit(data, form))}
-        className="space-y-5"
+        className="space-y-5 text-center"
       >
-        <div className="flex gap-4">
+        <div className="flex max-sm:flex-col gap-4">
           <Input
             key={"name-input"}
             type="text"
@@ -61,7 +61,7 @@ export default function ContactForm() {
             required={true}
           />
         </div>
-        <div className="flex gap-4">
+        <div className="flex max-sm:flex-col gap-4">
           <Input
             key={"phone-input"}
             type="number"

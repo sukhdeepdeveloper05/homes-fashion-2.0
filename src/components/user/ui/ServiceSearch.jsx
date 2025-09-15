@@ -50,14 +50,14 @@ export default function ServiceSearch() {
   return (
     <>
       <div
-        className="flex items-center gap-1.5 rounded-lg px-4 py-3 bg-white w-full"
+        className="flex items-center gap-2 rounded-lg px-4 py-3 bg-white w-full"
         ref={inputRef}
       >
         <FiSearch className="text-xl text-foreground-tertiary min-w-5" />
         <input
           type="text"
           placeholder="Find your service"
-          className="text-foreground-primary text-sm w-full h-7 outline-none"
+          className="text-foreground-primary w-full h-7 outline-none"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -107,7 +107,7 @@ export default function ServiceSearch() {
                       <div className="flex flex-col">
                         <span className="font-semibold">{service.title}</span>
                         <span className="text-xs text-muted-foreground">
-                          {service.collections[0].title}
+                          {service.collections[0]?.title}
                         </span>
                         <span className="text-xs font-medium">
                           <span>Starts at </span>

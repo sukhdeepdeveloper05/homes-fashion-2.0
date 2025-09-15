@@ -98,7 +98,7 @@ export default function ProfileForm({ details }) {
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
         {/* Left side fields */}
-        <div className="md:col-span-2 space-y-4">
+        <div className="md:col-span-2 space-y-5 max-sm:text-center">
           {fields.map((field) => {
             if (field.type === "date") {
               return (
@@ -120,6 +120,7 @@ export default function ProfileForm({ details }) {
                   name={field.name}
                   options={field.options}
                   value={form.getValues(field.name)}
+                  className="text-left"
                 />
               );
             }
@@ -138,7 +139,11 @@ export default function ProfileForm({ details }) {
             );
           })}
 
-          <Button type="submit" isLoading={updateMutation.isPending}>
+          <Button
+            type="submit"
+            isLoading={updateMutation.isPending}
+            className="mt-1"
+          >
             Save Changes
           </Button>
         </div>

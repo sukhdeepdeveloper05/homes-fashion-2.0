@@ -83,13 +83,15 @@ export function CartProvider({ children, user }) {
   const mergeGuestCart = useCallback(
     async (cart) => {
       try {
-        if (stored) {
+        if (cart) {
           const guestCart = JSON.parse(cart);
           if (guestCart.items?.length > 0) {
-            const ids = guestCart.items.map((i) => i.product.id);
+            const cartItems = guestCart.items.map((i) => ({
+              product: i.product.id,
+              quantity: i.quantity,
+            }));
             await addItemMutation({
-              product: ids,
-              quantity: item.quantity,
+              cartItems,
             });
 
             setCart({
@@ -110,24 +112,26 @@ export function CartProvider({ children, user }) {
   );
 
   useEffect(() => {
-    const stored = localStorage.getItem(CART_KEY);
-    if (user && user.role === "customer") {
-      if (stored) {
-        localStorage.removeItem(CART_KEY);
-        setCart({ items: [], totalPrice: 0 });
-        mergeGuestCart(stored);
-      }
+    (async () => {
+      const stored = localStorage.getItem(CART_KEY);
+      if (user && user.role === "customer") {
+        if (stored) {
+          localStorage.removeItem(CART_KEY);
+          setCart({ items: [], totalPrice: 0 });
+          await mergeGuestCart(stored);
+        }
 
-      if (!isFetching && serverCart) {
-        setCart(serverCart);
+        if (!isFetching && serverCart) {
+          setCart(serverCart);
+          setIsLoaded(true);
+        }
+      } else {
+        try {
+          if (stored) setCart(JSON.parse(stored));
+        } catch {}
         setIsLoaded(true);
       }
-    } else {
-      try {
-        if (stored) setCart(JSON.parse(stored));
-      } catch {}
-      setIsLoaded(true);
-    }
+    })();
   }, [user, serverCart, isFetching, mergeGuestCart]);
 
   // Sync cart to localStorage only for guests

@@ -44,7 +44,8 @@ function LoadingContent() {
 export default function CartPage() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { cart, removeFromCart, isLoaded, isLoggedIn } = useCartContext();
+  const { cart, removeFromCart, isLoaded, isLoggedIn, isDeleting } =
+    useCartContext();
 
   return (
     <div className="container max-w-2xl mx-auto py-8 flex-1 flex flex-col">
@@ -81,9 +82,9 @@ export default function CartPage() {
                     height={400}
                     className="rounded-md object-cover aspect-square w-20"
                   />
-                  <div>
-                    <h2 className="text-2xl font-bold">{item.product.title}</h2>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="space-y-1.5">
+                    <h2 className="text-xl font-bold">{item.product.title}</h2>
+                    <p className="text-muted-foreground">
                       Quantity {item.quantity} x{" "}
                       {formatPrice(item?.pricePerItem || item.product.price)}
                     </p>
@@ -98,11 +99,12 @@ export default function CartPage() {
               <CardFooter className="flex justify-between p-0 pt-4 gap-3">
                 <Button
                   className="flex-1"
-                  variant="primary"
+                  variant="foreground"
                   appearance="outline"
                   onClick={() => {
                     removeFromCart(item.id);
                   }}
+                  isLoading={isDeleting}
                 >
                   Remove
                 </Button>

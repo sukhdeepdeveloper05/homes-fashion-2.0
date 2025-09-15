@@ -14,6 +14,7 @@ import { LuBox, LuUsersRound } from "react-icons/lu";
 import { TbShoppingCartDollar } from "react-icons/tb";
 import { RiUserStarLine } from "react-icons/ri";
 import { FiCalendar } from "react-icons/fi";
+import Logo from "@/components/ui/Logo";
 
 export const iconMap = {
   FiGrid,
@@ -77,8 +78,7 @@ export default function Sidebar({ logo, routes = [], footerRoutes = [] }) {
                   "opacity-100 w-auto": isSidebarOpen,
                 })}
               /> */}
-              <span>Homes</span>
-              <span>Fashion</span>
+              <Logo />
             </button>
           )}
           <button onClick={toggleSidebar} className="cursor-pointer h-16">

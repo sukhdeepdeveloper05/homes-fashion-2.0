@@ -18,11 +18,11 @@ export default function CartButton() {
       {count > 0 && (
         <div className="absolute -top-1.5 -right-1.5">
           {/* Ping effect behind the badge */}
-          <span className="absolute top-1/2 left-1/2 -translate-1/2 inline-flex size-[80%] rounded-full bg-red-500 opacity-75 animate-ping" />
+          <span className="absolute top-1/2 left-1/2 -translate-1/2 inline-flex size-[80%] rounded-full bg-accent-primary opacity-75 animate-ping" />
 
           {/* Actual badge */}
           <Badge
-            variant="destructive"
+            variant="accent"
             className="relative rounded-full text-xs font-semibold flex items-center justify-center p-0 min-w-5 aspect-square"
           >
             {count}

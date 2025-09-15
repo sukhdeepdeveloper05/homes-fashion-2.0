@@ -34,8 +34,9 @@ export default function AuthHeader({ navLinks = [], profileLinks = [], user }) {
         />
       </button>
 
+      <div></div>
       {/* Nav Links */}
-      <ul className="hidden md:flex items-center space-x-6">
+      {/* <ul className="hidden md:flex items-center space-x-6">
         {navLinks.map(({ href, label }) => (
           <li key={href}>
             <Link
@@ -51,7 +52,7 @@ export default function AuthHeader({ navLinks = [], profileLinks = [], user }) {
             </Link>
           </li>
         ))}
-      </ul>
+      </ul> */}
 
       {/* Profile Dropdown */}
       <DropdownMenu>

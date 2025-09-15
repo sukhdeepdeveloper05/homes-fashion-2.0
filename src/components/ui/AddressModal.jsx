@@ -36,7 +36,7 @@ export default function AddressModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="flex min-w-[950px] min-h-[650px] p-0 overflow-hidden"
+        className="flex md:min-h-[540px] w-[calc(100%-40px)] md:!max-w-[1000px] p-0 overflow-hidden"
         overlayClassName="overlay"
         showCloseButton={false}
         aria-describedby={undefined}
@@ -152,12 +152,12 @@ function MainContent({ defaultCoordinates, initialData, onSuccess }) {
     <>
       <DialogTitle className="hidden">Select address</DialogTitle>
       {/* Map container */}
-      <div className="grid grid-cols-12 w-full">
-        <div className="w-full h-full col-span-7 relative">
+      <div className="md:grid grid-cols-[1fr_1fr] w-full overflow-auto">
+        <div className="w-full aspect-square h-auto relative">
           <div className="w-full h-full relative" ref={mapContainerRef} />
         </div>
 
-        <div className="col-span-5 p-4 py-6 flex flex-col">
+        <div className="p-4 py-6 flex flex-col">
           <LocationSearch
             moveMarkerTo={moveMarkerTo}
             onLocationChange={onLocationChange}
@@ -211,7 +211,7 @@ function MainContent({ defaultCoordinates, initialData, onSuccess }) {
               </form>
             </Form>
             <Button
-              className="text-sm font-semibold"
+              className="text-sm font-semibold mt-5"
               onClick={() => {
                 console.log(form.formState.errors);
                 form.handleSubmit(onSubmit)();

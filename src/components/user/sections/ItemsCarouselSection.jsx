@@ -49,16 +49,16 @@ function ProductCard({ item, collectionId }) {
         )}
       </div>
 
-      <div className="mt-2 flex flex-col">
-        <h2 className="text-xl font-semibold text-foreground-primary">
+      <div className="mt-3 flex flex-col">
+        <h2 className="text-xl font-semibold text-foreground-primary mb-1">
           {item.title}
         </h2>
-        <span className="text-sm text-foreground-primary flex items-center gap-1 mb-1">
+        {/* <span className="text-sm text-foreground-primary flex items-center gap-1 mb-1">
           <FaStar className="text-[#FFC02D] size-3" />
-          <span>{/* {item.rating} */}3.3</span>
-          <span>({/* {item.ratingCount} */}3k reviews)</span>
-        </span>
-        <p className="text-foreground-primary text-lg font-semibold">
+          <span>{item.rating}</span>
+          <span>({item.ratingCount})</span>
+        </span> */}
+        <p className="text-accent-primary text-lg font-semibold">
           {formatPrice(item.price)}
         </p>
       </div>
@@ -93,16 +93,20 @@ export default function ItemsCarouselSection({
 
   return (
     <section className={cn("w-full", wrapperClass)}>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between max-md:flex-col max-md:gap-2 mb-6 md:mb-8">
         {heading && (
-          <h1 className={cn("text-3xl font-bold", headingClass)}>{heading}</h1>
+          <h1 className={cn("text-[26px] md:text-3xl font-bold", headingClass)}>
+            {heading}
+          </h1>
         )}
-        <Link
-          href={moreUrl}
-          className="text-sm text-foreground-primary border border-gray-300 hover:border-gray-400 px-3 py-1.5 rounded-md transition-colors"
-        >
-          See all
-        </Link>
+        {slides.length > 5 && (
+          <Link
+            href={moreUrl}
+            className="uppercase underline underline-offset-4 font-semibold hover:decoration-2"
+          >
+            View all
+          </Link>
+        )}
       </div>
 
       {isLoading ? (
@@ -116,8 +120,10 @@ export default function ItemsCarouselSection({
         <Carousel>
           <CarouselContent
             gap="1rem"
-            slidesPerView={5}
             className={cn(itemsContentClass)}
+            slidesPerViewDesktop={5}
+            slidesPerViewTablet={3}
+            slidesPerViewMobile={2}
           >
             {slides.map((item, idx) => (
               <CarouselItem

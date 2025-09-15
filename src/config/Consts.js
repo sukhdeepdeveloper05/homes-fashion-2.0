@@ -34,7 +34,7 @@ export const PYAMENT_STATUSES = [
 export const ORDER_STATUSES = [
   { value: "pending", label: "Pending", key: "PENDING" },
   { value: "fulfilled", label: "Fulfilled", key: "FULFILLED" },
-  { value: "unfulfilled", label: "Un Fulfilled", key: "UN_FULFILLED" },
+  { value: "unfulfilled", label: "Unfulfilled", key: "UN_FULFILLED" },
   { value: "scheduled", label: "Scheduled", key: "SCHEDULED" },
   { value: "on hold", label: "On Hold", key: "ON_HOLD" },
 ];

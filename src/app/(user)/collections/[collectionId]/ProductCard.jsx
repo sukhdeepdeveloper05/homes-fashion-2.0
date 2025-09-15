@@ -15,14 +15,14 @@ export default function ProductCard({ product }) {
     <Card
       key={product.id}
       id={product.id}
-      className="scroll-mt-[calc(var(--header-height)+2rem)] p-6 min-w-[440px] cursor-pointer"
-      onClick={() => {
-        setProduct(product);
-      }}
+      className="scroll-mt-[calc(var(--header-height)+2rem)] p-0"
+      // onClick={() => {
+      //   setProduct(product);
+      // }}
     >
       <CardContent className="p-0">
-        <div className="space-y-6">
-          <div className="w-full rounded-xl overflow-hidden">
+        <div>
+          <div className="w-full rounded-t-xl overflow-hidden">
             <Image
               src={`${MEDIA_URL}${product.featuredImage?.src}`}
               width={1280}
@@ -31,15 +31,15 @@ export default function ProductCard({ product }) {
               className="w-full object-cover aspect-[16/10]"
             />
           </div>
-          <div className="w-full h-full flex justify-between items-start">
+          <div className="w-full h-full flex justify-between items-start px-4 py-5">
             <div>
-              <h4 className="font-bold text-foreground-primary">
+              <h4 className="text-xl font-bold text-foreground-primary">
                 {product.title}
               </h4>
-              <p className="text-sm text-muted-foreground">
+              {/* <p className="text-sm text-muted-foreground">
                 {product.description}
-              </p>
-              <p className="text-sm mt-2">
+              </p> */}
+              <p className="mt-2">
                 <span className="font-semibold mr-1">
                   Starts at {formatPrice(product.price)}
                 </span>
@@ -50,7 +50,10 @@ export default function ProductCard({ product }) {
               <Button
                 appearance="linkAccent"
                 size="small"
-                className="no-underline p-0 hover:opacity-80 mt-4"
+                className="p-0 hover:opacity-80 mt-3 rounded-none"
+                onClick={() => {
+                  setProduct(product);
+                }}
               >
                 View Details
               </Button>

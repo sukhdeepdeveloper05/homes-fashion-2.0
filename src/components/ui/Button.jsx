@@ -48,7 +48,7 @@ export default function Button({
     : variantClasses[variant][appearance];
 
   const finalClassName = cn(
-    "button inline-flex items-center justify-center gap-2 relative overflow-hidden",
+    "button inline-flex items-center justify-center gap-2 relative overflow-hidden disabled:pointer-events-none disabled:opacity-80",
     sizeClasses[size],
     variantClass,
     isLoading &&
@@ -119,7 +119,7 @@ export default function Button({
 
       <span
         className={cn(
-          "inline-flex items-center gap-2 relative z-10"
+          "inline-flex items-center gap-2 relative z-[1]"
           // isLoading && "invisible"
         )}
       >

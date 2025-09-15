@@ -141,7 +141,7 @@ export default function CheckoutContent({ params, isLoggedIn }) {
 
   if (!isCartLoaded || isSavedAddressesLoading) {
     return (
-      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 py-10 min-h-[540px]">
+      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 py-10 min-h-[540px]">
         {/* LEFT SIDE Skeleton */}
         <div className="space-y-6">
           <SkeletonBox className="h-10 w-full" />
@@ -157,11 +157,11 @@ export default function CheckoutContent({ params, isLoggedIn }) {
   }
 
   return (
-    <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 py-10 min-h-[540px]">
+    <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 py-10 min-h-[540px]">
       {/* LEFT SIDE - Steps */}
       <div>
         {/* Step header */}
-        <div className="flex items-center justify-between gap-2 mb-6">
+        <div className="flex items-center justify-between gap-2 mb-6 max-sm:flex-col max-sm:gap-5">
           <div className="flex items-center gap-2">
             {steps.map((step, i) => (
               <div key={step.id} className="flex items-center cursor-default">
@@ -211,7 +211,7 @@ export default function CheckoutContent({ params, isLoggedIn }) {
               transition={{ duration: 0.18 }}
               className="w-full"
             >
-              <div className="border rounded-lg p-6 shadow-sm flex-1">
+              <div className="border rounded-lg p-5 shadow-sm flex-1">
                 <h3 className="text-2xl font-bold mb-3">{currentStep.label}</h3>
 
                 {activeStep === "address" && (
@@ -242,7 +242,7 @@ export default function CheckoutContent({ params, isLoggedIn }) {
 
                 {activeStep === "payment" && (
                   <Button
-                    className="w-full"
+                    className="w-full mt-2"
                     onClick={handlePayment}
                     isLoading={createOrder.isPending}
                   >
@@ -257,9 +257,9 @@ export default function CheckoutContent({ params, isLoggedIn }) {
 
       {/* RIGHT SIDE - Summary */}
       <div className="space-y-6">
-        <div className="border rounded-lg p-6 shadow-sm space-y-4">
+        <div className="border rounded-lg p-5 shadow-sm space-y-4">
           <div>
-            <h2 className="text-lg font-semibold">Order Summary</h2>
+            <h2 className="text-xl font-bold mb-4">Order Summary</h2>
             <div className="flex items-center justify-between">
               <div>
                 <p>{item?.product?.title}</p>
@@ -272,7 +272,7 @@ export default function CheckoutContent({ params, isLoggedIn }) {
           </div>
           <Separator />
           <div className="space-y-4 text-sm">
-            <h2 className="text-lg font-semibold">Payment Summary</h2>
+            <h2 className="text-xl font-bold mb-3">Payment Summary</h2>
             <div className="flex justify-between items-center">
               <span>Item total</span>
               <span className="font-semibold">

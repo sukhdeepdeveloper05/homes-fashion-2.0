@@ -14,10 +14,10 @@ export default function ProfileLayout({ children }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex container flex-1 md:flex-row flex-col bg-white relative h-full">
+    <div className="flex flex-1 md:flex-row flex-col bg-white relative h-full">
       {/* Sidebar */}
-      <aside className="md:w-64 md:border-r bg-gray-50 px-4 md:py-12 py-4">
-        <nav className="flex md:flex-col justify-center gap-2">
+      <aside className="md:w-64 lg:w-80 md:border-r md:border-b bg-background-secondary px-5 md:py-12 py-4">
+        <nav className="flex md:flex-col justify-center gap-2 overflow-auto max-sm:justify-start">
           {tabs.map((tab) => {
             const isActive = pathname === tab.href;
             return (
@@ -25,7 +25,7 @@ export default function ProfileLayout({ children }) {
                 key={tab.href}
                 href={tab.href}
                 className={cn(
-                  "inline-flex rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                  "inline-flex rounded-lg px-4 py-3 font-medium transition-colors max-sm:text-sm max-sm:text-center whitespace-nowrap",
                   isActive
                     ? "bg-foreground-primary text-white"
                     : "text-gray-700 hover:bg-gray-200"
@@ -39,7 +39,9 @@ export default function ProfileLayout({ children }) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 px-6 py-12 overflow-y-auto">{children}</main>
+      <main className="flex-1 px-5 py-8 md:py-12 overflow-y-auto">
+        {children}
+      </main>
     </div>
   );
 }
