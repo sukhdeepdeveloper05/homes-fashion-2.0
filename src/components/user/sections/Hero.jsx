@@ -18,6 +18,7 @@ export default function HeroSection({ collections }) {
             autoPlay
             muted
             loop
+            playsInline
             className="w-full h-full object-cover object-center"
           >
             <source src="/house-cleaning.mp4" type="video/mp4" />
