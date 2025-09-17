@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AuthModal from "../modals/Auth";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -34,11 +34,30 @@ export default function Header({ user }) {
   const pathname = usePathname();
 
   const { isError } = useError();
-
   const darkRoutes = ["/"];
   const isDark = !isError && darkRoutes.includes(pathname);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const headerRef = useRef();
+
+  useEffect(() => {
+    function handleResize() {
+      if (headerRef.current) {
+        const headerHeight = headerRef.current.offsetHeight;
+        document
+          .querySelector(":root")
+          .style.setProperty("--header-height", `${headerHeight}px`);
+      }
+    }
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [headerRef.current]);
 
   const { data: { collections = [] } = {} } = useListQuery({
     handle: "collections",
@@ -53,6 +72,7 @@ export default function Header({ user }) {
         isDark && "dark absolute inset-0 z-50 bottom-auto bg-transparent",
         !isDark && "bg-white sticky top-0 z-50"
       )}
+      ref={headerRef}
     >
       <div className="grid grid-cols-2 md:grid-cols-[140px_1fr_140px] xl:grid-cols-3 items-center justify-between px-5 lg:px-10 py-3 lg:py-5 border-b dark:border-white/20 border-black/10">
         <div className="flex items-center">

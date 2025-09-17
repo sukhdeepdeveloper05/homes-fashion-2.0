@@ -16,6 +16,9 @@ export default function PromotionCarousel({
   return (
     <Carousel
       autoScroll
+      opts={{
+        watchDrag: false,
+      }}
       className={`border-b border-black/10 w-full overflow-hidden ${className}`}
     >
       <CarouselContent
@@ -26,7 +29,7 @@ export default function PromotionCarousel({
           <CarouselItem
             key={index}
             slideWidthAuto
-            className="flex items-center justify-evenly gap-8 md:gap-12 text-center min-w-fit"
+            className="flex items-center justify-evenly gap-8 md:gap-12 text-center min-w-fit select-none cursor-default"
           >
             {item.image && (
               <Image

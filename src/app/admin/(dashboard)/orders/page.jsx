@@ -6,7 +6,7 @@ export default async function OrdersPage({ searchParams }) {
 
   const normalizedParams = {
     page: Number(rawParams.page) || 1,
-    perPage: Math.min(Number(rawParams.rawPerPage) || 10, 50),
+    perPage: Math.min(Number(rawParams.perPage) || 10, 50),
     search: rawParams.search ?? null,
     sortBy: rawParams.sortBy ?? "updatedAt",
     sortDir: rawParams.sortDir ?? "desc",

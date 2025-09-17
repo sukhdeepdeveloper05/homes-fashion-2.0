@@ -41,7 +41,7 @@ export function CartProvider({ children, user }) {
   // React Query hooks
   const { data: serverCart, isFetching } = useCartQuery(user);
   const { mutateAsync: addItemMutation, isPending: isAdding } =
-    useAddCartItem();
+    useAddCartItem(user);
   const deleteItemMutation = useDeleteCartItem();
 
   // ✅ Attach onSuccess directly here

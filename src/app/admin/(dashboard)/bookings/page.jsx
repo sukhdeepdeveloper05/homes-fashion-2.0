@@ -7,7 +7,7 @@ export default async function BookingsPage({ searchParams }) {
 
   const normalizedParams = {
     page: Number(rawParams.page) || 1,
-    perPage: Math.min(Number(rawParams.rawPerPage) || 10, 50),
+    perPage: Math.min(Number(rawParams.perPage) || 10, 50),
     search: rawParams.search ?? null,
     sortBy: rawParams.sortBy ?? "bookedAt",
     sortDir: rawParams.sortDir ?? "asc",

@@ -41,7 +41,10 @@ export default function OrdersContent({ searchParams }) {
       title: "Customer",
       key: "customer",
       type: "text",
-      render: (row) => row.customer.name,
+      render: (row) => {
+        console.log(row);
+        return row.customer.name;
+      },
     },
     {
       title: "Order Status",
