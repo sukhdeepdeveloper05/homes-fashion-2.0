@@ -44,6 +44,12 @@ const ADMIN_NAV = [
     href: "/admin/bookings",
     roles: ["admin"],
   },
+  {
+    name: "Media",
+    icon: "MdOutlinePermMedia",
+    href: "/admin/media",
+    roles: ["admin"],
+  },
 ];
 
 const FOOTER_NAV = [

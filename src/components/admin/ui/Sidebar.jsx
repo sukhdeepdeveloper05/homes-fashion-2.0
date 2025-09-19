@@ -14,6 +14,8 @@ import { LuBox, LuUsersRound } from "react-icons/lu";
 import { TbShoppingCartDollar } from "react-icons/tb";
 import { RiUserStarLine } from "react-icons/ri";
 import { FiCalendar } from "react-icons/fi";
+import { MdOutlinePermMedia } from "react-icons/md";
+
 import Logo from "@/components/ui/Logo";
 
 export const iconMap = {
@@ -26,6 +28,7 @@ export const iconMap = {
   TbShoppingCartDollar,
   RiUserStarLine,
   FiCalendar,
+  MdOutlinePermMedia,
 };
 
 export default function Sidebar({ logo, routes = [], footerRoutes = [] }) {

@@ -53,7 +53,7 @@ export function useInfiniteListQuery({
 }) {
   return useInfiniteQuery({
     queryKey,
-    queryFn: async ({ pageParam = 1 }) =>
+    queryFn: async ({ pageParam = params?.page || 1 }) =>
       await getData({
         url,
         params: { ...params, page: pageParam },

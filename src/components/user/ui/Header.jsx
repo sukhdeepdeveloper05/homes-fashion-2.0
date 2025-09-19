@@ -102,7 +102,6 @@ export default function Header({ user }) {
                 pathname.startsWith("/services") ||
                 pathname.startsWith("/collections")
               }
-              iconClass="absolute -right-5"
             >
               <span className="flex items-center gap-2">Services</span>
             </DropdownMenuTrigger>

@@ -69,7 +69,7 @@ export default function Table({
 
   return (
     <div className="w-full overflow-auto mt-6">
-      <ShadcnTable className="md:table-fixed">
+      <ShadcnTable className="">
         <TableHeader>
           <TableRow className={"border-none bg-gray-100"}>
             {headings.map((h) => (
@@ -142,7 +142,7 @@ const cellRenderers = {
       return (
         <div className="flex items-center gap-2">
           <span className="flex-shrink-0 rounded-md overflow-hidden bg-foreground-secondary flex items-center justify-center uppercase text-xl font-bold text-white size-10">
-            {row.featuredImage || row.avatar ? (
+            {row?.featuredImage || row?.avatar ? (
               <Image
                 src={`${MEDIA_URL}${row.featuredImage?.src || row.avatar.src}`}
                 alt=""
