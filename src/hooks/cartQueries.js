@@ -37,7 +37,7 @@ export function useAddCartItem(user) {
 }
 
 // Update cart item quantity (and optional fields like address or bookingTime)
-export function useUpdateCartItem({ ...mutationOptions }) {
+export function useUpdateCartItem(user,{ ...mutationOptions }) {
   return useMutation({
     mutationFn: async ({ id, quantity, address, bookingTime }) => {
       if (!user || user.role !== "customer") {
@@ -59,7 +59,7 @@ export function useUpdateCartItem({ ...mutationOptions }) {
 }
 
 // Delete cart item
-export function useDeleteCartItem() {
+export function useDeleteCartItem(user) {
   return useMutation({
     mutationFn: async (id) => {
       if (!user || user.role !== "customer") {

@@ -42,10 +42,10 @@ export function CartProvider({ children, user }) {
   const { data: serverCart, isFetching } = useCartQuery(user);
   const { mutateAsync: addItemMutation, isPending: isAdding } =
     useAddCartItem(user);
-  const deleteItemMutation = useDeleteCartItem();
+  const deleteItemMutation = useDeleteCartItem(user);
 
   // ✅ Attach onSuccess directly here
-  const updateItemMutation = useUpdateCartItem({
+  const updateItemMutation = useUpdateCartItem(user, {
     onSuccess: (updatedItem, { id }) => {
       updateItem(updatedItem, id);
     },
