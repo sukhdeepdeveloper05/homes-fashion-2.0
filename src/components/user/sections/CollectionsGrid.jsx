@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MEDIA_URL } from "@/config/Consts";
+import { PiImage } from "react-icons/pi";
 
 export default function CollectionsGrid({ collections }) {
   return (
@@ -25,13 +26,19 @@ export default function CollectionsGrid({ collections }) {
               href={`/collections/${collection.id}`}
               className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition"
             >
-              <Image
-                src={MEDIA_URL + collection.featuredImage.src}
-                alt={collection.title}
-                width={600}
-                height={400}
-                className="w-full h-84 object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+              {collection?.featuredImage?.src ? (
+                <Image
+                  src={MEDIA_URL + collection?.featuredImage?.src}
+                  alt={collection.title}
+                  width={600}
+                  height={400}
+                  className="w-full h-84 object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-84 bg-gray-300">
+                  <PiImage className="size-8" />
+                </div>
+              )}
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition" />
               <div className="absolute bottom-6 left-6 text-white">
                 <h3 className="text-2xl font-semibold">{collection.title}</h3>

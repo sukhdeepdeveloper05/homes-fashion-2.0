@@ -117,7 +117,7 @@ function ProductsList({ collectionId, search }) {
                 <span
                   className={`flex-shrink-0 rounded-md overflow-hidden bg-foreground-secondary flex items-center justify-center uppercase text-xl font-bold text-white size-10`}
                 >
-                  {product.featuredImage ? (
+                  {product?.featuredImage ? (
                     <Image
                       src={`${MEDIA_URL}${product.featuredImage.src}`}
                       alt=""

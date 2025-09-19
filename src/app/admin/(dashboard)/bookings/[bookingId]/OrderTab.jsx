@@ -2,12 +2,13 @@ import { MEDIA_URL } from "@/config/Consts";
 import { formatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
 import React from "react";
+import { PiImage } from "react-icons/pi";
 
 export default function OrderTab({ orderItem, isLoading }) {
   return (
     <div>
       <div className="flex gap-4">
-        {orderItem?.product?.featuredImage?.src && (
+        {orderItem?.product?.featuredImage?.src ? (
           <Image
             src={`${MEDIA_URL}${orderItem.product.featuredImage.src}`}
             alt={orderItem.product.featuredImage.altText}
@@ -15,6 +16,10 @@ export default function OrderTab({ orderItem, isLoading }) {
             height={400}
             className="rounded-lg border object-contain"
           />
+        ) : (
+          <div className="flex items-center justify-center size-[400px] rounded-lg bg-gray-300">
+            <PiImage className="size-8" />
+          </div>
         )}
         <div className="flex flex-col gap-2">
           <h2 className="font-bold text-2xl">{orderItem?.product?.title}</h2>

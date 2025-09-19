@@ -58,7 +58,9 @@ export default function CollectionLayout({ children, params }) {
                 <DropZone
                   name="featuredImage"
                   label=""
-                  initial={[details?.featuredImage]}
+                  initial={
+                    details?.featuredImage ? [details?.featuredImage] : []
+                  }
                   onChange={async (files) => {
                     await updateCollectionMutation.mutateAsync({
                       id: collectionId,

@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { formatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
 import Link from "next/link";
+import { PiImage } from "react-icons/pi";
 import { FaStar } from "react-icons/fa";
 
 // 🟢 Skeleton Card
@@ -43,8 +44,8 @@ function ProductCard({ item, collectionId }) {
             className="object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center w-full h-full text-gray-400">
-            No Image
+          <div className="flex items-center justify-center w-full h-full bg-gray-300">
+            <PiImage className="size-8" />
           </div>
         )}
       </div>

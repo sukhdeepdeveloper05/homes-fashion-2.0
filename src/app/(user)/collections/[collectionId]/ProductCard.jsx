@@ -7,6 +7,7 @@ import AddToCartButton from "./AddToCartButton";
 import { MEDIA_URL } from "@/config/Consts";
 import { useProductContext } from "@/store/productContext";
 import Button from "@/components/ui/Button";
+import { PiImage } from "react-icons/pi";
 
 export default function ProductCard({ product }) {
   const { setProduct } = useProductContext();
@@ -23,13 +24,23 @@ export default function ProductCard({ product }) {
       <CardContent className="p-0">
         <div>
           <div className="w-full rounded-t-xl overflow-hidden">
-            <Image
-              src={`${MEDIA_URL}${product.featuredImage?.src}`}
-              width={1280}
-              height={640}
-              alt="Bathroom Cleaning"
-              className="w-full object-cover aspect-[16/10]"
-            />
+            {product?.featuredImage?.src ? (
+              <Image
+                src={`${MEDIA_URL}${product.featuredImage?.src}`}
+                width={1280}
+                height={640}
+                alt="Bathroom Cleaning"
+                className="w-full object-cover aspect-[16/10]"
+              />
+            ) : (
+              <div
+                width={1280}
+                height={640}
+                className="flex items-center justify-center w-full h-full aspect-[16/10] bg-gray-300"
+              >
+                <PiImage className="size-8" />
+              </div>
+            )}
           </div>
           <div className="w-full h-full flex justify-between items-start px-4 py-5">
             <div>

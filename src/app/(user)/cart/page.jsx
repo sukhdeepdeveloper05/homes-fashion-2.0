@@ -8,12 +8,13 @@ import Link from "next/link";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { useCartContext } from "@/store/cartContext";
 import { MEDIA_URL } from "@/config/Consts";
-import { useRouter } from "next/navigation";
 import { formatPrice } from "@/utils/formatPrice";
 import { SkeletonBox } from "@/components/ui/Skeletons";
 import CartIcon from "@/assets/icons/Cart";
 import AuthModal from "@/components/user/modals/Auth";
 import { useState } from "react";
+import { useRouter } from "nextjs-toploader/app";
+import { PiImage } from "react-icons/pi";
 
 function LoadingContent() {
   return (
@@ -75,13 +76,19 @@ export default function CartPage() {
             <Card key={item.id} className="shadow-sm border gap-0 p-6">
               <CardContent className="flex flex-col gap-0 p-0">
                 <div className="flex items-center gap-4 pb-4">
-                  <Image
-                    src={MEDIA_URL + item.product.featuredImage.src}
-                    alt={item.product.title}
-                    width={400}
-                    height={400}
-                    className="rounded-md object-cover aspect-square w-20"
-                  />
+                  {item?.product?.featuredImage?.src ? (
+                    <Image
+                      src={MEDIA_URL + item.product.featuredImage.src}
+                      alt={item.product.title}
+                      width={400}
+                      height={400}
+                      className="rounded-md object-cover aspect-square w-20"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center rounded-md w-20 h-full aspect-square bg-gray-300">
+                      <PiImage className="size-6" />
+                    </div>
+                  )}
                   <div className="space-y-1.5">
                     <h2 className="text-xl font-bold">{item.product.title}</h2>
                     <p className="text-muted-foreground">

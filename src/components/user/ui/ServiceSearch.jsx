@@ -9,6 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { MEDIA_URL } from "@/config/Consts";
 import { formatPrice } from "@/utils/formatPrice";
+import { PiImage } from "react-icons/pi";
 
 export default function ServiceSearch() {
   const router = useRouter();
@@ -44,8 +45,6 @@ export default function ServiceSearch() {
       });
     }
   }, [inputRef.current]);
-
-  console.log(isLoading, search.trim() !== "");
 
   return (
     <>
@@ -96,13 +95,19 @@ export default function ServiceSearch() {
                       className="px-4 py-2 cursor-pointer flex items-center gap-4"
                     >
                       <div className="relative aspect-square w-22 overflow-hidden rounded-lg">
-                        <Image
-                          src={MEDIA_URL + service.featuredImage.src}
-                          alt=""
-                          width={120}
-                          height={100}
-                          className="w-full object-cover object-top h-full absolute inset-0"
-                        />
+                        {service?.featuredImage?.src ? (
+                          <Image
+                            src={MEDIA_URL + service.featuredImage.src}
+                            alt=""
+                            width={120}
+                            height={100}
+                            className="w-full object-cover object-top h-full absolute inset-0"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center w-full h-full bg-gray-300">
+                            <PiImage className="size-6" />
+                          </div>
+                        )}
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold">{service.title}</span>

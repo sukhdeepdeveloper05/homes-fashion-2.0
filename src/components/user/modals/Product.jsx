@@ -16,6 +16,7 @@ import Button from "@/components/ui/Button";
 import Faqs from "../ui/Faqs";
 import AddToCartButton from "@/app/(user)/collections/[collectionId]/AddToCartButton";
 import { formatPrice } from "@/utils/formatPrice";
+import { PiImage } from "react-icons/pi";
 
 export default function ProductModal({ product, open, onOpenChange }) {
   return (
@@ -30,12 +31,18 @@ export default function ProductModal({ product, open, onOpenChange }) {
           <div className="overflow-hidden rounded-2xl flex-1 flex flex-col bg-background-primary">
             <div className="overflow-auto">
               <div className="relative aspect-video w-full">
-                <Image
-                  src={MEDIA_URL + product.featuredImage.src}
-                  alt={product.title}
-                  fill
-                  className="object-cover"
-                />
+                {product?.featuredImage?.src ? (
+                  <Image
+                    src={MEDIA_URL + product.featuredImage.src}
+                    alt={product.title}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full bg-gray-300">
+                    <PiImage className="size-8" />
+                  </div>
+                )}
               </div>
               {/* Product Info */}
               <div className="">

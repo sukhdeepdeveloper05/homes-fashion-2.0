@@ -6,6 +6,7 @@ import Image from "next/image";
 import { cache } from "react";
 import { FaCheck } from "react-icons/fa6";
 import ProductCard from "./ProductCard";
+import { PiImage } from "react-icons/pi";
 
 export const revalidate = 0;
 
@@ -39,14 +40,24 @@ export default async function CollectionPage({ params }) {
         <div className="space-y-10 lg:space-y-14">
           <div className="space-y-6 lg:space-y-8">
             <div className="rounded-lg overflow-hidden">
-              <Image
-                src={`${MEDIA_URL}${details.featuredImage?.src}`}
-                width={1600}
-                height={900}
-                priority
-                alt={details.featuredImage?.altText || details.title}
-                className="object-cover object-bottom aspect-video"
-              />
+              {details?.featuredImage?.src ? (
+                <Image
+                  src={`${MEDIA_URL}${details.featuredImage?.src}`}
+                  width={1600}
+                  height={900}
+                  priority
+                  alt={details.featuredImage?.altText || details.title}
+                  className="object-cover object-bottom aspect-video"
+                />
+              ) : (
+                <div
+                  width={1600}
+                  height={900}
+                  className="flex items-center justify-center w-full h-full aspect-video bg-gray-300"
+                >
+                  <PiImage className="size-8" />
+                </div>
+              )}
             </div>
             <h1 className="text-2xl lg:text-3xl xl:text-4xl text-foreground-primary font-bold mb-3 lg:mb-5 text-center">
               {details.title}

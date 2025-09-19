@@ -199,7 +199,7 @@ export default function AddNewProduct() {
       type: "dropzone",
       placeholder: "Select Featured Image",
       value: initialValues.featuredImage,
-      initial: [initialData?.featuredImage],
+      initial: initialValues.featuredImage ? [initialData?.featuredImage] : [],
       onChange: (file, form) => {
         form.setValue("featuredImage", file);
       },
