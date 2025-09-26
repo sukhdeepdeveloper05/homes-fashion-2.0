@@ -8,6 +8,7 @@ import DeleteModal from "./DeleteModal";
 
 export default function DeleteButton({
   isLoading,
+  disabled,
   onDelete,
   deleteId,
   showDialog,
@@ -42,7 +43,7 @@ export default function DeleteButton({
             await handleDelete();
           }
         }}
-        disabled={isDeleting}
+        disabled={disabled || isDeleting}
         className={cn(
           "rounded-md bg-red-600 flex items-center justify-center text-lg",
           !children && "size-8",
@@ -56,7 +57,7 @@ export default function DeleteButton({
             <BiTrash className="text-white" />
           ))}
 
-        {!children && isDeleting && !showDialog ? (
+        {children && isDeleting && !showDialog ? (
           <FiLoader className="animate-spin text-white" />
         ) : (
           children
