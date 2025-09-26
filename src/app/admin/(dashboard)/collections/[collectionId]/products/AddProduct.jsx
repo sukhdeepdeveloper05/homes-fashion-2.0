@@ -3,7 +3,7 @@
 import Checkbox from "@/components/ui/fields/Checkbox";
 import SidebarModal from "@/components/admin/ui/modals/SidebarModal";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FiLoader } from "react-icons/fi";
 import {
   invalidateQueries,
@@ -38,8 +38,8 @@ export default function AddProductToCollectionModal({ collectionId }) {
         id: collectionId,
         values: { products: values.products },
       });
-      form.reset();
       close();
+      form.reset();
       invalidateQueries("products");
       invalidateQueries(collectionId);
     } catch (error) {}
@@ -65,12 +65,19 @@ export default function AddProductToCollectionModal({ collectionId }) {
     },
   ];
 
+  const defaultValues = useMemo(
+    () => ({
+      products: [],
+    }),
+    []
+  );
+
   return (
     <SidebarModal
       open={isShown}
       onClose={close}
       schema={schema}
-      defaultValues={{ products: [] }}
+      defaultValues={defaultValues}
       title={`Add Products`}
       list={fields}
       submitLabel={"Add"}
@@ -87,7 +94,7 @@ function ProductsList({ collectionId, search }) {
   const {
     data: { products = [] } = {},
     isFetchingNextPage,
-    isFetching,
+    isLoading,
     fetchNextPage,
     hasNextPage,
   } = useInfiniteListQuery({
@@ -109,50 +116,62 @@ function ProductsList({ collectionId, search }) {
 
   return (
     <div className="flex-1 overflow-y-auto border-t border-gray-200">
-      <ul className="min-h-1/2">
-        {products.map((product) => (
-          <li key={product.id}>
-            <label className="border-b border-gray-200 py-3 text-sm flex items-center justify-between px-4 select-none cursor-pointer">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`flex-shrink-0 rounded-md overflow-hidden bg-foreground-secondary flex items-center justify-center uppercase text-xl font-bold text-white size-10`}
-                >
-                  {product?.featuredImage ? (
-                    <Image
-                      src={`${MEDIA_URL}${product.featuredImage.src}`}
-                      alt=""
-                      width={100}
-                      height={100}
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    product.title[0]
-                  )}
-                </span>
-                <span className="line-clamp-1 text-ellipsis">
-                  {product.title}
-                </span>
-              </div>
-              <Checkbox
-                key={product.id + "checkbox"}
-                name={product.id + "checkbox"}
-                className="flex"
-                checked={product?.checked ?? false}
-                disabled={product?.checked ?? false}
-                onChange={(checked) => {
-                  onChange(
-                    checked
-                      ? [...productsIds, product.id]
-                      : productsIds.filter((id) => id !== product.id)
-                  );
-                }}
-              />
-            </label>
-          </li>
-        ))}
-      </ul>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <FiLoader className="animate-spin text-2xl text-foreground-primary" />
+        </div>
+      ) : (
+        !products.length > 0 && (
+          <div className="flex justify-center items-center h-full">
+            <span className="text-gray-500">No products found</span>
+          </div>
+        )
+      )}
+      {!isLoading && products.length > 0 && (
+        <ul>
+          {products.map((product) => (
+            <li key={product.id}>
+              <label className="border-b border-gray-200 py-3 text-sm flex items-center justify-between px-4 select-none cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`flex-shrink-0 rounded-md overflow-hidden bg-foreground-secondary flex items-center justify-center uppercase text-xl font-bold text-white size-10`}
+                  >
+                    {product?.featuredImage ? (
+                      <Image
+                        src={`${MEDIA_URL}${product.featuredImage.src}`}
+                        alt=""
+                        width={100}
+                        height={100}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      product.title[0]
+                    )}
+                  </span>
+                  <span className="line-clamp-1 text-ellipsis">
+                    {product.title}
+                  </span>
+                </div>
+                <Checkbox
+                  key={product.id + "checkbox"}
+                  name={product.id + "checkbox"}
+                  className="flex"
+                  checked={productsIds.includes(product.id)}
+                  onChange={(checked) => {
+                    onChange(
+                      checked
+                        ? [...productsIds, product.id]
+                        : productsIds.filter((id) => id !== product.id)
+                    );
+                  }}
+                />
+              </label>
+            </li>
+          ))}
+        </ul>
+      )}
 
-      {isFetching ? (
+      {isFetchingNextPage ? (
         <div className="flex items-center justify-center p-4">
           <FiLoader className="animate-spin text-2xl text-foreground-primary" />
         </div>
