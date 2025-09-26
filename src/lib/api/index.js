@@ -50,9 +50,9 @@ export async function updateData({
   }
 }
 
-export async function deleteData({ url, params, requiresAuth = true }) {
+export async function deleteData({ url, params, data, requiresAuth = true }) {
   try {
-    return await axios.delete(url, { params, meta: { requiresAuth } });
+    return await axios.delete(url, { params, data, meta: { requiresAuth } });
   } catch (error) {
     throw new Error(
       error.message ?? error.data.message ?? "Something went wrong"

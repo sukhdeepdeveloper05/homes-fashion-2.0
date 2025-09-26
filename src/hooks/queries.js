@@ -163,10 +163,11 @@ export function useUpdateMutation({
 export function useDeleteMutation({ handle, url, mutationOptions = {} }) {
   return useMutation({
     mutationKey: [`delete${handle}`],
-    mutationFn: async (id) =>
+    mutationFn: async ({id, body, ...params}) =>
       await deleteData({
-        url: `${url}/${id}`,
-        params: { id },
+        url: id ? `${url}/${id}` : url,
+        params: { id, ...params },
+        data: body,
         requiresAuth: true,
       }),
     onSuccess: () => {
