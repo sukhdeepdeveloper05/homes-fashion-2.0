@@ -40,6 +40,10 @@ export default function StatusSelectField({
   }, [value]);
 
   const handleSelectionChange = async (newValue) => {
+    if (hideOptions) {
+      return;
+    }
+
     if (newValue === "__create__") {
       onCreate();
       return;
@@ -50,13 +54,19 @@ export default function StatusSelectField({
       ? String(newValue)
       : Number(newValue);
 
+    try {
+      onChange && (await onChange(parsedValue !== "null" ? parsedValue : null));
+    } catch (error) {
+      console.log(error.message);
+      setIsLoading(false);
+      return;
+    }
     setSelected(options.find((opt) => String(opt.value) === String(newValue)));
-    onChange && (await onChange(parsedValue !== "null" ? parsedValue : null));
     setIsLoading(false);
   };
 
   return (
-    <div className={`w-full ${className}`} key={name}>
+    <div className={cn("w-full", className)} key={name}>
       {label && (
         <label
           htmlFor={name}
@@ -78,7 +88,7 @@ export default function StatusSelectField({
       >
         <SelectTrigger
           className={cn(
-            "w-fit uppercase text-xs font-semibold truncate border-0 py-1.5 data-[options-hidden=true]:pointer-events-none disabled:opacity-100",
+            "w-fit uppercase text-xs font-semibold truncate border-0 py-1.5 data-[options-hidden=true]:pointer-events-none disabled:opacity-100 disabled:cursor-default",
             STATUS[selected?.key],
             { "opacity-50 pointer-events-none": isLoading }
           )}

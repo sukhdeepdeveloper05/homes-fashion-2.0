@@ -1,39 +1,33 @@
 "use client";
 
-import { forwardRef, useState } from "react";
 import { Checkbox as SCheckbox } from "@/components/shadcn/checkbox";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
-export default forwardRef(function Checkbox(
-  {
-    title,
-    className = "",
-    inputClass = "",
-    checked = false,
-    disabled = false,
-    onChange,
-    id = `chk-${title ?? "checkbox"}`,
-    name = "checkbox",
-    ...rest
-  },
-  ref
-) {
-  const [isChecked, setIsChecked] = useState(checked);
-
+export default function Checkbox({
+  title,
+  className = "",
+  inputClass = "",
+  checked = false,
+  disabled = false,
+  onChange,
+  id = `chk-${title ?? "checkbox"}`,
+  name = "checkbox",
+  ref,
+  ...rest
+}) {
   return (
-    <div className={clsx({ "flex items-center gap-2": title }, className)}>
+    <div className={cn({ "flex items-center gap-2": title }, className)}>
       <SCheckbox
         id={id}
         name={name}
-        checked={isChecked}
+        checked={checked}
         disabled={disabled}
         onCheckedChange={(val) => {
-          setIsChecked(!!val);
           onChange?.(!!val);
         }}
         ref={ref}
-        className={clsx(
-          "h-5 w-5 rounded border border-gray-300 flex-shrink-0 transition focus:outline-none shadow-none",
+        className={cn(
+          "h-5 w-5 rounded border border-gray-300 flex-shrink-0 transition focus:outline-none shadow-none bg-white",
           inputClass
         )}
         {...rest}
@@ -42,7 +36,7 @@ export default forwardRef(function Checkbox(
       {title && (
         <label
           htmlFor={id}
-          className={clsx(
+          className={cn(
             "font-medium cursor-pointer select-none",
             disabled ? "text-gray-400" : "text-gray-700"
           )}
@@ -52,4 +46,4 @@ export default forwardRef(function Checkbox(
       )}
     </div>
   );
-});
+}

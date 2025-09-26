@@ -104,7 +104,7 @@ export default function SavedAddressesPage() {
 
                     <DeleteButton
                       deleteId={addr.id}
-                      onDelete={deleteAddress}
+                      onDelete={async (id) => await deleteAddress({ id })}
                       title={"Delete Address"}
                       description={
                         "Are you sure you want to delete this address?"

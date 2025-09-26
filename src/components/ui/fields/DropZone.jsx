@@ -5,9 +5,9 @@ import Image from "next/image";
 import { FiX, FiUpload, FiLoader } from "react-icons/fi";
 import Button from "@/components/ui/Button";
 import { useUploadMutation } from "@/hooks/queries";
-import clsx from "clsx";
 import { MEDIA_URL } from "@/config/Consts";
 import { cn } from "@/lib/utils";
+import MediaPickerModal from "@/components/admin/ui/modals/Media";
 
 const ACCEPT_ALL = "image/*";
 
@@ -74,18 +74,24 @@ export default function DropZone({
 
   const shapeCls = shape === "circle" ? "rounded-full" : "rounded-lg";
 
-  console.log(files);
-
   return (
-    <div className={clsx("flex flex-col gap-2", className)}>
-      {label && (
-        <label
-          htmlFor={name}
-          className={clsx("font-medium text-foreground-primary", labelClass)}
-        >
-          {label}
-        </label>
-      )}
+    <div className={cn("flex flex-col gap-2", className)}>
+      <div className="flex items-center justify-between">
+        {label && (
+          <label
+            htmlFor={name}
+            className={cn("font-medium text-foreground-primary", labelClass)}
+          >
+            {label}
+          </label>
+        )}
+        <ModalButton
+          multi={multi}
+          accept={accept}
+          files={files}
+          setFiles={setFiles}
+        />
+      </div>
 
       <div
         className={cn(
@@ -108,7 +114,7 @@ export default function DropZone({
                 alt="preview"
                 fill
                 sizes="500px"
-                className={clsx("object-contain", shapeCls, imageClass)}
+                className={cn("object-contain", shapeCls, imageClass)}
                 {...imageProps}
               />
             ) : (
@@ -117,7 +123,7 @@ export default function DropZone({
                 alt="preview"
                 fill
                 sizes="500px"
-                className={clsx("object-contain", shapeCls, imageClass)}
+                className={cn("object-contain", shapeCls, imageClass)}
                 {...imageProps}
               />
             )}
@@ -172,5 +178,30 @@ export default function DropZone({
         </div>
       )}
     </div>
+  );
+}
+
+function ModalButton({ files, multi, accept, setFiles }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button type="button" onClick={() => setIsOpen(true)} className="">
+        Select
+      </button>
+      <MediaPickerModal
+        open={isOpen}
+        onClose={(_, selectedFiles) => {
+          console.log(selectedFiles);
+          if (selectedFiles) {
+            setFiles(selectedFiles);
+          }
+          setIsOpen(false);
+        }}
+        accept={accept}
+        files={files}
+        multi={multi}
+      />
+    </>
   );
 }

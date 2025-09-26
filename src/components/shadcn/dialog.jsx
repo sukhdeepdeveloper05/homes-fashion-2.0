@@ -23,11 +23,14 @@ function DialogClose({ className, ...props }) {
     <DialogPrimitive.Close
       data-slot="dialog-close"
       className={cn(
-        "data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-100 transition-opacity hover:opacity-90 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-100 transition-opacity focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
-    />
+    >
+      <XIcon className="size-5" />
+      <span className="sr-only hidden">Close</span>
+    </DialogPrimitive.Close>
   );
 }
 

@@ -22,14 +22,16 @@ import clsx from "clsx";
 import { FiX } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import MediaField from "@/components/ui/fields/MediaField";
+import { cn } from "@/lib/utils";
 
 const componentMap = {
   select: ({ multiple, ...props }) =>
     multiple ? <MultiSelectField {...props} /> : <SelectField {...props} />,
   date: (props) => <DatePicker {...props} />,
   checkbox: (props) => <Checkbox {...props} />,
-  dropzone: (props) => <DropZone {...props} />,
+  dropzone: (props) => <MediaField {...props} />,
   button: ({ label, onClick, ...props }) => (
     <Button onClick={onClick} variant="primary" {...props}>
       {label}
@@ -59,16 +61,23 @@ export default function SidebarModal({
   className = "",
   children,
 }) {
-  const form = useForm({
-    resolver: zodResolver(schema),
-    defaultValues,
-  });
+  const initialValues = useMemo(
+    () => ({
+      ...defaultValues,
+    }),
+    [defaultValues]
+  );
 
   useEffect(() => {
-    if (defaultValues) {
-      form.reset(defaultValues);
+    if (initialValues) {
+      form.reset(initialValues);
     }
-  }, [defaultValues, form]);
+  }, [initialValues]);
+
+  const form = useForm({
+    resolver: zodResolver(schema),
+    initialValues,
+  });
 
   const shapeItem = (item, idx) => {
     const Component = componentMap[item.type] ?? componentMap.default;
@@ -89,13 +98,13 @@ export default function SidebarModal({
     );
   };
 
-  // console.log(form.formState.errors);
+  console.log(form.getValues());
 
   return (
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose?.()}>
       <SheetContent
         side="right"
-        className={clsx(
+        className={cn(
           "flex flex-col gap-0 h-full shadow-xl data-[state=open]:duration-200",
           width,
           className
@@ -114,14 +123,14 @@ export default function SidebarModal({
         </SheetHeader>
 
         <div className="flex-1 flex flex-col overflow-y-auto">
-          <div className="shrink-0 bg-white px-4 py-5">
+          <div className="shrink-0 bg-white px-4 py-5 h-full">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(
                   (data) => onSubmit(data, form),
                   onInvalid
                 )}
-                className="space-y-5"
+                className="space-y-5 flex flex-col h-full"
               >
                 {list.map(shapeItem)}
                 {children}

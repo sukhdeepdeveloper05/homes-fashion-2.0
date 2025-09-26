@@ -73,7 +73,8 @@ export default function useProductsTableColumns() {
         try {
           await updateProduct({ id: productId, values: { status: value } });
         } catch (error) {
-          console.log(error.message);
+          console.log(error?.message);
+          throw new Error(error?.message || "Failed to update product status");
         }
       },
     },
@@ -95,7 +96,7 @@ export default function useProductsTableColumns() {
           show();
         },
         delete: {
-          onDelete: async (id) => await handleDelete(id),
+          onDelete: async (id) => await handleDelete({ id }),
           isLoading: deleteLoading,
           showDialog: true,
           title: "Delete Product",

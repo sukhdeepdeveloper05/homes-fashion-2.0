@@ -67,7 +67,7 @@ export default function PartnersContent({ searchParams }) {
           show();
         },
         delete: {
-          onDelete: async (id) => await handleDelete(id),
+          onDelete: async (id) => await handleDelete({ id }),
           isFetching: deleteLoading,
           showDialog: true,
           title: "Delete Partner",

@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { FiPlus } from "react-icons/fi";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export default function SelectField({
@@ -59,10 +59,10 @@ export default function SelectField({
   };
 
   return (
-    <div className={clsx("w-full", className)} key={name}>
+    <div className={cn("w-full", className)} key={name}>
       {label && (
         <label
-          className={clsx(
+          className={cn(
             "mb-2 inline-flex items-center font-medium text-foreground",
             labelClass
           )}
@@ -81,7 +81,7 @@ export default function SelectField({
       >
         <SelectTrigger
           id={name}
-          className={clsx(
+          className={cn(
             "w-full px-4 py-3 border border-gray-300 bg-white text-base h-full",
             buttonClass
           )}
@@ -97,7 +97,7 @@ export default function SelectField({
         </SelectTrigger>
 
         <SelectContent
-          className={clsx("border border-gray-100 bg-white", dropdownClass)}
+          className={cn("border border-gray-100 bg-white", dropdownClass)}
         >
           {options.map((opt) => (
             <SelectItem

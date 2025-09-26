@@ -12,7 +12,7 @@ export const STATUS_BADGES = {
   FAILED: "text-[#E03137] data-[hover=true]:bg-[#FFEDEC] bg-[#FFEDEC]",
 
   FULFILLED: "text-[#0CAF60] data-[hover=true]:bg-[#E7F7EF] bg-[#E7F7EF]",
-  UN_FULFILLED: "text-[#E6BB20] data-[hover=true]:bg-[#FFF6D3] bg-[#FFF6D3]",
+  UN_FULFILLED: "text-[#E03137] data-[hover=true]:bg-[#FFEDEC] bg-[#FFEDEC]",
 
   PENDING: "text-[#E6BB20] data-[hover=true]:bg-[#FFF6D3] bg-[#FFF6D3]",
   COMPLETED: "text-[#0CAF60] data-[hover=true]:bg-[#E7F7EF] bg-[#E7F7EF]",

@@ -10,6 +10,7 @@ import DatePicker from "@/components/ui/fields/DatePicker";
 import DropZone from "@/components/ui/fields/DropZone";
 import SelectField from "@/components/ui/fields/SelectField";
 import { useUpdateMutation } from "@/hooks/queries";
+import MediaField from "@/components/ui/fields/MediaField";
 
 const fields = [
   { name: "firstName", label: "First Name", placeholder: "Enter first name" },
@@ -150,15 +151,16 @@ export default function ProfileForm({ details }) {
 
         {/* Avatar on right side */}
         <div className="flex flex-col items-center justify-start space-y-4 row-start-1 md:row-auto">
-          <DropZone
+          <MediaField
             name="avatar"
             label="Avatar"
             shape="circle"
             shapeClass="w-48 h-48"
-            initial={[details?.avatar]}
-            onChange={(files) => {
-              form.setValue("avatar", files?.[0] || null);
+            initial={details?.avatar ? [details.avatar] : null}
+            onChange={(file) => {
+              form.setValue("avatar", file || null);
             }}
+            showModal={false}
             createMedia={false}
           />
         </div>

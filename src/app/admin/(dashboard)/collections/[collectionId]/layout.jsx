@@ -10,6 +10,7 @@ import DropZone from "@/components/ui/fields/DropZone";
 import { motion } from "framer-motion";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
+import MediaField from "@/components/ui/fields/MediaField";
 
 const TABS = [
   { name: "General", slug: "" },
@@ -55,7 +56,7 @@ export default function CollectionLayout({ children, params }) {
           {!isLoading && (
             <div className="max-w-80 w-full flex flex-col gap-6 rounded-xl bg-white px-4 py-6 md:px-6 text-center flex-shrink-0">
               <div className="cursor-pointer">
-                <DropZone
+                <MediaField
                   name="featuredImage"
                   label=""
                   initial={
@@ -68,6 +69,7 @@ export default function CollectionLayout({ children, params }) {
                     });
                   }}
                   key="featuredImage"
+                  shape="square"
                   shapeClass="!size-full aspect-square mx-auto"
                   imageClass="!object-cover"
                   imageProps={{

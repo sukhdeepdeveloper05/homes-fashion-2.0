@@ -48,7 +48,7 @@ export default function Button({
     : variantClasses[variant][appearance];
 
   const finalClassName = cn(
-    "button inline-flex items-center justify-center gap-2 relative overflow-hidden disabled:pointer-events-none disabled:opacity-80",
+    "button inline-flex items-center justify-center gap-2 relative overflow-hidden disabled:pointer-events-none disabled:opacity-70",
     sizeClasses[size],
     variantClass,
     isLoading &&

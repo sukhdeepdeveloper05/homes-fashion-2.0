@@ -25,7 +25,7 @@ export default function useCollectionColumns() {
         view: { href: `/admin/collections/` }, // id will be added
         delete: {
           onDelete: async (id) =>
-            await deleteCollectionMutation.mutateAsync(id),
+            await deleteCollectionMutation.mutateAsync({ id }),
           isLoading: deleteCollectionMutation.isPending,
           showDialog: true,
           title: "Delete Collection",

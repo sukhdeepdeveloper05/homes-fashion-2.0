@@ -3,7 +3,7 @@
 import TableLayout from "@/components/admin/shared/table/TableLayout";
 import { ORDER_STATUSES, PYAMENT_STATUSES } from "@/config/Consts";
 import { useSetParams } from "@/hooks/setParams";
-import { useListQuery } from "@/hooks/queries";
+import { useListQuery, useUpdateMutation } from "@/hooks/queries";
 import FiltersBar from "@/components/admin/shared/FiltersBar";
 
 export default function OrdersContent({ searchParams }) {
@@ -17,6 +17,11 @@ export default function OrdersContent({ searchParams }) {
       params: searchParams,
       requiresAuth: true,
     });
+
+  const updateOrderMutation = useUpdateMutation({
+    handle: "order",
+    url: "/orders",
+  });
 
   const headings = [
     {
@@ -51,7 +56,18 @@ export default function OrdersContent({ searchParams }) {
       key: "orderStatus",
       type: "status",
       options: ORDER_STATUSES,
-      hideOptions: true,
+      onChange: async (orderId, val) => {
+        try {
+          await updateOrderMutation.mutateAsync({
+            id: orderId,
+            values: { orderStatus: val },
+          });
+        } catch (error) {
+          console.log(error?.message);
+          throw new Error(error?.message || "Failed to update order status");
+        }
+      },
+      // hideOptions: true,
     },
     {
       title: "Payment Status",
