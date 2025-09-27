@@ -4,7 +4,7 @@ import { API_URL } from "@/config/Consts";
 
 const axiosInstance = axios.create({
   baseURL: API_URL || "http://localhost:9090",
-  // withCredentials: true,
+  withCredentials: true,
   headers: {
     Accept: "application/json",
   },
@@ -39,9 +39,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   async (response) => {
     // Auto-save token if API returns a new one
-    if (response?.data?.token) {
-      await setAuthUser({ token: response.data.token, ...response.data.data });
-    }
+    // if (response?.data?.token) {
+    //   await setAuthUser({ token: response.data.token, ...response.data.data });
+    // }
 
     return response.data;
   },
