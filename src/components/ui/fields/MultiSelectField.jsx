@@ -12,9 +12,6 @@ import { Check, Plus } from "lucide-react";
 import clsx from "clsx";
 import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import { useFormField } from "@/components/shadcn/form";
-import { useFormState } from "react-hook-form";
-import { is } from "zod/v4/locales";
 
 const containerVariants = {
   animate: {
@@ -70,11 +67,11 @@ export default function MultiSelectField({
   };
 
   return (
-    <div className={clsx("w-full", className)}>
+    <div className={clsx("w-full flex flex-col gap-2", className)}>
       {label && (
         <label
           className={clsx(
-            "data-[error=true]:text-destructive mb-2 inline-flex items-center font-medium text-foreground",
+            "data-[error=true]:text-destructive inline-flex items-center font-medium text-foreground",
             labelClass
           )}
           // data-error={!!errorMessage}

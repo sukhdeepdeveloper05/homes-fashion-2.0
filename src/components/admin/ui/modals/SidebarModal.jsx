@@ -130,7 +130,7 @@ export default function SidebarModal({
                   (data) => onSubmit(data, form),
                   onInvalid
                 )}
-                className="space-y-5 flex flex-col h-full"
+                className="flex flex-col gap-5 h-full"
               >
                 {list.map(shapeItem)}
                 {children}

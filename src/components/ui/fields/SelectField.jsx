@@ -59,11 +59,11 @@ export default function SelectField({
   };
 
   return (
-    <div className={cn("w-full", className)} key={name}>
+    <div className={cn("w-full flex flex-col gap-2", className)} key={name}>
       {label && (
         <label
           className={cn(
-            "mb-2 inline-flex items-center font-medium text-foreground",
+            "inline-flex items-center font-medium text-foreground",
             labelClass
           )}
           htmlFor={name}
