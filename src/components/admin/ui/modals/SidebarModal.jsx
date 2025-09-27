@@ -123,7 +123,7 @@ export default function SidebarModal({
         </SheetHeader>
 
         <div className="flex-1 flex flex-col overflow-y-auto">
-          <div className="shrink-0 bg-white px-4 py-5 h-full">
+          <div className="shrink-0 bg-white px-4 py-5 flex-1">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(
