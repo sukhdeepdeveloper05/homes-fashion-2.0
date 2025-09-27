@@ -27,8 +27,6 @@ export default function BookingsContent({ searchParams }) {
     invalidate: false,
   });
 
-  console.log(bookings[0]);
-
   const headings = [
     {
       title: "Booking Id",

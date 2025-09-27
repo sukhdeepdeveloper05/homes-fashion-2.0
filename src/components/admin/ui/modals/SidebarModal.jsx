@@ -98,7 +98,7 @@ export default function SidebarModal({
     );
   };
 
-  console.log(form.getValues());
+  // console.log(form.getValues());
 
   return (
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose?.()}>

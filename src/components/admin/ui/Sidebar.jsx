@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter, useSelectedLayoutSegment } from "next/navigation";
-import Image from "next/image";
+import { useSelectedLayoutSegment } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import clsx from "clsx";
 import { FiChevronsRight } from "react-icons/fi";
 import Link from "next/link";

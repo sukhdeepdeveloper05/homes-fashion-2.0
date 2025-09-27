@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,9 +45,10 @@ export default function AdminSignInPage() {
     },
     onSuccess: (response) => {
       toast.success(response?.message || "Login Successful");
-      router.replace("/admin");
+      router.push("/admin");
     },
     onError: (error) => {
+      console.log(error);
       toast.error(error?.message || "Login Failed");
     },
   });

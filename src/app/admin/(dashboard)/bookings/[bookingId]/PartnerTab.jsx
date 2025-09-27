@@ -3,6 +3,7 @@ import formatDate from "@/utils/formatDate";
 import Image from "next/image";
 
 import { SkeletonBox } from "@/components/ui/Skeletons";
+import { formatPhoneNumber } from "@/utils/formatPhone";
 
 export function PartnerSkeleton() {
   return (
@@ -42,7 +43,7 @@ export default function PartnerTab({ partner, isLoading }) {
         </p>
         <p className="font-medium space-x-2">
           <span className="text-foreground-primary font-semibold">Phone:</span>
-          <span>{partner?.phone}</span>
+          <span>{formatPhoneNumber(partner?.phone)}</span>
         </p>
 
         <p className="font-medium space-x-2">

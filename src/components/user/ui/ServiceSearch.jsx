@@ -2,9 +2,8 @@
 
 import { useListQuery } from "@/hooks/queries";
 import { FiSearch } from "react-icons/fi";
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { MEDIA_URL } from "@/config/Consts";
@@ -12,8 +11,6 @@ import { formatPrice } from "@/utils/formatPrice";
 import { PiImage } from "react-icons/pi";
 
 export default function ServiceSearch() {
-  const router = useRouter();
-
   const [search, setSearch] = useState("");
   const [debounced, setDebounced] = useState("");
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });

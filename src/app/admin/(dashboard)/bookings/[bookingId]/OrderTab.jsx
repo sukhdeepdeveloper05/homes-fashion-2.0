@@ -32,7 +32,7 @@ export default function OrderTab({ orderItem, isLoading }) {
           </p>
           <p>
             <span className="font-bold">Price: </span>
-            {formatPrice(orderItem?.product?.price)}
+            {formatPrice(orderItem?.pricePerItem)}
           </p>
           <p>
             <span className="font-bold">Quantity: </span>

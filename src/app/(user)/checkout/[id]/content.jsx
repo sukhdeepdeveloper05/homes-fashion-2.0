@@ -14,7 +14,7 @@ import { useCreateMutation, useListQuery } from "@/hooks/queries";
 import { SkeletonBox } from "@/components/ui/Skeletons";
 import { Separator } from "@/components/shadcn/separator";
 import QuantityButton from "@/components/user/ui/QuantityButton";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 
 const TAX_RATE = 5;
 

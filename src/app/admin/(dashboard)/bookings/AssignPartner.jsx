@@ -1,27 +1,23 @@
 "use client";
 
-import Checkbox from "@/components/ui/fields/Checkbox";
 import SidebarModal from "@/components/admin/ui/modals/SidebarModal";
 import Image from "next/image";
 import { useState } from "react";
 import { FiLoader } from "react-icons/fi";
 import {
   invalidateQueries,
-  useInfiniteListQuery,
   useListQuery,
   useUpdateMutation,
 } from "@/hooks/queries";
 import { useSidebarFormContext } from "@/store/sidebarFormContext";
 import z from "zod";
-import { toast } from "sonner";
-import { useController, useForm } from "react-hook-form";
+import { useController } from "react-hook-form";
 import { MEDIA_URL } from "@/config/Consts";
 import { RadioGroup, RadioGroupItem } from "@/components/shadcn/radio-group";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function AssignPartnerModal() {
   const {
-    initialData: { id: bookingId, partner } = {},
+    initialData: { id: bookingId, partner } = { partner: null, id: null },
     isShown,
     close,
   } = useSidebarFormContext();
@@ -47,7 +43,9 @@ export default function AssignPartnerModal() {
       close();
       invalidateQueries("bookings");
       invalidateQueries(bookingId);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error?.message);
+    }
   }
 
   const fields = [
@@ -100,7 +98,7 @@ function PartnersList({ search }) {
   return (
     <div className="flex-1 overflow-y-auto border-t border-gray-200">
       <RadioGroup
-        className="min-h-1/2"
+        className=""
         onValueChange={(v) => {
           console.log(v);
           onChange(v);

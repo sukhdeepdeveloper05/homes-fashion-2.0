@@ -9,7 +9,7 @@ const SidebarContext = createContext({
 });
 
 export function SidebarContextProvider({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
