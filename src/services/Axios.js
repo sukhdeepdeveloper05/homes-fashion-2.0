@@ -39,9 +39,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   async (response) => {
     // Auto-save token if API returns a new one
-    // if (response?.data?.token) {
-    //   await setAuthUser({ token: response.data.token, ...response.data.data });
-    // }
+    if (response?.data?.token) {
+      await setAuthUser({ token: response.data.token, ...response.data.data });
+    }
 
     return response.data;
   },
