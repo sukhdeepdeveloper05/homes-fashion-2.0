@@ -1,5 +1,3 @@
-import logo from "@/assets/images/logo.webp";
-
 import Sidebar from "@/components/admin/ui/Sidebar";
 import AuthHeader from "@/components/admin/shared/AuthHeader";
 import { getAuthUser } from "@/actions/user";
@@ -85,8 +83,8 @@ export default async function DashboardLayout({ children }) {
   return (
     <SidebarContextProvider>
       <SidebarFormContextProvider>
-        <div className={`transition-all flex bg-gray-50`}>
-          <Sidebar logo={logo} routes={ADMIN_NAV} footerRoutes={FOOTER_NAV} />
+        <div className="transition-all flex flex-1 bg-gray-50">
+          <Sidebar routes={ADMIN_NAV} footerRoutes={FOOTER_NAV} />
 
           <div className="w-full">
             <AuthHeader
@@ -95,7 +93,7 @@ export default async function DashboardLayout({ children }) {
               user={user}
             />
 
-            <main className="main h-[calc(100vh-4.5rem)] md:h-[calc(100vh-80px)] overflow-y-auto md:px-7 px-4 py-4 md:py-8 bg-gray-100">
+            <main className="main h-[calc(100vh-var(--header-height))] md:h-[calc(100vh-80px)] overflow-y-auto md:px-7 px-4 py-4 md:py-8 bg-gray-100">
               {children}
             </main>
           </div>
