@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FiChevronDown, FiChevronsRight } from "react-icons/fi";
 import Profile from "../ui/Profile";
 import clsx from "clsx";
 
@@ -16,27 +14,49 @@ import {
   DropdownMenuTrigger,
 } from "@/components/shadcn/dropdown-menu";
 import { useSidebarContext } from "@/store/sidebarContext";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { useEffect, useRef } from "react";
 
 export default function AuthHeader({ navLinks = [], profileLinks = [], user }) {
-  const pathname = usePathname();
+  const headerRef = useRef();
+
+  useEffect(() => {
+    function handleResize() {
+      if (headerRef.current) {
+        const headerHeight = headerRef.current.offsetHeight;
+        document
+          .querySelector(":root")
+          .style.setProperty("--header-height", `${headerHeight}px`);
+      }
+    }
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [headerRef.current]);
 
   const { setIsSidebarOpen } = useSidebarContext();
 
   return (
-    <nav className="no-print sticky top-0 z-20 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-3 md:px-6 h-[80px]">
-      {/* Mobile Sidebar Toggle */}
-      <button
-        className="text-gray-900 md:hidden"
-        onClick={() => setIsSidebarOpen(true)}
-      >
-        <FiChevronsRight
-          className={clsx("text-3xl transition-transform duration-200")}
-        />
-      </button>
+    <header ref={headerRef}>
+      <nav className="no-print sticky top-0 z-20 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-3 md:px-6 h-[80px]">
+        {/* Mobile Sidebar Toggle */}
+        <button
+          className="text-gray-900 md:hidden"
+          onClick={() => setIsSidebarOpen(true)}
+        >
+          <RxHamburgerMenu
+            className={clsx("text-3xl transition-transform duration-200")}
+          />
+        </button>
 
-      <div></div>
-      {/* Nav Links */}
-      {/* <ul className="hidden md:flex items-center space-x-6">
+        <div></div>
+        {/* Nav Links */}
+        {/* <ul className="hidden md:flex items-center space-x-6">
         {navLinks.map(({ href, label }) => (
           <li key={href}>
             <Link
@@ -54,43 +74,44 @@ export default function AuthHeader({ navLinks = [], profileLinks = [], user }) {
         ))}
       </ul> */}
 
-      {/* Profile Dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center cursor-pointer">
-          <Profile user={user} imageClass="h-full object-cover" />
-        </DropdownMenuTrigger>
+        {/* Profile Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center cursor-pointer">
+            <Profile user={user} imageClass="h-full object-cover" />
+          </DropdownMenuTrigger>
 
-        <DropdownMenuContent
-          align="end"
-          className="w-56 rounded-md p-0 overflow-hidden"
-        >
-          {/* User Info */}
-          <DropdownMenuLabel className="px-4 py-3">
-            <span className="block font-semibold capitalize text-base">
-              {user?.firstName} {user?.lastName ?? ""}
-            </span>
-            <span className="block truncate text-sm text-gray-500">
-              {user?.email}
-            </span>
-          </DropdownMenuLabel>
+          <DropdownMenuContent
+            align="end"
+            className="w-56 rounded-md p-0 overflow-hidden"
+          >
+            {/* User Info */}
+            <DropdownMenuLabel className="px-4 py-3">
+              <span className="block font-semibold capitalize text-base">
+                {user?.firstName} {user?.lastName ?? ""}
+              </span>
+              <span className="block truncate text-sm text-gray-500">
+                {user?.email}
+              </span>
+            </DropdownMenuLabel>
 
-          <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
 
-          {/* Profile Links */}
-          <DropdownMenuGroup className="py-2 pb-3">
-            {profileLinks.map(({ href, label }) => (
-              <DropdownMenuItem key={label} asChild>
-                <Link
-                  href={href}
-                  className="w-full cursor-pointer text-foreground-secondary hover:rounded-none px-4 py-2 font-medium"
-                >
-                  {label}
-                </Link>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </nav>
+            {/* Profile Links */}
+            <DropdownMenuGroup className="py-2 pb-3">
+              {profileLinks.map(({ href, label }) => (
+                <DropdownMenuItem key={label} asChild>
+                  <Link
+                    href={href}
+                    className="w-full cursor-pointer text-foreground-secondary hover:rounded-none px-4 py-2 font-medium"
+                  >
+                    {label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </nav>
+    </header>
   );
 }
