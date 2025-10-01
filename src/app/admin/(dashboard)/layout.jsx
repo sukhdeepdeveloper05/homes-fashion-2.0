@@ -83,10 +83,10 @@ export default async function DashboardLayout({ children }) {
   return (
     <SidebarContextProvider>
       <SidebarFormContextProvider>
-        <div className="transition-all flex flex-1 bg-gray-50">
+        <div className="transition-all flex bg-gray-50">
           <Sidebar routes={ADMIN_NAV} footerRoutes={FOOTER_NAV} />
 
-          <div className="w-full">
+          <div className="w-full h-full">
             <AuthHeader
               navLinks={HEADER_NAV}
               profileLinks={PROFILE_LINKS}
